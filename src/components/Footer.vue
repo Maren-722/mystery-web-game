@@ -1,7 +1,7 @@
 <template>
   <footer v-if="!hideNav" class="footer">
     <p>南桥夜市 · 临岗市江边 · 营业时间 17:00-23:00</p>
-    <p class="footer-small">夜市管理处维护 · 有问题请联系管理处</p>
+    <p class="footer-small">夜市管理处维护 · 有问题请联系管理处王主任</p>
   </footer>
 </template>
 

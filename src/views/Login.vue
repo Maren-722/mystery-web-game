@@ -2,6 +2,7 @@
   <div class="login-page">
     <NavBar />
     <div class="login-container">
+      <BackBar label="返回首页" fallback="/home" />
       <h1 class="login-title">账号登录</h1>
       <p class="login-subtitle">登录后可查看私信、手记和管理店铺信息</p>
 
@@ -38,6 +39,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
+import BackBar from '../components/BackBar.vue'
 import accounts from '../data/accounts.json'
 
 const router = useRouter()

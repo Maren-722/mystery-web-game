@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import messagesData from '../data/messages.json'
@@ -39,10 +39,22 @@ const currentUser = computed(() => {
   }
 })
 
-onMounted(() => {
+function loadData() {
   if (currentUser.value) {
     notes.value = messagesData[currentUser.value.username]?.notes || []
+  } else {
+    notes.value = []
   }
+}
+
+onMounted(() => {
+  loadData()
+  // 切换账号后自动刷新为本账号的手记
+  window.addEventListener('nq-user-changed', loadData)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('nq-user-changed', loadData)
 })
 </script>
 

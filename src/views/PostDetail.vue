@@ -2,6 +2,7 @@
   <div class="post-detail-page">
     <NavBar />
     <div class="container">
+      <BackBar label="返回论坛" fallback="/forum" />
       <!-- TODO(队友B)：根据路由参数 :id 从 src/data/posts.json 读取帖子详情和评论 -->
       <div v-if="post" class="detail-card">
         <h2 class="post-title">{{ post.title }}</h2>
@@ -34,6 +35,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
+import BackBar from '../components/BackBar.vue'
 import postsData from '../data/posts.json'
 
 const route = useRoute()

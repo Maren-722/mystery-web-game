@@ -8,33 +8,122 @@
       <template v-if="currentUser">
         <a @click="go('/messages')">短信</a>
         <a @click="go('/notes')">我的手记</a>
-        <span class="navbar-user">{{ currentUser.shopName || currentUser.username }}</span>
+        <div class="navbar-user-wrap">
+          <span class="navbar-user" @click="showMenu = !showMenu">
+            {{ currentUser.shopName || currentUser.username }} ▾
+          </span>
+        </div>
       </template>
       <a v-else @click="go('/login')">登录</a>
+    </div>
+
+    <!-- 账号菜单遮罩：点击菜单外关闭 -->
+    <div v-if="showMenu" class="menu-mask" @click="closeMenu"></div>
+
+    <!-- 账号下拉菜单 -->
+    <div v-if="showMenu" class="user-menu" @click.stop>
+      <button class="menu-item" @click="openSwitch">切换账号</button>
+      <button class="menu-item menu-danger" @click="logout">退出登录</button>
+
+      <!-- 切换账号表单 -->
+      <div v-if="switchMode" class="menu-form">
+        <input
+          v-model="loginId"
+          class="form-input menu-input"
+          placeholder="ID / 用户名"
+        >
+        <input
+          v-model="loginPwd"
+          type="password"
+          class="form-input menu-input"
+          placeholder="密码"
+          @keyup.enter="doSwitch"
+        >
+        <button class="btn btn-block" @click="doSwitch">登录</button>
+        <p v-if="loginError" class="menu-error">{{ loginError }}</p>
+      </div>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import accounts from '../data/accounts.json'
 
 const route = useRoute()
 const router = useRouter()
 
-const hideNav = computed(() => route.meta.hideNav === true)
+const hideNav = ref(route.meta.hideNav === true)
 
-// 从 localStorage 读取当前登录账号
-const currentUser = computed(() => {
+// 当前登录账号：响应式 ref，登录/切换/退出时同步更新
+function loadUser() {
   try {
     return JSON.parse(localStorage.getItem('nq_user') || 'null')
   } catch {
     return null
   }
-})
+}
+const currentUser = ref(loadUser())
+
+// 账号菜单状态
+const showMenu = ref(false)
+const switchMode = ref(false)
+const loginId = ref('')
+const loginPwd = ref('')
+const loginError = ref('')
 
 function go(path) {
   router.push(path)
+}
+
+function closeMenu() {
+  showMenu.value = false
+  switchMode.value = false
+  loginError.value = ''
+}
+
+function openSwitch() {
+  switchMode.value = true
+  loginError.value = ''
+}
+
+// 退出登录：清除登录态，恢复游客模式
+function logout() {
+  localStorage.removeItem('nq_user')
+  currentUser.value = null
+  closeMenu()
+  loginId.value = ''
+  loginPwd.value = ''
+  window.dispatchEvent(new CustomEvent('nq-user-changed'))
+  // 若在私密页面（短信/手记），跳回首页
+  if (route.meta.requiresAuth) {
+    router.push('/home')
+  }
+}
+
+// 切换账号：校验并替换当前登录账号
+function doSwitch() {
+  const uname = loginId.value.trim()
+  const pwd = loginPwd.value.trim()
+  if (!uname || !pwd) {
+    loginError.value = '请输入用户名和密码'
+    return
+  }
+  const account = accounts[uname]
+  if (account && account.password === pwd) {
+    localStorage.setItem('nq_user', JSON.stringify({
+      username: uname,
+      shopName: account.shopName || uname
+    }))
+    currentUser.value = { username: uname, shopName: account.shopName || uname }
+    closeMenu()
+    loginId.value = ''
+    loginPwd.value = ''
+    window.dispatchEvent(new CustomEvent('nq-user-changed'))
+  } else {
+    loginError.value = '账号或密码错误，请重试'
+  }
 }
 </script>
 
@@ -71,11 +160,75 @@ function go(path) {
 .navbar-links a:hover {
   opacity: 1;
 }
+.navbar-user-wrap {
+  position: relative;
+}
 .navbar-user {
   background: rgba(255, 255, 255, 0.15);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: var(--font-small);
+  cursor: pointer;
+  user-select: none;
+}
+.navbar-user:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* 菜单遮罩：点击任意外部区域关闭 */
+.menu-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+}
+/* 账号下拉菜单 */
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  padding: 8px;
+  z-index: 200;
+}
+.menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 10px;
+  font-size: var(--font-body-size);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.menu-item:hover {
+  background: var(--color-bg);
+}
+.menu-danger {
+  color: var(--color-danger);
+}
+.menu-form {
+  border-top: 1px dashed var(--color-border);
+  margin-top: 8px;
+  padding-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+.menu-input {
+  font-size: 14px;
+  padding: 8px 10px;
+}
+.menu-error {
+  color: var(--color-danger);
+  font-size: var(--font-tiny);
+  text-align: center;
 }
 
 @media (max-width: 720px) {
@@ -87,6 +240,11 @@ function go(path) {
   }
   .navbar-links a {
     font-size: var(--font-small);
+  }
+  .user-menu {
+    position: fixed;
+    right: var(--space-md);
+    top: 52px;
   }
 }
 </style>

@@ -2,6 +2,7 @@
   <div class="stall-detail-page">
     <NavBar />
     <div class="container">
+      <BackBar label="返回夜市导览" fallback="/stalls" />
       <!-- TODO(队友B)：根据路由参数 :id 从 src/data/stalls.json 读取对应摊位详情 -->
       <div v-if="stall" class="detail-card">
         <div class="detail-header">
@@ -17,12 +18,8 @@
           <span class="dish-price">{{ item.price }}元</span>
         </div>
 
-        <!-- 摊主手记（关键线索区，陈伯的页面重点做） -->
-        <h3 class="sub-title">摊主手记</h3>
-        <div v-for="(note, i) in stall.notes" :key="i" class="note-item">
-          <p class="note-date">{{ note.date }}</p>
-          <p>{{ note.content }}</p>
-        </div>
+        <!-- 注意：摊主手记属于私密内容，只有摊主登录后在"我的手记"页可见，
+             游客在摊位详情页不显示。手记数据在 src/data/stalls.json 的 notes 字段。 -->
 
         <!-- 顾客评价 -->
         <h3 class="sub-title">顾客评价</h3>
@@ -42,6 +39,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
+import BackBar from '../components/BackBar.vue'
 import stallsData from '../data/stalls.json'
 
 const route = useRoute()
@@ -95,12 +93,10 @@ onMounted(() => {
 .dish-price {
   color: var(--color-accent);
 }
-.note-item,
 .review-item {
   padding: 10px 0;
   border-bottom: 1px dashed var(--color-border);
 }
-.note-date,
 .review-user {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);

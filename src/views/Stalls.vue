@@ -11,6 +11,7 @@
           v-for="stall in stalls"
           :key="stall.id"
           class="card stall-card"
+          :class="{ 'stall-closed': stall.closed }"
           @click="$router.push('/stalls/' + stall.id)"
         >
           <div class="stall-no">摊位 {{ stall.stallNo }}</div>
@@ -18,6 +19,7 @@
           <p class="stall-owner">老板：{{ stall.owner }}</p>
           <p class="stall-main">{{ stall.main }}</p>
           <p class="stall-price">价格：{{ stall.price }}</p>
+          <span v-if="stall.closed" class="stall-status">暂停营业</span>
         </div>
       </div>
     </div>
@@ -46,12 +48,13 @@ onMounted(() => {
 }
 .stall-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-md);
 }
 .stall-card {
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 .stall-card:hover {
   border-color: var(--color-accent);
@@ -78,18 +81,34 @@ onMounted(() => {
   color: var(--color-accent);
   margin-top: var(--space-xs);
 }
+.stall-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--color-danger);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--font-tiny);
+}
 
-@media (max-width: 1440px) {
-  .stall-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+/* 暂停营业摊位：整体置灰 */
+.stall-closed {
+  background: #EFEFEF;
+  border-color: #DCDCDC;
 }
+.stall-closed .stall-name {
+  color: #8A8A8A;
+}
+.stall-closed .stall-owner,
+.stall-closed .stall-main {
+  color: #A5A5A5;
+}
+.stall-closed .stall-price {
+  color: #A5A5A5;
+}
+
 @media (max-width: 720px) {
-  .stall-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 480px) {
   .stall-grid {
     grid-template-columns: 1fr;
   }

@@ -4,7 +4,7 @@
       <span class="intro-tag">游戏开始</span>
       <h1 class="intro-title">你是一名刚到临岗市的大一新生</h1>
       <p class="intro-text">
-        开学两周，你还没适应这座江边城市的秋天。今晚室友出去约会了，你一个人在宿舍刷手机，搜"临岗必吃夜市"。
+        开学两周，你还没适应这座江边城市的秋天。今天室友们都出去了，你一个人在宿舍刷手机，搜"临岗必吃夜市"。
       </p>
       <p class="intro-text">
         评论区里有人提到<span class="intro-highlight">南桥夜市</span>——江边摆了18年的老夜市，其中有一家<span class="intro-highlight">"陈记糖粥藕"</span>，据说是很多临岗人从小吃到大的味道。
@@ -13,7 +13,11 @@
         你点进了南桥夜市的官网，想看看陈记今晚出不出摊。
       </p>
       <hr class="intro-divider">
-      <button class="intro-btn" @click="$router.push('/home')">进入南桥夜市官网 →</button>
+      <p class="intro-text">
+        你发现这个夜市有自己的官网：
+        <a class="intro-link" @click="$router.push('/home')">http://www.nanqiao-night-market.com</a>
+      </p>
+      <p class="intro-disclaimer">本游戏为虚构创作，其中人物、地点、事件均为虚构，如有雷同，纯属巧合。</p>
     </div>
   </div>
 </template>
@@ -72,23 +76,22 @@
   border-top: 1px solid #0f3460;
   margin: 32px 0;
 }
-.intro-btn {
-  display: block;
-  width: 100%;
-  padding: 16px;
-  background: #e94560;
-  color: #fff;
-  text-align: center;
-  border-radius: 8px;
-  font-size: 16px;
+.intro-link {
+  color: #e94560;
   font-weight: 600;
   cursor: pointer;
-  border: none;
-  font-family: var(--font-body);
-  transition: background 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
 }
-.intro-btn:hover {
-  background: #c73650;
+.intro-link:hover {
+  color: #fff;
+}
+.intro-disclaimer {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #666b85;
+  text-align: center;
 }
 
 @media (max-width: 720px) {

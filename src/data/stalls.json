@@ -1,7 +1,8 @@
 [
   {
     "id": "chenji",
-    "stallNo": "A12",
+    "stallNo": "A1",
+    "closed": true,
     "shopName": "陈记糖粥藕",
     "owner": "陈桂生",
     "main": "糖粥、藕粉、桂花糖水",
@@ -19,36 +20,8 @@
     ]
   },
   {
-    "id": "laozhang",
-    "stallNo": "B03",
-    "shopName": "张记卤味",
-    "owner": "张建国",
-    "main": "卤鸭脖、卤藕片、卤蛋",
-    "price": "10元起",
-    "dishes": [
-      { "name": "卤鸭脖", "price": 12 },
-      { "name": "卤藕片", "price": 10 }
-    ],
-    "notes": [],
-    "reviews": []
-  },
-  {
-    "id": "xiaoli",
-    "stallNo": "C07",
-    "shopName": "小李炒粉",
-    "owner": "李明",
-    "main": "炒粉、炒面、蛋炒饭",
-    "price": "12元起",
-    "dishes": [
-      { "name": "炒粉", "price": 12 },
-      { "name": "蛋炒饭", "price": 10 }
-    ],
-    "notes": [],
-    "reviews": []
-  },
-  {
     "id": "zhangayi",
-    "stallNo": "A05",
+    "stallNo": "A2",
     "shopName": "张阿姨凉面",
     "owner": "张桂香",
     "main": "凉面、凉皮、酸梅汤",
@@ -61,13 +34,120 @@
     "reviews": []
   },
   {
-    "id": "wangzhuren",
-    "stallNo": "—",
-    "shopName": "南桥夜市管理处",
-    "owner": "王志强",
-    "main": "夜市管理、公告发布",
-    "price": "—",
-    "dishes": [],
+    "id": "zhaoji",
+    "stallNo": "A3",
+    "shopName": "赵记馄饨",
+    "owner": "赵德柱",
+    "main": "鲜肉馄饨、荠菜馄饨",
+    "price": "10元起",
+    "dishes": [
+      { "name": "鲜肉馄饨", "price": 10 },
+      { "name": "荠菜馄饨", "price": 12 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "zhenjie",
+    "stallNo": "A4",
+    "shopName": "珍姐水果捞",
+    "owner": "阿珍",
+    "main": "水果捞、鲜榨果汁",
+    "price": "15元起",
+    "dishes": [
+      { "name": "水果捞", "price": 15 },
+      { "name": "鲜榨西瓜汁", "price": 8 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "laozhang",
+    "stallNo": "B1",
+    "shopName": "张记卤味",
+    "owner": "张建国",
+    "main": "卤鸭脖、卤藕片、卤蛋",
+    "price": "10元起",
+    "dishes": [
+      { "name": "卤鸭脖", "price": 12 },
+      { "name": "卤藕片", "price": 10 },
+      { "name": "卤蛋", "price": 3 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "wangji",
+    "stallNo": "B3",
+    "shopName": "王记烧烤",
+    "owner": "王强",
+    "main": "烤羊肉串、烤生蚝、烤茄子",
+    "price": "15元起",
+    "dishes": [
+      { "name": "羊肉串", "price": 5 },
+      { "name": "烤生蚝", "price": 15 },
+      { "name": "烤茄子", "price": 12 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "awei",
+    "stallNo": "A5",
+    "shopName": "阿伟烤冷面",
+    "owner": "阿伟",
+    "main": "烤冷面、鸡蛋灌饼",
+    "price": "8元起",
+    "dishes": [
+      { "name": "烤冷面", "price": 8 },
+      { "name": "鸡蛋灌饼", "price": 6 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "xiaoli",
+    "stallNo": "B2",
+    "shopName": "小李炒粉",
+    "owner": "李明",
+    "main": "炒粉、炒面、蛋炒饭",
+    "price": "12元起",
+    "dishes": [
+      { "name": "炒粉", "price": 12 },
+      { "name": "炒面", "price": 12 },
+      { "name": "蛋炒饭", "price": 10 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "liujie",
+    "stallNo": "B4",
+    "shopName": "刘姐麻辣烫",
+    "owner": "刘姐",
+    "main": "麻辣烫、秘制香辣藕片",
+    "price": "15元起",
+    "dishes": [
+      { "name": "麻辣烫", "price": 15 },
+      { "name": "香辣藕片", "price": 10 }
+    ],
+    "notes": [
+      { "date": "10月9日", "content": "跟陈叔说好了，这周帮我把藕带上。他进货的眼光，我信。" },
+      { "date": "10月12日", "content": "陈叔今天没来。藕的事……先放一放吧。" }
+    ],
+    "reviews": []
+  },
+  {
+    "id": "aqiang",
+    "stallNo": "B5",
+    "shopName": "阿强臭豆腐",
+    "owner": "阿强",
+    "main": "臭豆腐、炸串",
+    "price": "10元起",
+    "dishes": [
+      { "name": "臭豆腐", "price": 10 },
+      { "name": "炸鸡排", "price": 12 }
+    ],
     "notes": [],
     "reviews": []
   }
