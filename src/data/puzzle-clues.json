@@ -1,0 +1,45 @@
+[
+  {
+    "accountId": "liming",
+    "sourceType": "stall",
+    "sourceId": "xiaoli",
+    "rule": "四位月日",
+    "password": "1010"
+  },
+  {
+    "accountId": "zhangjianguo",
+    "sourceType": "stall",
+    "sourceId": "laozhang",
+    "rule": "四位月日",
+    "password": "0318"
+  },
+  {
+    "accountId": "zhangguixiang",
+    "sourceType": "stall",
+    "sourceId": "zhangayi",
+    "rule": "四位月日",
+    "password": "0612"
+  },
+  {
+    "accountId": "wangzhiqiang",
+    "sourceType": "notice",
+    "sourceId": "management",
+    "rule": "八位年月日",
+    "password": "20180901"
+  },
+  {
+    "accountId": "chenguisheng",
+    "sourceType": "note",
+    "sourceId": "N-W03",
+    "rule": "旧档案日期",
+    "password": "19980716"
+  },
+  {
+    "accountId": "chennian",
+    "sourceType": "note-and-post",
+    "sourceId": "N-C04",
+    "postId": "p9",
+    "rule": "纸条背面八位数字",
+    "password": "19980716"
+  }
+]

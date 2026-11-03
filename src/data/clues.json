@@ -1,0 +1,47 @@
+[
+  {
+    "id": "EV_VOLUNTARY",
+    "label": "陈伯自行离开并报平安",
+    "sourceId": "T01"
+  },
+  {
+    "id": "EV_LI_CLEAR",
+    "label": "小李擦桌是报恩",
+    "sourceId": "T03"
+  },
+  {
+    "id": "EV_HAND",
+    "label": "旧照与年轻人相同的手部特征",
+    "sourceId": "N-L02"
+  },
+  {
+    "id": "EV_HOSPITAL",
+    "label": "住院位置已确认",
+    "sourceId": "N-W01"
+  },
+  {
+    "id": "EV_LOST_DATE",
+    "label": "1998年走失档案与日期",
+    "sourceId": "N-W03"
+  },
+  {
+    "id": "EV_RECOGNITION",
+    "label": "陈伯认出了手部特征",
+    "sourceId": "N-C03"
+  },
+  {
+    "id": "EV_PAPER",
+    "label": "两人都保留相同日期",
+    "sourceId": "N-C04"
+  },
+  {
+    "id": "EV_DEPARTURE",
+    "label": "陈伯等人后自行去医院",
+    "sourceId": "N-C06"
+  },
+  {
+    "id": "EV_IDENTITY",
+    "label": "夜归人自述姓名陈念",
+    "sourceId": "N-N04"
+  }
+]

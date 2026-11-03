@@ -1,29 +1,501 @@
-{
-  "chenguisheng": {
+[
+  {
+    "id": "T01",
+    "participants": [
+      "chenguisheng",
+      "zhangjianguo"
+    ],
     "messages": [
       {
-        "with": "张建国",
-        "messages": [
-          { "from": "chenjigui", "time": "10月12日 20:30", "content": "老张，摊子的事拜托你了。" },
-          { "from": "laozhang", "time": "10月12日 20:31", "content": "你少说这种话，明天去医院。" }
-        ]
+        "id": "T01-01",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-09 16:42",
+        "content": "报告拿到了？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-02",
+        "fromId": "chenguisheng",
+        "at": "2026-10-09 16:47",
+        "content": "拿到了。跟七月那回差不多。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-03",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-09 16:49",
+        "content": "少跟我绕，医生怎么说的？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-04",
+        "fromId": "chenguisheng",
+        "at": "2026-10-09 17:03",
+        "content": "回去再说，手机快没电了。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-05",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-12 21:36",
+        "content": "粥放着，跟我走。床位我都替你问了。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-06",
+        "fromId": "chenguisheng",
+        "at": "2026-10-12 21:38",
+        "content": "再等一会。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-07",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-12 21:39",
+        "content": "等哪个？你要在这儿咳一晚上？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-08",
+        "fromId": "chenguisheng",
+        "at": "2026-10-12 21:41",
+        "content": "你别拽我。今晚不吵了，行不行。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-09",
+        "fromId": "chenguisheng",
+        "at": "2026-10-12 23:18",
+        "content": "钥匙压在煤炉后头。明早帮我把门拉好。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-10",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-12 23:19",
+        "content": "我送你。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-11",
+        "fromId": "chenguisheng",
+        "at": "2026-10-12 23:21",
+        "content": "我自己打车。那五万块，你也别惦记了。你家嫂子现在能出来转转，比什么都强。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-12",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-13 00:06",
+        "content": "到了给个信。别又不回。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T01-13",
+        "fromId": "chenguisheng",
+        "at": "2026-10-13 00:29",
+        "content": "到了。卤锅火记得关。",
+        "evidenceId": "EV_VOLUNTARY"
       }
-    ],
-    "notes": [
-      { "date": "10月9日", "content": "检查结果出来了。医生说最多三个月。\n\n念儿，爹不该躲你。可爹这副样子，怎么让你看？" }
     ]
   },
-  "chennian": {
+  {
+    "id": "T02",
+    "participants": [
+      "chenguisheng",
+      "zhangguixiang"
+    ],
     "messages": [
       {
-        "with": "张阿姨",
-        "messages": [
-          { "from": "zhangayi", "time": "10月20日 15:00", "content": "小伙子，你天天来买粥，是不是在找人？" }
-        ]
+        "id": "T02-01",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-09 08:17",
+        "content": "我收拾好了，你带上卡。公交站等你。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-02",
+        "fromId": "chenguisheng",
+        "at": "2026-10-09 08:20",
+        "content": "别跟他们说。就说我去进货。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-03",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-09 12:54",
+        "content": "我先回摊上备料了。你还要等多久？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-04",
+        "fromId": "chenguisheng",
+        "at": "2026-10-09 12:58",
+        "content": "还要排一会。你快回，孩子午饭等着呢。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-05",
+        "fromId": "chenguisheng",
+        "at": "2026-10-10 15:08",
+        "content": "你儿子喜欢的那把椅子，收摊拿回去吧。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-06",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-10 15:12",
+        "content": "他喜欢的是在你那儿坐着吃藕，不缺椅子。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-07",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-12 22:11",
+        "content": "你托我收的围裙洗好了，明天带来。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-08",
+        "fromId": "chenguisheng",
+        "at": "2026-10-12 22:15",
+        "content": "搁你那儿吧，别急。辣椒你自己少吃，膝盖疼别还站那么久。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T02-09",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-13 09:07",
+        "content": "老张说你去住下了。粥锅我擦了，没挪地方。",
+        "evidenceId": ""
       }
+    ]
+  },
+  {
+    "id": "T03",
+    "participants": [
+      "chenguisheng",
+      "liming"
     ],
-    "notes": [
-      { "date": "10月18日", "content": "我不敢问。如果他说不认识我怎么办？" }
+    "messages": [
+      {
+        "id": "T03-01",
+        "fromId": "liming",
+        "at": "2026-10-10 01:06",
+        "content": "叔，旧桌子我擦好了，你明天看看还黏不黏。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-02",
+        "fromId": "chenguisheng",
+        "at": "2026-10-10 06:40",
+        "content": "别老弄我这儿。你收摊晚，早点睡。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-03",
+        "fromId": "liming",
+        "at": "2026-10-11 00:53",
+        "content": "昨晚那个人又来问你。他右手食指弯着，拿勺子费劲，我还给他换了把大的。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-04",
+        "fromId": "chenguisheng",
+        "at": "2026-10-11 07:18",
+        "content": "别拿这个问人家。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-05",
+        "fromId": "liming",
+        "at": "2026-10-11 07:20",
+        "content": "没有，我就是想起来你原来那张照片。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-06",
+        "fromId": "chenguisheng",
+        "at": "2026-10-11 07:28",
+        "content": "照片收好，别发网上。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-07",
+        "fromId": "liming",
+        "at": "2026-10-13 01:11",
+        "content": "你没来，我给桌子擦了。门口两个凳子还是老地方。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T03-08",
+        "fromId": "liming",
+        "at": "2026-10-14 01:03",
+        "content": "今天也擦了。叔，不收你钱的，原来那两百我慢慢还。",
+        "evidenceId": "EV_LI_CLEAR"
+      }
+    ]
+  },
+  {
+    "id": "T04",
+    "participants": [
+      "chenguisheng",
+      "wangzhiqiang"
+    ],
+    "messages": [
+      {
+        "id": "T04-01",
+        "fromId": "chenguisheng",
+        "at": "2026-10-11 10:02",
+        "content": "我想停几天，摊位先别销。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-02",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-11 10:09",
+        "content": "多久？月底要报数字，你给我个准话。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-03",
+        "fromId": "chenguisheng",
+        "at": "2026-10-11 10:16",
+        "content": "还说不准。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-04",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-13 08:10",
+        "content": "老张说你昨晚去医院了。我先写“个人原因暂停营业”，没写别的。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-05",
+        "fromId": "chenguisheng",
+        "at": "2026-10-13 08:24",
+        "content": "谢谢。人家来问，就照这个说。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-06",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-13 08:28",
+        "content": "那位老来找你的年轻人呢？也这么回？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-07",
+        "fromId": "chenguisheng",
+        "at": "2026-10-13 08:31",
+        "content": "也一样。别让他跑一趟。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-08",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-13 08:36",
+        "content": "你们认识？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T04-09",
+        "fromId": "chenguisheng",
+        "at": "2026-10-13 08:52",
+        "content": "吃粥的。",
+        "evidenceId": ""
+      }
+    ]
+  },
+  {
+    "id": "T05",
+    "participants": [
+      "zhangjianguo",
+      "zhangguixiang"
+    ],
+    "messages": [
+      {
+        "id": "T05-01",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-13 10:22",
+        "content": "昨晚有人说你们动手了。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T05-02",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-13 10:24",
+        "content": "我拽他袖子。他咳得腰都直不起来，还要站着等。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T05-03",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-13 10:25",
+        "content": "你那张嘴，催人也像骂人。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T05-04",
+        "fromId": "zhangjianguo",
+        "at": "2026-10-13 10:28",
+        "content": "晓得。他那锅藕你帮他看着。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T05-05",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-13 10:30",
+        "content": "我看着。你别在论坛跟人吵，他不愿意让大家知道。",
+        "evidenceId": ""
+      }
+    ]
+  },
+  {
+    "id": "T06",
+    "participants": [
+      "liming",
+      "zhangguixiang"
+    ],
+    "messages": [
+      {
+        "id": "T06-01",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-14 00:48",
+        "content": "又一点了？你那粉还炒不炒。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T06-02",
+        "fromId": "liming",
+        "at": "2026-10-14 00:49",
+        "content": "最后一桌走了。我擦两下就回。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T06-03",
+        "fromId": "zhangguixiang",
+        "at": "2026-10-14 00:52",
+        "content": "两百块不是叫你熬夜还的。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T06-04",
+        "fromId": "liming",
+        "at": "2026-10-14 00:54",
+        "content": "我知道。我怕叔哪天回来，桌子上落一层灰。",
+        "evidenceId": ""
+      }
+    ]
+  },
+  {
+    "id": "T07",
+    "participants": [
+      "chennian",
+      "liming"
+    ],
+    "messages": [
+      {
+        "id": "T07-01",
+        "fromId": "chennian",
+        "at": "2026-10-13 18:31",
+        "content": "你好，陈叔今天也不来吗？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-02",
+        "fromId": "liming",
+        "at": "2026-10-13 18:44",
+        "content": "门还是关的。公告说休息几天。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-03",
+        "fromId": "chennian",
+        "at": "2026-10-13 18:47",
+        "content": "昨晚我到的时候都收了。有人说他跟隔壁吵架，是不是出什么事了？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-04",
+        "fromId": "liming",
+        "at": "2026-10-13 18:50",
+        "content": "别听他们乱说。叔的东西一件没少。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-05",
+        "fromId": "chennian",
+        "at": "2026-10-16 19:08",
+        "content": "你有他的电话吗？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-06",
+        "fromId": "liming",
+        "at": "2026-10-16 19:13",
+        "content": "我给他发了，你也等等。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T07-07",
+        "fromId": "chennian",
+        "at": "2026-10-16 19:15",
+        "content": "好，谢谢。",
+        "evidenceId": ""
+      }
+    ]
+  },
+  {
+    "id": "T08",
+    "participants": [
+      "chennian",
+      "wangzhiqiang"
+    ],
+    "messages": [
+      {
+        "id": "T08-01",
+        "fromId": "chennian",
+        "at": "2026-10-18 09:12",
+        "content": "王主任，陈记糖粥藕的老板还会回来吗？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T08-02",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-18 10:04",
+        "content": "个人原因停业，恢复时间还没定。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T08-03",
+        "fromId": "chennian",
+        "at": "2026-10-18 10:05",
+        "content": "我不是催他营业。我找他有点事。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T08-04",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-18 10:21",
+        "content": "我替你问过了。他说暂时不用来找。",
+        "evidenceId": ""
+      },
+      {
+        "id": "T08-05",
+        "fromId": "chennian",
+        "at": "2026-10-18 10:24",
+        "content": "是他说的，还是你们都这么回？",
+        "evidenceId": ""
+      },
+      {
+        "id": "T08-06",
+        "fromId": "wangzhiqiang",
+        "at": "2026-10-18 11:02",
+        "content": "是他本人回的。你先别急。",
+        "evidenceId": ""
+      }
     ]
   }
-}
+]

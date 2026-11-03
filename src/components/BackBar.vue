@@ -17,7 +17,7 @@ const router = useRouter()
 
 // 优先回退到浏览历史的上一步；没有历史时跳到指定上级页面
 function goBack() {
-  if (window.history.length > 1) {
+  if (router.options.history.state.back) {
     router.back()
   } else {
     router.push(props.fallback)

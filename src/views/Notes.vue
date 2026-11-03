@@ -1,82 +1,31 @@
-<template>
-  <div class="notes-page">
-    <NavBar />
-    <div class="container">
-      <h2 class="section-title">我的手记</h2>
-      <p class="page-desc">只有你自己能看到的私密手记。</p>
-
-      <!-- TODO(队友C)：根据当前登录账号从 src/data/notes.json（或 messages.json 内）读取手记 -->
-      <!-- 关键：陈伯账号登录后，这里显示《给念儿的》等隐藏手记 -->
-      <div v-if="currentUser">
-        <div v-if="notes.length">
-          <div v-for="(note, i) in notes" :key="i" class="card note-card">
-            <p class="note-date">{{ note.date }}</p>
-            <p class="note-content">{{ note.content }}</p>
-          </div>
-        </div>
-        <p v-else class="empty-hint">还没有手记。</p>
-      </div>
-      <p v-else class="empty-hint"><router-link to="/login">登录</router-link>后查看手记。</p>
-    </div>
-    <Footer />
-  </div>
-</template>
-
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
-import messagesData from '../data/messages.json'
-
-// 手记数据：可以放在 src/data/messages.json 的 notes 字段，或单独建 notes.json
-const notes = ref([])
-
-const currentUser = computed(() => {
-  try {
-    return JSON.parse(localStorage.getItem('nq_user') || 'null')
-  } catch {
-    return null
-  }
-})
-
-function loadData() {
-  if (currentUser.value) {
-    notes.value = messagesData[currentUser.value.username]?.notes || []
-  } else {
-    notes.value = []
-  }
-}
-
-onMounted(() => {
-  loadData()
-  // 切换账号后自动刷新为本账号的手记
-  window.addEventListener('nq-user-changed', loadData)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('nq-user-changed', loadData)
-})
+import EvidenceBook from '../components/EvidenceBook.vue'
+import { notes, currentUser, markNoteRead, readyForEnding, chooseEnding } from '../game/state.js'
+import { getNotes } from '../game/rules.js'
+const router = useRouter()
+const selectedId = ref(null)
+const list = computed(() => getNotes(notes, currentUser.value?.username))
+const active = computed(() => list.value.find(n => n.id === selectedId.value))
+watch(() => currentUser.value?.username, () => { selectedId.value = null })
+function open(n) { selectedId.value = n.id; markNoteRead(n.id) }
+function decide(choice) { if (chooseEnding(choice)) router.push('/ending') }
 </script>
-
-<style scoped>
-.page-desc {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-md);
-}
-.note-card {
-  margin-bottom: var(--space-md);
-  border-left: 3px solid var(--color-accent);
-}
-.note-date {
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-xs);
-}
-.note-content {
-  white-space: pre-line;
-  line-height: 1.9;
-}
-.empty-hint {
-  color: var(--color-text-secondary);
-}
-</style>
+<template>
+  <div class="page-shell"><NavBar /><div class="container private-container">
+    <h1 class="section-title">我的手记</h1><p class="page-desc">{{ currentUser?.displayName }}留下的备忘、草稿与没说出口的话。</p>
+    <EvidenceBook />
+    <div class="account-layout">
+      <aside class="account-list" aria-label="手记列表"><button v-for="n in list" :key="n.id" @click="open(n)" :aria-current="n.id === selectedId"><strong>{{ n.title }}</strong><small>{{ n.at }} · {{ n.kind }}</small></button></aside>
+      <section class="account-reader" aria-live="polite"><article v-if="active" class="private-note"><p class="note-kind">{{ active.kind }}</p><h2>{{ active.title }}</h2><time>{{ active.at }}</time><p class="note-body">{{ active.content }}</p></article><div v-else class="account-empty"><h2>翻开一篇手记</h2><p>这里记下的，往往没有告诉别人。</p></div></section>
+    </div>
+    <section v-if="readyForEnding && currentUser?.username === 'chennian'" class="decision card">
+      <h2>这一次，你知道他在哪</h2><p>住院地址、二十八年前的日期、那封没发出的私信，已经能够拼在一起。夜归人还在等一条回复。</p>
+      <button class="btn" @click="decide('A')">把住院地址告诉他</button><button class="btn btn-secondary" @click="decide('B')">暂时不发出这条消息</button>
+    </section>
+  </div><Footer /></div>
+</template>
+<style scoped>.decision{margin-top:24px}.decision h2{font-family:var(--font-title);font-size:var(--font-h2)}.decision p{margin:16px 0;line-height:1.9}.decision button{margin:0 10px 10px 0}.btn-secondary{background:var(--color-card);color:var(--color-primary);border:1px solid var(--color-border)}</style>

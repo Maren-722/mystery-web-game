@@ -3,12 +3,12 @@
     <NavBar />
     <div class="container">
       <BackBar label="返回夜市导览" fallback="/stalls" />
-      <!-- TODO(队友B)：根据路由参数 :id 从 src/data/stalls.json 读取对应摊位详情 -->
       <div v-if="stall" class="detail-card">
         <div class="detail-header">
           <span class="stall-no">摊位 {{ stall.stallNo }}</span>
           <h2 class="stall-name">{{ stall.shopName }}</h2>
           <p class="stall-owner">老板：{{ stall.owner }}</p>
+          <p v-if="stall.accountId" class="stall-account">商户账号ID：{{ stall.accountId }}</p>
         </div>
 
         <!-- 菜品与价格 -->
@@ -18,8 +18,7 @@
           <span class="dish-price">{{ item.price }}元</span>
         </div>
 
-        <!-- 注意：摊主手记属于私密内容，只有摊主登录后在"我的手记"页可见，
-             游客在摊位详情页不显示。手记数据在 src/data/stalls.json 的 notes 字段。 -->
+        <!-- 私密手记统一保存在 notes.json，仅在人物登录后展示。 -->
 
         <!-- 顾客评价 -->
         <h3 class="sub-title">顾客评价</h3>
@@ -35,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
@@ -43,12 +42,9 @@ import BackBar from '../components/BackBar.vue'
 import stallsData from '../data/stalls.json'
 
 const route = useRoute()
-const stall = ref(null)
+const stall = computed(() => stallsData.find(s => s.id === route.params.id) || null)
 
 // 摊位详情：按 :id 匹配数据
-onMounted(() => {
-  stall.value = stallsData.find(s => s.id === route.params.id) || null
-})
 </script>
 
 <style scoped>

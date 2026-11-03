@@ -1,111 +1,36 @@
-<template>
-  <div class="messages-page">
-    <NavBar />
-    <div class="container">
-      <h2 class="section-title">短信</h2>
-      <p class="page-desc">你和夜市里其他人的聊天记录。</p>
-
-      <!-- TODO(队友C)：根据当前登录账号（localStorage 的 nq_user）从 src/data/messages.json 读取对应私信 -->
-      <div v-if="currentUser">
-        <div v-if="messageList.length">
-          <div
-            v-for="conv in messageList"
-            :key="conv.with"
-            class="card conv-card"
-          >
-            <h3 class="conv-title">与 {{ conv.with }} 的对话</h3>
-            <div
-              v-for="(msg, i) in conv.messages"
-              :key="i"
-              class="msg-item"
-              :class="{ mine: msg.from === currentUser.username }"
-            >
-              <p class="msg-meta">{{ msg.from }} · {{ msg.time }}</p>
-              <p class="msg-content">{{ msg.content }}</p>
-            </div>
-          </div>
-        </div>
-        <p v-else class="empty-hint">暂时没有私信记录。</p>
-      </div>
-      <p v-else class="empty-hint"><router-link to="/login">登录</router-link>后查看私信。</p>
-    </div>
-    <Footer />
-  </div>
-</template>
-
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, watch } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
-import messagesData from '../data/messages.json'
-
-// 私信数据：src/data/messages.json（你负责写这个文件）
-// 结构建议：{ "chenjigui": [{ with: "老张", messages: [{from, time, content}] }] }
-const messageList = ref([])
-
-const currentUser = computed(() => {
-  try {
-    return JSON.parse(localStorage.getItem('nq_user') || 'null')
-  } catch {
-    return null
-  }
-})
-
-function loadData() {
-  if (currentUser.value) {
-    messageList.value = messagesData[currentUser.value.username] || []
-  } else {
-    messageList.value = []
-  }
-}
-
-onMounted(() => {
-  loadData()
-  // 切换账号后自动刷新为本账号的私信
-  window.addEventListener('nq-user-changed', loadData)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('nq-user-changed', loadData)
-})
+import EvidenceBook from '../components/EvidenceBook.vue'
+import { accounts, threads, currentUser, markConversationRead } from '../game/state.js'
+import { getConversations } from '../game/rules.js'
+const selectedId = ref(null)
+const conversations = computed(() => getConversations(threads, currentUser.value?.username))
+const active = computed(() => conversations.value.find(t => t.id === selectedId.value))
+const otherName = t => accounts[t.participants.find(id => id !== currentUser.value?.username)]?.displayName
+watch(() => currentUser.value?.username, () => { selectedId.value = null })
+function open(t) { selectedId.value = t.id; markConversationRead(t.id) }
 </script>
-
-<style scoped>
-.page-desc {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-md);
-}
-.conv-card {
-  margin-bottom: var(--space-md);
-}
-.conv-title {
-  font-size: var(--font-h3);
-  color: var(--color-primary);
-  margin-bottom: var(--space-sm);
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-xs);
-}
-.msg-item {
-  padding: 8px 0;
-}
-.msg-item.mine {
-  text-align: right;
-}
-.msg-meta {
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-}
-.msg-content {
-  background: var(--color-bg);
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: var(--radius);
-  max-width: 80%;
-}
-.msg-item.mine .msg-content {
-  background: #FFFBEB;
-}
-.empty-hint {
-  color: var(--color-text-secondary);
-}
-</style>
+<template>
+  <div class="page-shell"><NavBar /><div class="container private-container">
+    <h1 class="section-title">私信记录</h1>
+    <p class="page-desc">{{ currentUser?.displayName }}的历史会话。收摊以后，有些话只留在这里。</p>
+    <EvidenceBook />
+    <div class="account-layout">
+      <aside class="account-list" aria-label="会话列表">
+        <button v-for="t in conversations" :key="t.id" @click="open(t)" :aria-current="t.id === selectedId">
+          <strong>{{ otherName(t) }}</strong><small>{{ t.messages.at(-1).at }}</small><span>{{ t.messages.at(-1).content }}</span>
+        </button>
+      </aside>
+      <section class="account-reader" aria-live="polite">
+        <template v-if="active"><header class="reader-header"><h2>与{{ otherName(active) }}的对话</h2><p>历史记录 · 按发送时间排列</p></header>
+          <div class="chat-history"><article v-for="m in active.messages" :key="m.id" class="chat-message" :class="{mine:m.fromId === currentUser?.username}">
+            <p class="chat-meta">{{ accounts[m.fromId].displayName }} · <time>{{ m.at }}</time></p><p class="chat-bubble">{{ m.content }}</p>
+          </article></div>
+        </template>
+        <div v-else class="account-empty"><h2>选择一段会话</h2><p>关于那一晚，每个人都记得一部分。</p></div>
+      </section>
+    </div>
+  </div><Footer /></div>
+</template>

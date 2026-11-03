@@ -1,72 +1,82 @@
 {
-  "chenguisheng": {
-    "password": "123456",
-    "shopName": "陈记糖粥藕",
-    "stallNo": "A1",
-    "role": "merchant"
-  },
-  "zhangguixiang": {
-    "password": "123456",
-    "shopName": "张阿姨凉面",
-    "stallNo": "A2",
-    "role": "merchant"
-  },
-  "zhaodezhu": {
-    "password": "123456",
-    "shopName": "赵记馄饨",
-    "stallNo": "A3",
-    "role": "merchant"
-  },
-  "azhen": {
-    "password": "123456",
-    "shopName": "珍姐水果捞",
-    "stallNo": "A4",
-    "role": "merchant"
-  },
-  "awei": {
-    "password": "123456",
-    "shopName": "阿伟烤冷面",
-    "stallNo": "A5",
-    "role": "merchant"
-  },
-  "zhangjianguo": {
-    "password": "123456",
-    "shopName": "张记卤味",
-    "stallNo": "B1",
-    "role": "merchant"
-  },
   "liming": {
-    "password": "123456",
+    "displayName": "李明",
+    "password": "1010",
     "shopName": "小李炒粉",
     "stallNo": "B2",
-    "role": "merchant"
+    "role": "merchant",
+    "aliases": [
+      "李明",
+      "小李炒粉",
+      "小李"
+    ],
+    "intro": "今晚的粉比昨天少放一点盐。"
   },
-  "wangqiang": {
-    "password": "123456",
-    "shopName": "王记烧烤",
-    "stallNo": "B3",
-    "role": "merchant"
+  "zhangjianguo": {
+    "displayName": "张建国",
+    "password": "0318",
+    "shopName": "张记卤味",
+    "stallNo": "B1",
+    "role": "merchant",
+    "aliases": [
+      "张建国",
+      "张记卤味",
+      "老张",
+      "老张卤味"
+    ],
+    "intro": "卤水每天续，少问放了几年。"
   },
-  "liujie": {
-    "password": "123456",
-    "shopName": "刘姐麻辣烫",
-    "stallNo": "B4",
-    "role": "merchant"
-  },
-  "aqiang": {
-    "password": "123456",
-    "shopName": "阿强臭豆腐",
-    "stallNo": "B5",
-    "role": "merchant"
-  },
-  "chennian": {
-    "password": "123456",
-    "shopName": "夜归人（陈念）",
-    "role": "customer"
+  "zhangguixiang": {
+    "displayName": "张桂香",
+    "password": "0612",
+    "shopName": "张阿姨凉面",
+    "stallNo": "A2",
+    "role": "merchant",
+    "aliases": [
+      "张桂香",
+      "张阿姨凉面",
+      "张阿姨",
+      "桂香"
+    ],
+    "intro": "辣椒自己加，醋在右手边。"
   },
   "wangzhiqiang": {
-    "password": "123456",
-    "shopName": "南桥夜市管理处·王志强",
-    "role": "manager"
+    "displayName": "王志强",
+    "password": "20180901",
+    "shopName": "南桥夜市管理处",
+    "stallNo": "",
+    "role": "manager",
+    "aliases": [
+      "王志强",
+      "南桥夜市管理处",
+      "王主任",
+      "夜市管理处"
+    ],
+    "intro": "营业问题请在工作时间留言。"
+  },
+  "chenguisheng": {
+    "displayName": "陈桂生",
+    "password": "19980716",
+    "shopName": "陈记糖粥藕",
+    "stallNo": "A1",
+    "role": "merchant",
+    "aliases": [
+      "陈桂生",
+      "陈记糖粥藕",
+      "陈伯"
+    ],
+    "intro": "藕要慢慢煨。人来了，粥总是有的。"
+  },
+  "chennian": {
+    "displayName": "夜归人",
+    "password": "19980716",
+    "shopName": "夜归人",
+    "stallNo": "",
+    "role": "customer",
+    "aliases": [
+      "夜归人",
+      "夜行者"
+    ],
+    "intro": "我在找一个人。"
   }
 }

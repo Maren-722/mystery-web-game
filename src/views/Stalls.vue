@@ -6,13 +6,12 @@
       <p class="page-desc">在这里查看每个摊位的名片：摊位号、老板、主营商品、价格和顾客评价。</p>
 
       <div class="stall-grid">
-        <!-- TODO(队友B)：从 src/data/stalls.json 循环渲染摊位卡片 -->
-        <div
+        <router-link
           v-for="stall in stalls"
           :key="stall.id"
           class="card stall-card"
           :class="{ 'stall-closed': stall.closed }"
-          @click="$router.push('/stalls/' + stall.id)"
+          :to="'/stalls/' + stall.id"
         >
           <div class="stall-no">摊位 {{ stall.stallNo }}</div>
           <h3 class="stall-name">{{ stall.shopName }}</h3>
@@ -20,7 +19,7 @@
           <p class="stall-main">{{ stall.main }}</p>
           <p class="stall-price">价格：{{ stall.price }}</p>
           <span v-if="stall.closed" class="stall-status">暂停营业</span>
-        </div>
+        </router-link>
       </div>
     </div>
     <Footer />

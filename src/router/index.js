@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { currentUser, progress, readyForEnding } from '../game/state.js'
 
 const routes = [
   {
@@ -47,7 +48,7 @@ const routes = [
     path: '/messages',
     name: 'messages',
     component: () => import('../views/Messages.vue'),
-    meta: { title: '短信', requiresAuth: true }
+    meta: { title: '私信记录', requiresAuth: true }
   },
   {
     path: '/notes',
@@ -59,8 +60,9 @@ const routes = [
     path: '/ending',
     name: 'ending',
     component: () => import('../views/Ending.vue'),
-    meta: { title: '结局' }
-  }
+    meta: { title: '结局', requiresAuth: true, requiresEnding: true }
+  },
+  { path: '/:pathMatch(.*)*', redirect: '/home' }
 ]
 
 const router = createRouter({
@@ -70,11 +72,13 @@ const router = createRouter({
 
 // 路由守卫：登录后才能访问的页面
 router.beforeEach((to) => {
-  if (to.meta.requiresAuth && !localStorage.getItem('nq_user')) {
+  if (to.meta.requiresAuth && !currentUser.value) {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
+  if (to.meta.requiresEnding && (!readyForEnding.value || !progress.value.ending)) return '/notes'
   document.title = to.meta.title || '南桥夜市'
   return true
 })
 
 export default router
+router.afterEach(() => window.scrollTo(0, 0))

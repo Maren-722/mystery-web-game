@@ -4,7 +4,7 @@
       <span class="intro-tag">游戏开始</span>
       <h1 class="intro-title">你是一名刚到临岗市的大一新生</h1>
       <p class="intro-text">
-        开学两周，你还没适应这座江边城市的秋天。今天室友们都出去了，你一个人在宿舍刷手机，搜"临岗必吃夜市"。
+        开学快两个月，你还没适应这座江边城市的秋天。今天是10月28日，室友们都出去了，你一个人在宿舍刷手机，搜"临岗必吃夜市"。
       </p>
       <p class="intro-text">
         评论区里有人提到<span class="intro-highlight">南桥夜市</span>——江边摆了18年的老夜市，其中有一家<span class="intro-highlight">"陈记糖粥藕"</span>，据说是很多临岗人从小吃到大的味道。
@@ -15,9 +15,10 @@
       <hr class="intro-divider">
       <p class="intro-text">
         你发现这个夜市有自己的官网：
-        <a class="intro-link" @click="$router.push('/home')">http://www.nanqiao-night-market.com</a>
+        <router-link class="intro-link" to="/home">http://www.nanqiao-night-market.com</router-link>
       </p>
       <p class="intro-disclaimer">本游戏为虚构创作，其中人物、地点、事件均为虚构，如有雷同，纯属巧合。</p>
+      <details class="intro-help"><summary>第一次玩网页解谜</summary><p>从公告、商户评价和论坛里找人物ID与日期线索，推理密码后登录，阅读他们的私信和手记。无需查看源代码，也无需外部搜索。关键发现会记入调查笔记，进度仅保存在本机。</p></details>
     </div>
   </div>
 </template>
@@ -93,6 +94,7 @@
   color: #666b85;
   text-align: center;
 }
+.intro-help{font-size:12px;line-height:1.9;color:#b8b8b8;margin-top:22px}.intro-help summary{cursor:pointer;color:#e0e0e0}.intro-help p{margin-top:10px}
 
 @media (max-width: 720px) {
   .intro-card {
