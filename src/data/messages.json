@@ -1,0 +1,29 @@
+{
+  "chenjigui": {
+    "messages": [
+      {
+        "with": "张建国",
+        "messages": [
+          { "from": "chenjigui", "time": "10月12日 20:30", "content": "老张，摊子的事拜托你了。" },
+          { "from": "laozhang", "time": "10月12日 20:31", "content": "你少说这种话，明天去医院。" }
+        ]
+      }
+    ],
+    "notes": [
+      { "date": "10月9日", "content": "检查结果出来了。医生说最多三个月。\n\n念儿，爹不该躲你。可爹这副样子，怎么让你看？" }
+    ]
+  },
+  "yeguiren": {
+    "messages": [
+      {
+        "with": "张阿姨",
+        "messages": [
+          { "from": "zhangayi", "time": "10月20日 15:00", "content": "小伙子，你天天来买粥，是不是在找人？" }
+        ]
+      }
+    ],
+    "notes": [
+      { "date": "10月18日", "content": "我不敢问。如果他说不认识我怎么办？" }
+    ]
+  }
+}

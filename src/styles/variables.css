@@ -1,0 +1,55 @@
+/* ============================================
+   南桥夜市 · 设计变量
+   全站统一使用这套变量，不要写死色值
+   ============================================ */
+
+:root {
+  /* 主色系：老夜市暖棕 */
+  --color-primary: #8B4513;        /* 主色：深棕（导航栏、标题、主按钮） */
+  --color-primary-dark: #6B3410;   /* 主色加深（hover 态） */
+  --color-accent: #D97706;         /* 强调色：暖橙（标签、高亮、链接） */
+  --color-accent-light: #FDE68A;   /* 强调浅色（公告栏背景边框） */
+
+  /* 背景与卡片 */
+  --color-bg: #FAF7F2;             /* 页面背景：米白 */
+  --color-card: #FFFFFF;           /* 卡片背景 */
+
+  /* 文字 */
+  --color-text: #2D1810;           /* 主文字 */
+  --color-text-secondary: #6B5544; /* 次要文字 */
+  --color-text-muted: #8A7666;     /* 弱化文字（时间戳等） */
+
+  /* 边框与状态 */
+  --color-border: #E8DDD0;         /* 边框 */
+  --color-danger: #B91C1C;         /* 警告/错误/停业 */
+  --color-success: #15803D;        /* 营业中/成功 */
+
+  /* 字体 */
+  --font-title: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  --font-body: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  /* 圆角与间距 */
+  --radius: 6px;
+  --radius-lg: 10px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  /* 内容区最大宽度 */
+  --container-max: 1200px;
+
+  /* 字号层级 */
+  --font-h1: 28px;
+  --font-h2: 22px;
+  --font-h3: 16px;
+  --font-body-size: 14px;
+  --font-small: 13px;
+  --font-tiny: 12px;
+}
+
+/* 响应式断点参考
+   1920px：大屏（内容区仍限制在 1200px 内）
+   1440px：常规笔记本
+   720px：手机窄屏（在此断点以下改布局） */

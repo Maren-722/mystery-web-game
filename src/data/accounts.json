@@ -1,0 +1,13 @@
+{
+  "chenjigui": {
+    "password": "19980716",
+    "shopName": "陈记糖粥藕",
+    "stallNo": "A12",
+    "role": "merchant"
+  },
+  "yeguiren": {
+    "password": "19980716",
+    "shopName": "夜归人",
+    "role": "customer"
+  }
+}

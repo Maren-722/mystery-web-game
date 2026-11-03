@@ -1,0 +1,74 @@
+[
+  {
+    "id": "chenji",
+    "stallNo": "A12",
+    "shopName": "陈记糖粥藕",
+    "owner": "陈桂生",
+    "main": "糖粥、藕粉、桂花糖水",
+    "price": "8元起",
+    "dishes": [
+      { "name": "糖粥藕", "price": 8 },
+      { "name": "桂花糖水", "price": 5 }
+    ],
+    "notes": [
+      { "date": "10月10日", "content": "今天的藕粉很稠。" },
+      { "date": "10月11日", "content": "价格改来改去，手有点抖。" }
+    ],
+    "reviews": [
+      { "user": "老顾客", "date": "10月5日", "content": "吃了十年的味道，怎么突然不做了？" }
+    ]
+  },
+  {
+    "id": "laozhang",
+    "stallNo": "B03",
+    "shopName": "张记卤味",
+    "owner": "张建国",
+    "main": "卤鸭脖、卤藕片、卤蛋",
+    "price": "10元起",
+    "dishes": [
+      { "name": "卤鸭脖", "price": 12 },
+      { "name": "卤藕片", "price": 10 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "xiaoli",
+    "stallNo": "C07",
+    "shopName": "小李炒粉",
+    "owner": "李明",
+    "main": "炒粉、炒面、蛋炒饭",
+    "price": "12元起",
+    "dishes": [
+      { "name": "炒粉", "price": 12 },
+      { "name": "蛋炒饭", "price": 10 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "zhangayi",
+    "stallNo": "A05",
+    "shopName": "张阿姨凉面",
+    "owner": "张桂香",
+    "main": "凉面、凉皮、酸梅汤",
+    "price": "8元起",
+    "dishes": [
+      { "name": "凉面", "price": 8 },
+      { "name": "酸梅汤", "price": 5 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "wangzhuren",
+    "stallNo": "—",
+    "shopName": "南桥夜市管理处",
+    "owner": "王志强",
+    "main": "夜市管理、公告发布",
+    "price": "—",
+    "dishes": [],
+    "notes": [],
+    "reviews": []
+  }
+]
