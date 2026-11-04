@@ -11,7 +11,7 @@
       </p>
       <hr class="intro-divider">
       <p class="intro-text">
-        你发现这个夜市有专门的官网。在美味的诱惑下，你点开了它：
+        在美味的诱惑下，你点开了南桥夜市的官网：
         <a class="intro-link" @click="$router.push('/home')">http://www.nanqiao-night-market.com</a>
       </p>
       <p class="intro-disclaimer">本游戏为虚构创作，其中人物、地点、事件均为虚构，如有雷同，纯属巧合。</p>
