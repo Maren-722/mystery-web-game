@@ -16,7 +16,7 @@
         <button class="btn" @click="publishPost" style="margin-top:8px">发布</button>
       </div>
 
-      <!-- TODO(队友B)：从 src/data/posts.json 循环渲染帖子列表 -->
+      <!-- 帖子列表：内置帖子 + 玩家发布的帖子（玩家帖排前面） -->
       <div
         v-for="post in posts"
         :key="post.id"
@@ -38,7 +38,8 @@ import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import postsData from '../data/posts.json'
 
-// 帖子列表：数据从 src/data/posts.json 读取（你负责写这个文件）
+// 帖子列表：内置帖子(src/data/posts.json) + 玩家发布的帖子(localStorage nq_posts)
+// 玩家帖子/评论只存在本机浏览器，退出游戏（清除浏览器数据/换设备）后不再保留
 const posts = ref([])
 const showComposer = ref(false)
 const newTitle = ref('')
@@ -52,24 +53,64 @@ const currentUser = computed(() => {
   }
 })
 
+// 读取玩家发布的帖子
+function readLocalPosts() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_posts') || '[]')
+  } catch {
+    return []
+  }
+}
+
+// 读取玩家补充的评论：{ postId: [ {user,date,content} ] }
+function readLocalComments() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_comments') || '{}')
+  } catch {
+    return {}
+  }
+}
+
+function loadData() {
+  const localPosts = readLocalPosts()
+  const localComments = readLocalComments()
+  // 玩家帖子排前面，回复数 = 已有评论数
+  const userPosts = localPosts.map(p => ({
+    ...p,
+    replies: (p.comments?.length || 0) + (localComments[p.id]?.length || 0)
+  }))
+  // 内置帖子：回复数叠加玩家补充的评论
+  const builtinPosts = postsData.map(p => ({
+    ...p,
+    replies: p.replies + (localComments[p.id]?.length || 0)
+  }))
+  posts.value = [...userPosts, ...builtinPosts]
+}
+
 onMounted(() => {
-  posts.value = postsData
+  loadData()
 })
 
-// 发帖：存 localStorage，临时渲染（无后端，仅本机可见）
+// 发帖：写入 localStorage 持久化（本机可见，退出登录/换账号仍存在）
 function publishPost() {
   if (!newTitle.value.trim()) return
-  posts.value.unshift({
+  const author = currentUser.value?.shopName || currentUser.value?.username || '游客'
+  const post = {
     id: 'local-' + Date.now(),
-    title: newTitle.value,
-    author: currentUser.value?.shopName || currentUser.value?.username,
-    date: '刚刚',
-    replies: 0,
-    preview: newContent.value
-  })
+    title: newTitle.value.trim(),
+    author,
+    date: new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }),
+    preview: newContent.value.trim(),
+    content: newContent.value.trim(),
+    comments: []
+  }
+  const localPosts = readLocalPosts()
+  localPosts.unshift(post)
+  localStorage.setItem('nq_posts', JSON.stringify(localPosts))
   newTitle.value = ''
   newContent.value = ''
   showComposer.value = false
+  loadData()
 }
 </script>
 

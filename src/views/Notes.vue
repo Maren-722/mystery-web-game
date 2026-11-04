@@ -5,8 +5,7 @@
       <h2 class="section-title">我的手记</h2>
       <p class="page-desc">只有你自己能看到的私密手记。</p>
 
-      <!-- TODO(队友C)：根据当前登录账号从 src/data/notes.json（或 messages.json 内）读取手记 -->
-      <!-- 关键：陈伯账号登录后，这里显示《给念儿的》等隐藏手记 -->
+      <!-- 只有你自己能看到的私密手记；这里也可以添加新手记（本机保存） -->
       <div v-if="currentUser">
         <div v-if="notes.length">
           <div v-for="(note, i) in notes" :key="i" class="card note-card">
@@ -15,6 +14,12 @@
           </div>
         </div>
         <p v-else class="empty-hint">还没有手记。</p>
+
+        <!-- 添加新手记 -->
+        <div class="card note-composer">
+          <textarea v-model="newNote" class="form-input" rows="3" placeholder="写点什么…（只保存在本机浏览器）"></textarea>
+          <button class="btn" @click="addNote" style="margin-top:8px">保存手记</button>
+        </div>
       </div>
       <p v-else class="empty-hint"><router-link to="/login">登录</router-link>后查看手记。</p>
     </div>
@@ -28,8 +33,10 @@ import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import messagesData from '../data/messages.json'
 
-// 手记数据：可以放在 src/data/messages.json 的 notes 字段，或单独建 notes.json
+// 手记 = 内置剧情手记(messages.json) + 玩家自己添加的手记(localStorage nq_notes)
+// 玩家添加的手记只保存在本机浏览器：重新登录同一账号仍可见，退出游戏(清浏览器数据/换设备)后不再保留
 const notes = ref([])
+const newNote = ref('')
 
 const currentUser = computed(() => {
   try {
@@ -39,12 +46,37 @@ const currentUser = computed(() => {
   }
 })
 
+function readLocalNotes() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_notes') || '{}')
+  } catch {
+    return {}
+  }
+}
+
 function loadData() {
-  if (currentUser.value) {
-    notes.value = messagesData[currentUser.value.username]?.notes || []
+  const uname = currentUser.value?.username
+  if (uname) {
+    const builtin = messagesData[uname]?.notes || []
+    const local = readLocalNotes()[uname] || []
+    // 玩家自己添加的排前面
+    notes.value = [...local, ...builtin]
   } else {
     notes.value = []
   }
+}
+
+function addNote() {
+  if (!newNote.value.trim() || !currentUser.value) return
+  const uname = currentUser.value.username
+  const local = readLocalNotes()
+  local[uname] = [
+    { date: new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }), content: newNote.value.trim() },
+    ...(local[uname] || [])
+  ]
+  localStorage.setItem('nq_notes', JSON.stringify(local))
+  newNote.value = ''
+  loadData()
 }
 
 onMounted(() => {
@@ -75,6 +107,10 @@ onBeforeUnmount(() => {
 .note-content {
   white-space: pre-line;
   line-height: 1.9;
+}
+.note-composer {
+  margin-top: var(--space-lg);
+  border-left: 3px solid var(--color-accent);
 }
 .empty-hint {
   color: var(--color-text-secondary);

@@ -7,7 +7,7 @@
       <p class="login-subtitle">登录后可查看私信、手记和管理店铺信息</p>
 
       <div class="form-group">
-        <label class="form-label">ID / 用户名</label>
+        <label class="form-label">用户名</label>
         <input
           type="text"
           class="form-input"
@@ -29,6 +29,7 @@
 
       <button class="btn btn-primary btn-block" @click="handleLogin">登 录</button>
       <div class="login-error" v-if="errorMsg">{{ errorMsg }}</div>
+      <p class="register-link">还没有账号？<router-link to="/register">注册新用户</router-link></p>
     </div>
     <Footer />
   </div>
@@ -50,7 +51,7 @@ const password = ref('')
 const errorMsg = ref('')
 
 // 登录逻辑：账号密码对照表在 src/data/accounts.json（队友C维护）
-// 登录成功：写入 localStorage，跳转到私信页
+// 玩家自己注册的账号存 localStorage nq_custom_accounts，同样可以登录
 function handleLogin() {
   const uname = username.value.trim()
   const pwd = password.value.trim()
@@ -61,11 +62,27 @@ function handleLogin() {
   }
 
   const account = accounts[uname]
-  if (account && account.password === pwd) {
+  let matched = account && account.password === pwd
+  let shopName = account?.shopName || uname
+
+  if (!matched) {
+    // 检查玩家注册的账号
+    try {
+      const custom = JSON.parse(localStorage.getItem('nq_custom_accounts') || '{}')
+      if (custom[uname] && custom[uname].password === pwd) {
+        matched = true
+        shopName = custom[uname].shopName || uname
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  if (matched) {
     errorMsg.value = ''
     localStorage.setItem('nq_user', JSON.stringify({
       username: uname,
-      shopName: account.shopName || uname
+      shopName
     }))
     router.push(route.query.redirect || '/messages')
   } else {
@@ -109,6 +126,12 @@ function handleLogin() {
   color: var(--color-danger);
   font-size: var(--font-small);
   margin-top: var(--space-md);
+  text-align: center;
+}
+.register-link {
+  margin-top: var(--space-md);
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
   text-align: center;
 }
 

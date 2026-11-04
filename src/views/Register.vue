@@ -1,0 +1,139 @@
+<template>
+  <div class="register-page">
+    <NavBar />
+    <div class="register-container">
+      <BackBar label="返回登录" fallback="/login" />
+      <h1 class="register-title">注册新用户</h1>
+      <p class="register-subtitle">注册后可以发帖、评论、写手记</p>
+
+      <div class="form-group">
+        <label class="form-label">用户名</label>
+        <input
+          type="text"
+          class="form-input"
+          v-model="username"
+          placeholder="请输入用户名"
+          @keyup.enter="handleRegister"
+        >
+      </div>
+      <div class="form-group">
+        <label class="form-label">密码</label>
+        <input
+          type="password"
+          class="form-input"
+          v-model="password"
+          placeholder="请输入密码"
+          @keyup.enter="handleRegister"
+        >
+      </div>
+
+      <button class="btn btn-primary btn-block" @click="handleRegister">注 册</button>
+      <div class="register-error" v-if="errorMsg">{{ errorMsg }}</div>
+      <p class="login-link">已有账号？<router-link to="/login">去登录</router-link></p>
+    </div>
+    <Footer />
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import NavBar from '../components/NavBar.vue'
+import Footer from '../components/Footer.vue'
+import BackBar from '../components/BackBar.vue'
+import accounts from '../data/accounts.json'
+
+const router = useRouter()
+
+const username = ref('')
+const password = ref('')
+const errorMsg = ref('')
+
+// 读取玩家注册的账号（localStorage）
+function readCustomAccounts() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_custom_accounts') || '{}')
+  } catch {
+    return {}
+  }
+}
+
+function handleRegister() {
+  const uname = username.value.trim()
+  const pwd = password.value.trim()
+
+  if (!uname || !pwd) {
+    errorMsg.value = '请输入用户名和密码'
+    return
+  }
+  // 与游戏内置账号不冲突
+  if (accounts[uname]) {
+    errorMsg.value = '该用户名已被占用，请换一个'
+    return
+  }
+  const custom = readCustomAccounts()
+  if (custom[uname]) {
+    errorMsg.value = '该用户名已被占用，请换一个'
+    return
+  }
+
+  custom[uname] = { password: pwd, shopName: uname }
+  localStorage.setItem('nq_custom_accounts', JSON.stringify(custom))
+
+  // 注册成功即自动登录
+  localStorage.setItem('nq_user', JSON.stringify({ username: uname, shopName: uname }))
+  router.push('/home')
+}
+</script>
+
+<style scoped>
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.register-container {
+  max-width: 400px;
+  width: 100%;
+  margin: 60px auto;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-xl);
+  flex: 1;
+}
+.register-title {
+  font-family: var(--font-title);
+  font-size: var(--font-h1);
+  text-align: center;
+  margin-bottom: var(--space-sm);
+}
+.register-subtitle {
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+.form-group {
+  margin-bottom: var(--space-md);
+}
+.register-error {
+  color: var(--color-danger);
+  font-size: var(--font-small);
+  margin-top: var(--space-md);
+  text-align: center;
+}
+.login-link {
+  margin-top: var(--space-md);
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .register-container {
+    margin: 24px auto;
+    padding: var(--space-lg);
+  }
+}
+</style>

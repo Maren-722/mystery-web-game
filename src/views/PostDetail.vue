@@ -3,14 +3,14 @@
     <NavBar />
     <div class="container">
       <BackBar label="返回论坛" fallback="/forum" />
-      <!-- TODO(队友B)：根据路由参数 :id 从 src/data/posts.json 读取帖子详情和评论 -->
+      <!-- 帖子详情：内置帖子 + 玩家发布的帖子（玩家评论存 localStorage，退出登录仍可见） -->
       <div v-if="post" class="detail-card">
         <h2 class="post-title">{{ post.title }}</h2>
         <p class="post-meta">{{ post.author }} · {{ post.date }}</p>
         <div class="post-content">{{ post.content }}</div>
 
-        <h3 class="sub-title">评论（{{ post.comments.length }}）</h3>
-        <div v-for="(c, i) in post.comments" :key="i" class="comment-item">
+        <h3 class="sub-title">评论（{{ mergedComments.length }}）</h3>
+        <div v-for="(c, i) in mergedComments" :key="i" class="comment-item">
           <p class="comment-user">{{ c.user }} · {{ c.date }}</p>
           <p>{{ c.content }}</p>
         </div>
@@ -50,17 +50,49 @@ const currentUser = computed(() => {
   }
 })
 
+// 读取玩家发布的帖子（与 Forum 同一份数据）
+function readLocalPosts() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_posts') || '[]')
+  } catch {
+    return []
+  }
+}
+
+// 玩家补充的评论：{ postId: [ {user,date,content} ] }
+function readLocalComments() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_comments') || '{}')
+  } catch {
+    return {}
+  }
+}
+
+// 合并展示：帖子自带评论 + 玩家后续补充的评论
+const mergedComments = computed(() => {
+  if (!post.value) return []
+  const extra = readLocalComments()[post.value.id] || []
+  return [...(post.value.comments || []), ...extra]
+})
+
 onMounted(() => {
-  post.value = postsData.find(p => p.id === route.params.id) || null
+  const id = route.params.id
+  const localPosts = readLocalPosts()
+  const found = localPosts.find(p => p.id === id) || postsData.find(p => p.id === id) || null
+  post.value = found
 })
 
 function addComment() {
-  if (!newComment.value.trim()) return
-  post.value.comments.push({
-    user: currentUser.value?.shopName || '游客',
-    date: '刚刚',
-    content: newComment.value
-  })
+  if (!newComment.value.trim() || !post.value) return
+  const comment = {
+    user: currentUser.value?.shopName || currentUser.value?.username || '游客',
+    date: new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }),
+    content: newComment.value.trim()
+  }
+  // 持久化到 localStorage：退出登录/切换账号后依然存在，退出游戏(清浏览器数据)后不再保留
+  const localComments = readLocalComments()
+  localComments[post.value.id] = [...(localComments[post.value.id] || []), comment]
+  localStorage.setItem('nq_comments', JSON.stringify(localComments))
   newComment.value = ''
 }
 </script>

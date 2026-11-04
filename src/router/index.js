@@ -20,6 +20,12 @@ const routes = [
     meta: { title: '账号登录' }
   },
   {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/Register.vue'),
+    meta: { title: '注册新用户' }
+  },
+  {
     path: '/stalls',
     name: 'stalls',
     component: () => import('../views/Stalls.vue'),
