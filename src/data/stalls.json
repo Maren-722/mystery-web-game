@@ -62,6 +62,20 @@
     "reviews": []
   },
   {
+    "id": "awei",
+    "stallNo": "A5",
+    "shopName": "阿伟烤冷面",
+    "owner": "阿伟",
+    "main": "烤冷面、鸡蛋灌饼",
+    "price": "8元起",
+    "dishes": [
+      { "name": "烤冷面", "price": 8 },
+      { "name": "鸡蛋灌饼", "price": 6 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
     "id": "laozhang",
     "stallNo": "B1",
     "shopName": "张记卤味",
@@ -77,35 +91,6 @@
     "reviews": []
   },
   {
-    "id": "wangji",
-    "stallNo": "B3",
-    "shopName": "王记烧烤",
-    "owner": "王强",
-    "main": "烤羊肉串、烤生蚝、烤茄子",
-    "price": "15元起",
-    "dishes": [
-      { "name": "羊肉串", "price": 5 },
-      { "name": "烤生蚝", "price": 15 },
-      { "name": "烤茄子", "price": 12 }
-    ],
-    "notes": [],
-    "reviews": []
-  },
-  {
-    "id": "awei",
-    "stallNo": "A5",
-    "shopName": "阿伟烤冷面",
-    "owner": "阿伟",
-    "main": "烤冷面、鸡蛋灌饼",
-    "price": "8元起",
-    "dishes": [
-      { "name": "烤冷面", "price": 8 },
-      { "name": "鸡蛋灌饼", "price": 6 }
-    ],
-    "notes": [],
-    "reviews": []
-  },
-  {
     "id": "xiaoli",
     "stallNo": "B2",
     "shopName": "小李炒粉",
@@ -116,6 +101,21 @@
       { "name": "炒粉", "price": 12 },
       { "name": "炒面", "price": 12 },
       { "name": "蛋炒饭", "price": 10 }
+    ],
+    "notes": [],
+    "reviews": []
+  },
+  {
+    "id": "wangji",
+    "stallNo": "B3",
+    "shopName": "王记烧烤",
+    "owner": "王强",
+    "main": "烤羊肉串、烤生蚝、烤茄子",
+    "price": "15元起",
+    "dishes": [
+      { "name": "羊肉串", "price": 5 },
+      { "name": "烤生蚝", "price": 15 },
+      { "name": "烤茄子", "price": 12 }
     ],
     "notes": [],
     "reviews": []

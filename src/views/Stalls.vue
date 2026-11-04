@@ -48,7 +48,10 @@ onMounted(() => {
 }
 .stall-grid {
   display: grid;
+  /* 全设备固定两列：左列 A1-A5，右列 B1-B5（列优先填充） */
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, auto);
+  grid-auto-flow: column;
   gap: var(--space-md);
 }
 .stall-card {
@@ -108,9 +111,5 @@ onMounted(() => {
   color: #A5A5A5;
 }
 
-@media (max-width: 720px) {
-  .stall-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* 手机端同样保持两列（A 列 / B 列），卡片内容自动紧凑换行 */
 </style>
