@@ -134,6 +134,13 @@ function handleLogin() {
   color: var(--color-text-secondary);
   text-align: center;
 }
+/* 醒目标志：链接文字加下划线 */
+.register-link a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
 
 @media (max-width: 720px) {
   .login-container {

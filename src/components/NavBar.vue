@@ -2,9 +2,9 @@
   <nav v-if="!hideNav" class="navbar">
     <div class="navbar-logo" @click="go('/home')">南桥夜市</div>
     <div class="navbar-links">
-      <a @click="go('/home')">首页</a>
-      <a @click="go('/stalls')">夜市导览</a>
-      <a @click="go('/forum')">夜市论坛</a>
+      <a :class="{ active: isActive('/home') }" @click="go('/home')">首页</a>
+      <a :class="{ active: isActive('/stalls') }" @click="go('/stalls')">夜市导览</a>
+      <a :class="{ active: isActive('/forum') }" @click="go('/forum')">夜市论坛</a>
       <template v-if="currentUser">
         <a @click="go('/messages')">短信</a>
         <a @click="go('/notes')">我的手记</a>
@@ -75,6 +75,12 @@ const loginError = ref('')
 
 function go(path) {
   router.push(path)
+}
+
+// 当前页面高亮：首页精确匹配，导览/论坛匹配其详情页
+function isActive(path) {
+  if (path === '/home') return route.path === '/home'
+  return route.path.startsWith(path)
 }
 
 function closeMenu() {
@@ -156,9 +162,18 @@ function doSwitch() {
   font-size: var(--font-body-size);
   opacity: 0.9;
   cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: opacity 0.2s, background 0.2s, box-shadow 0.2s;
 }
 .navbar-links a:hover {
   opacity: 1;
+}
+/* 当前所在页面：阴影高亮 */
+.navbar-links a.active {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .navbar-user-wrap {
   position: relative;
