@@ -5,6 +5,7 @@
     "closed": true,
     "shopName": "陈记糖粥藕",
     "owner": "陈伯",
+    "uid": "chenguisheng",
     "main": "糖粥藕、桂花糖水",
     "price": "8元起",
     "dishes": [
@@ -22,6 +23,7 @@
     "stallNo": "A2",
     "shopName": "老街凉面",
     "owner": "老夫妻俩",
+    "uid": "laojieliangmian",
     "main": "凉面、凉皮、酸梅汤",
     "price": "8元起",
     "dishes": [
@@ -39,6 +41,7 @@
     "stallNo": "A3",
     "shopName": "巷口馄饨",
     "owner": "小两口",
+    "uid": "xiangkouhundun",
     "main": "鲜肉馄饨、荠菜馄饨",
     "price": "10元起",
     "dishes": [
@@ -56,6 +59,7 @@
     "stallNo": "A4",
     "shopName": "鲜果小铺",
     "owner": "姐妹俩",
+    "uid": "xianguoxiaopu",
     "main": "水果捞、鲜榨果汁",
     "price": "15元起",
     "dishes": [
@@ -73,6 +77,7 @@
     "stallNo": "A5",
     "shopName": "街角烤冷面",
     "owner": "年轻小哥",
+    "uid": "jiejiaokaolengmian",
     "main": "烤冷面、鸡蛋灌饼",
     "price": "8元起",
     "dishes": [
@@ -90,6 +95,7 @@
     "stallNo": "B1",
     "shopName": "张记卤味",
     "owner": "老张",
+    "uid": "zhangjianguo",
     "main": "卤鸭脖、卤藕片、卤蛋",
     "price": "10元起",
     "dishes": [
@@ -109,6 +115,7 @@
     "stallNo": "B2",
     "shopName": "小李炒粉",
     "owner": "小李",
+    "uid": "liyang",
     "main": "炒粉、炒面、蛋炒饭",
     "price": "12元起",
     "dishes": [
@@ -127,6 +134,7 @@
     "stallNo": "B3",
     "shopName": "炭火烧烤",
     "owner": "东北大哥",
+    "uid": "tanhuoshaokao",
     "main": "烤羊肉串、烤生蚝、烤茄子",
     "price": "15元起",
     "dishes": [
@@ -145,6 +153,7 @@
     "stallNo": "B4",
     "shopName": "刘姐麻辣烫",
     "owner": "刘姐",
+    "uid": "liuxiulan",
     "main": "麻辣烫、手工藕圆子",
     "price": "15元起",
     "dishes": [
@@ -162,6 +171,7 @@
     "stallNo": "B5",
     "shopName": "巷尾臭豆腐",
     "owner": "小伙子",
+    "uid": "xiangweichoudoufu",
     "main": "臭豆腐、炸串",
     "price": "10元起",
     "dishes": [

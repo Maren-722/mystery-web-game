@@ -16,7 +16,7 @@
         >
           <div class="stall-no">摊位 {{ stall.stallNo }}</div>
           <h3 class="stall-name">{{ stall.shopName }}</h3>
-          <p class="stall-owner">老板：{{ stall.owner }}</p>
+          <p class="stall-owner">老板：{{ stall.owner }} <span v-if="stall.uid" class="stall-uid">ID:{{ stall.uid }}</span></p>
           <p class="stall-main">{{ stall.main }}</p>
           <p class="stall-price">价格：{{ stall.price }}</p>
           <span v-if="stall.closed" class="stall-status">暂停营业</span>
@@ -78,6 +78,10 @@ onMounted(() => {
 .stall-main {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
+}
+.stall-uid {
+  color: var(--color-text-muted);
+  font-size: var(--font-tiny);
 }
 .stall-price {
   font-size: var(--font-small);

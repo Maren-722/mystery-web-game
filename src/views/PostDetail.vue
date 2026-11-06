@@ -7,14 +7,14 @@
       <div v-if="post" class="detail-card">
         <h2 class="post-title">{{ post.title }}</h2>
         <p class="post-meta">
-          {{ post.author }} <span v-if="post.uid" class="user-uid">{{ post.uid }}</span> · {{ post.date }}
+          {{ post.author }} <span v-if="post.uid" class="user-uid">ID:{{ post.uid }}</span> · {{ post.date }}
         </p>
         <div class="post-content">{{ post.content }}</div>
 
         <h3 class="sub-title">评论（{{ mergedComments.length }}）</h3>
         <div v-for="(c, i) in mergedComments" :key="i" class="comment-item">
           <p class="comment-user">
-            {{ c.user }} <span v-if="c.uid" class="user-uid">{{ c.uid }}</span><template v-if="c.replyTo"> 回复 {{ c.replyTo }}</template> · {{ c.date }}
+            {{ c.user }} <span v-if="c.uid" class="user-uid">ID:{{ c.uid }}</span><template v-if="c.replyTo"> 回复 {{ c.replyTo }}</template> · {{ c.date }}
           </p>
           <p class="comment-content">{{ c.content }}</p>
         </div>

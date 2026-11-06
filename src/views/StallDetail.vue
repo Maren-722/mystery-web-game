@@ -8,7 +8,7 @@
         <div class="detail-header">
           <span class="stall-no">摊位 {{ stall.stallNo }}</span>
           <h2 class="stall-name">{{ stall.shopName }}</h2>
-          <p class="stall-owner">老板：{{ stall.owner }}</p>
+          <p class="stall-owner">老板：{{ stall.owner }} <span v-if="stall.uid" class="stall-uid">ID:{{ stall.uid }}</span></p>
         </div>
 
         <!-- 菜品与价格 -->
@@ -119,6 +119,10 @@ function addReview() {
 }
 .stall-owner {
   color: var(--color-text-secondary);
+}
+.stall-uid {
+  color: var(--color-text-muted);
+  font-size: var(--font-tiny);
 }
 .sub-title {
   font-size: var(--font-h3);

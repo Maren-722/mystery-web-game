@@ -25,7 +25,7 @@
       >
         <h3 class="post-title">{{ post.title }}</h3>
         <p class="post-meta">
-          {{ post.author }} <span v-if="post.uid" class="user-uid">{{ post.uid }}</span> · {{ post.date }} · {{ post.replies }} 回复
+          {{ post.author }} <span v-if="post.uid" class="user-uid">ID:{{ post.uid }}</span> · {{ post.date }} · {{ post.replies }} 回复
         </p>
         <p class="post-preview">{{ post.preview }}</p>
       </div>
