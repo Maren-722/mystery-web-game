@@ -3,41 +3,67 @@
     <NavBar />
     <div class="container">
       <h2 class="section-title">短信</h2>
-      <p class="page-desc">{{ currentUser ? '你和夜市里其他人的聊天记录。' : '' }}</p>
 
-      <div v-if="currentUser">
-        <div v-if="messageList.length">
+      <div v-if="currentUser" class="chat-app" :class="{ 'chat-open': !!activeConv }">
+        <!-- 左侧：会话列表（电脑常驻；手机上未进入聊天时显示） -->
+        <aside class="chat-list">
           <div
-            v-for="conv in messageList"
+            v-for="conv in sortedConvs"
             :key="conv.with"
-            class="card conv-card"
+            class="chat-list-item"
+            :class="{ active: activeConv && activeConv.with === conv.with }"
+            @click="openConv(conv)"
           >
-            <div class="conv-header" @click="toggleConv(conv)">
-              <div class="conv-avatar">{{ conv.with.slice(0, 1) }}</div>
-              <div class="conv-info">
-                <p class="conv-name">{{ conv.with }}</p>
-                <p class="conv-preview">{{ conv.messages.length ? lastOf(conv.messages).content : '（记录已清空）' }}</p>
+            <div class="chat-avatar">{{ conv.with.slice(0, 1) }}</div>
+            <div class="chat-item-info">
+              <div class="chat-item-top">
+                <span class="chat-item-name">{{ conv.with }}</span>
+                <span class="chat-item-time">{{ convTime(conv) }}</span>
               </div>
-              <span class="conv-count" v-if="conv.messages.length">{{ conv.messages.length }} 条</span>
-              <span class="conv-chevron" :class="{ open: openConvs.has(conv.with) }">›</span>
-            </div>
-            <div v-if="openConvs.has(conv.with)" class="conv-body">
-              <template v-if="conv.messages.length">
-                <div
-                  v-for="(msg, i) in conv.messages"
-                  :key="i"
-                  class="msg-item"
-                  :class="{ mine: msg.from === currentUser.username }"
-                >
-                  <p class="msg-meta">{{ msg.from }} · {{ msg.time }}</p>
-                  <p class="msg-content">{{ msg.content }}</p>
-                </div>
-              </template>
-              <p v-else class="conv-empty">此会话的记录已被清空。</p>
+              <p class="chat-item-preview" :class="{ cleared: !convMsgs(conv).length }">
+                {{ convPreview(conv) }}
+              </p>
             </div>
           </div>
-        </div>
-        <p v-else class="empty-hint">暂时没有私信记录。</p>
+          <p v-if="!sortedConvs.length" class="chat-list-empty">暂时没有私信记录</p>
+        </aside>
+
+        <!-- 右侧：聊天窗口（手机上点进会话后显示，可返回） -->
+        <section v-if="activeConv" class="chat-window">
+          <div class="chat-window-header">
+            <button class="chat-back" @click="closeConv" title="返回会话列表">‹</button>
+            <span class="chat-window-name">{{ activeConv.with }}</span>
+          </div>
+          <div class="chat-window-body" ref="chatBody">
+            <template v-if="activeMessages.length">
+              <div
+                v-for="(msg, i) in activeMessages"
+                :key="i"
+                class="bubble-row"
+                :class="{ mine: msg.from === currentUser.username }"
+              >
+                <div class="bubble-avatar">{{ avatarFor(msg) }}</div>
+                <div class="bubble-stack">
+                  <p class="bubble-time">{{ msg.time }}</p>
+                  <div class="bubble">{{ msg.content }}</div>
+                </div>
+              </div>
+            </template>
+            <p v-else class="chat-cleared">此会话的记录已被清空。</p>
+          </div>
+          <div class="chat-input-bar">
+            <input
+              v-model="draft"
+              class="chat-input"
+              placeholder="发消息…"
+              @keyup.enter="sendMsg"
+            >
+            <button class="chat-send" @click="sendMsg">发送</button>
+          </div>
+        </section>
+        <section v-else class="chat-window chat-placeholder">
+          <p>选择一个会话开始聊天</p>
+        </section>
       </div>
       <p v-else class="empty-hint"><router-link to="/login">登录</router-link>后查看私信。</p>
     </div>
@@ -46,54 +72,130 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import messagesData from '../data/messages.json'
 import { markNode } from '../utils/progress'
+import { useCurrentUser } from '../utils/auth'
 
-const messageList = ref([])
-const openConvs = ref(new Set())
+const { currentUser, syncUser } = useCurrentUser()
 
-const currentUser = computed(() => {
-  try {
-    return JSON.parse(localStorage.getItem('nq_user') || 'null')
-  } catch {
-    return null
-  }
-})
+const convs = ref([])          // 当前账号的会话列表（内置数据）
+const sentMap = ref({})        // 玩家发出的消息 { 对方名: [ {from,time,content} ] }
+const activeWith = ref('')     // 当前打开的会话对方名
+const draft = ref('')
+const chatBody = ref(null)
 
-// 展开某个会话才判定进度（内容点开后才可见，判定同样在点开时）
+// 展开会话（点进聊天）才判定进度：内容点开后才可见，判定同样在点开时
 const PROGRESS_KEYS = {
   '小李|刘姐': 'chat-xl-lj',
   '刘姐|陈伯': 'chat-lj-cb',
   '老张|陈伯': 'chat-lz-cb'
 }
 
-function toggleConv(conv) {
-  const s = new Set(openConvs.value)
-  if (s.has(conv.with)) {
-    s.delete(conv.with)
-  } else {
-    s.add(conv.with)
-    const key = PROGRESS_KEYS[currentUser.value?.username + '|' + conv.with]
-    if (key) markNode(key)
+// 玩家发出的消息存 localStorage（nq_sent_messages），本机保留
+function readSent() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_sent_messages') || '{}')
+  } catch {
+    return {}
   }
-  openConvs.value = s
 }
 
-function lastOf(messages) {
-  return messages[messages.length - 1]
+// 会话的全部消息 = 内置 + 玩家发出的（按时间顺序追加在后）
+function convMsgs(conv) {
+  return [...(conv.messages || []), ...(sentMap.value[conv.with] || [])]
+}
+
+// "10月26日 21:47" -> 可比较的数字
+function parseTime(t) {
+  const m = String(t || '').match(/(\d+)月(\d+)日(?:\s*(\d+):(\d+))?/)
+  if (!m) return 0
+  return (+m[1]) * 1000000 + (+m[2]) * 10000 + (+(m[3] || 0)) * 100 + (+(m[4] || 0))
+}
+
+// 会话按最新消息时间由近及远排列；无记录（已清空）的排最后
+const sortedConvs = computed(() => {
+  return [...convs.value].sort((a, b) => lastTs(b) - lastTs(a))
+})
+
+function lastTs(conv) {
+  const m = convMsgs(conv)
+  return m.length ? parseTime(m[m.length - 1].time) : -1
+}
+
+function convTime(conv) {
+  const m = convMsgs(conv)
+  return m.length ? m[m.length - 1].time : ''
+}
+
+function convPreview(conv) {
+  const m = convMsgs(conv)
+  return m.length ? m[m.length - 1].content : '（记录已清空）'
+}
+
+const activeConv = computed(() => {
+  return convs.value.find(c => c.with === activeWith.value) || null
+})
+
+const activeMessages = computed(() => {
+  return activeConv.value ? convMsgs(activeConv.value) : []
+})
+
+function avatarFor(msg) {
+  return msg.from === currentUser.value?.username
+    ? (currentUser.value?.username || '').slice(0, 1)
+    : activeConv.value.with.slice(0, 1)
+}
+
+function openConv(conv) {
+  activeWith.value = conv.with
+  const key = PROGRESS_KEYS[currentUser.value?.username + '|' + conv.with]
+  if (key) markNode(key)
+  scrollToBottom()
+}
+
+function closeConv() {
+  activeWith.value = ''
+}
+
+// 发消息：追加到本机记录并立即显示（游戏内时间固定为 10月30日）
+function sendMsg() {
+  const text = draft.value.trim()
+  if (!text || !activeConv.value || !currentUser.value) return
+  const now = new Date()
+  const msg = {
+    from: currentUser.value.username,
+    time: '10月30日 ' + now.toTimeString().slice(0, 5),
+    content: text
+  }
+  const all = readSent()
+  all[activeConv.value.with] = [...(all[activeConv.value.with] || []), msg]
+  localStorage.setItem('nq_sent_messages', JSON.stringify(all))
+  sentMap.value = { ...all }
+  draft.value = ''
+  scrollToBottom()
+}
+
+function scrollToBottom() {
+  nextTick(() => {
+    if (chatBody.value) {
+      chatBody.value.scrollTop = chatBody.value.scrollHeight
+    }
+  })
 }
 
 function loadData() {
-  if (currentUser.value) {
-    // messages.json 结构：{ 账号: { messages: [会话...], notes: [手记...] } }
-    messageList.value = messagesData[currentUser.value.username]?.messages || []
-  } else {
-    messageList.value = []
+  syncUser()
+  sentMap.value = readSent()
+  convs.value = currentUser.value
+    ? (messagesData[currentUser.value.username]?.messages || [])
+    : []
+  // 当前打开的会话如果不在新账号的列表里，回到列表
+  if (activeWith.value && !convs.value.find(c => c.with === activeWith.value)) {
+    activeWith.value = ''
   }
-  openConvs.value = new Set()
 }
 
 onMounted(() => {
@@ -108,30 +210,43 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.page-desc {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-md);
-}
-.conv-card {
-  margin-bottom: var(--space-md);
-  padding: 0;
+/* ---------- 整体双栏布局 ---------- */
+.chat-app {
+  display: flex;
+  height: 600px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
-.conv-header {
+
+/* ---------- 左侧会话列表 ---------- */
+.chat-list {
+  width: 280px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg);
+  overflow-y: auto;
+}
+.chat-list-item {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 12px 14px;
   cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
   transition: background 0.15s;
 }
-.conv-header:hover {
-  background: var(--color-bg);
+.chat-list-item:hover {
+  background: var(--color-card);
 }
-.conv-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+.chat-list-item.active {
+  background: var(--color-card);
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+.chat-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
   background: var(--color-primary);
   color: #fff;
   display: flex;
@@ -141,76 +256,202 @@ onBeforeUnmount(() => {
   font-weight: 600;
   flex-shrink: 0;
 }
-.conv-info {
+.chat-item-info {
   flex: 1;
   min-width: 0;
 }
-.conv-name {
-  font-size: var(--font-body-size);
-  font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 2px;
+.chat-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
 }
-.conv-preview {
+.chat-item-name {
+  font-weight: 600;
+  font-size: var(--font-body-size);
+  color: var(--color-text);
+}
+.chat-item-time {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+.chat-item-preview {
+  font-size: var(--font-tiny);
+  color: var(--color-text-muted);
+  margin-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.conv-preview.cleared {
+.chat-item-preview.cleared {
   font-style: italic;
 }
-.conv-count {
-  font-size: var(--font-tiny);
+.chat-list-empty {
   color: var(--color-text-muted);
+  text-align: center;
+  padding: 40px 0;
+  font-size: var(--font-small);
+}
+
+/* ---------- 右侧聊天窗口 ---------- */
+.chat-window {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.chat-window-header {
+  height: 52px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-card);
 }
-.conv-chevron {
-  color: var(--color-text-muted);
-  font-size: 18px;
-  transform: rotate(0deg);
-  transition: transform 0.2s;
-  flex-shrink: 0;
+.chat-back {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0 4px;
 }
-.conv-chevron.open {
-  transform: rotate(90deg);
+.chat-window-name {
+  font-weight: 600;
+  font-size: var(--font-body-size);
 }
-.conv-body {
-  border-top: 1px dashed var(--color-border);
-  padding: 12px 16px;
+.chat-window-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
   background: var(--color-bg);
 }
-.msg-item {
-  padding: 8px 0;
-}
-.msg-item.mine {
-  text-align: right;
-}
-.msg-meta {
-  font-size: var(--font-tiny);
+.chat-cleared {
   color: var(--color-text-muted);
-}
-.msg-content {
-  background: var(--color-card);
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: var(--radius);
-  max-width: 85%;
-  line-height: 1.7;
-  text-align: left;
-}
-.msg-item.mine .msg-content {
-  background: #FFFBEB;
-}
-.conv-empty {
-  color: var(--color-text-muted);
-  font-size: var(--font-small);
   font-style: italic;
   text-align: center;
-  padding: 12px 0;
+  padding: 60px 0;
+  font-size: var(--font-small);
 }
+.chat-placeholder {
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-small);
+}
+
+/* ---------- 气泡 ---------- */
+.bubble-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  align-items: flex-start;
+}
+.bubble-row.mine {
+  flex-direction: row-reverse;
+}
+.bubble-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.bubble-stack {
+  max-width: 72%;
+  min-width: 0;
+}
+.bubble-time {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+.bubble-row.mine .bubble-time {
+  text-align: right;
+}
+.bubble {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  padding: 9px 12px;
+  border-radius: 10px;
+  line-height: 1.6;
+  font-size: var(--font-body-size);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.bubble-row.mine .bubble {
+  background: #95EC69;
+  border-color: #86DB5C;
+}
+
+/* ---------- 输入栏 ---------- */
+.chat-input-bar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card);
+}
+.chat-input {
+  flex: 1;
+  min-width: 0;
+}
+.chat-send {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--font-body-size);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.chat-send:hover {
+  opacity: 0.9;
+}
+
 .empty-hint {
   color: var(--color-text-secondary);
+}
+
+/* ---------- 手机端：列表与聊天窗口切换 ---------- */
+@media (max-width: 720px) {
+  .chat-app {
+    height: calc(100vh - 230px);
+    min-height: 420px;
+  }
+  .chat-list {
+    width: 100%;
+    border-right: none;
+  }
+  .chat-window {
+    display: none;
+  }
+  .chat-app.chat-open .chat-list {
+    display: none;
+  }
+  .chat-app.chat-open .chat-window {
+    display: flex;
+  }
+  .chat-back {
+    display: inline-block;
+  }
+  .bubble-stack {
+    max-width: 80%;
+  }
 }
 </style>

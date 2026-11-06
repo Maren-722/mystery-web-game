@@ -3,7 +3,7 @@
     <NavBar />
     <div class="container">
       <BackBar label="返回夜市导览" fallback="/stalls" />
-      <!-- TODO(队友B)：根据路由参数 :id 从 src/data/stalls.json 读取对应摊位详情 -->
+      <!-- 摊位详情：按路由参数 :id 匹配 src/data/stalls.json -->
       <div v-if="stall" class="detail-card">
         <div class="detail-header">
           <span class="stall-no">摊位 {{ stall.stallNo }}</span>
@@ -18,17 +18,23 @@
           <span class="dish-price">{{ item.price }}元</span>
         </div>
 
-        <!-- 注意：摊主手记属于私密内容，只有摊主登录后在"我的手记"页可见，
-             游客在摊位详情页不显示。手记数据在 src/data/stalls.json 的 notes 字段。 -->
-
-        <!-- 顾客评价 -->
+        <!-- 顾客评价：内置 + 玩家发布的（localStorage 本机保留） -->
         <h3 class="sub-title">顾客评价</h3>
-        <div v-for="(review, i) in stall.reviews" :key="i" class="review-item">
+        <div v-for="(review, i) in mergedReviews" :key="i" class="review-item">
           <p class="review-user">
             {{ review.user }}<template v-if="review.replyTo"> 回复 {{ review.replyTo }}</template> · {{ review.date }}
           </p>
-          <p>{{ review.content }}</p>
+          <p class="review-content">{{ review.content }}</p>
         </div>
+
+        <!-- 登录后可以写评价 -->
+        <div v-if="currentUser" class="review-composer">
+          <textarea v-model="newReview" class="form-input" rows="3" placeholder="写写这家的味道…"></textarea>
+          <button class="btn" @click="addReview" style="margin-top:8px">发布评价</button>
+        </div>
+        <p v-else class="login-hint">
+          <router-link to="/login">登录</router-link>后可发表评价
+        </p>
       </div>
       <p v-else>没有找到这个摊位。</p>
     </div>
@@ -37,20 +43,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
 import stallsData from '../data/stalls.json'
+import { useCurrentUser } from '../utils/auth'
 
 const route = useRoute()
 const stall = ref(null)
+const newReview = ref('')
+// 玩家写的评价放响应式 ref：发完立刻显示
+const extraReviews = ref([])
 
-// 摊位详情：按 :id 匹配数据
+const { currentUser } = useCurrentUser()
+
+// 玩家写的评价：{ stallId: [ {user,date,content} ] }
+function readLocalReviews() {
+  try {
+    return JSON.parse(localStorage.getItem('nq_stall_reviews') || '{}')
+  } catch {
+    return {}
+  }
+}
+
+const mergedReviews = computed(() => {
+  if (!stall.value) return []
+  return [...(stall.value.reviews || []), ...extraReviews.value]
+})
+
 onMounted(() => {
   stall.value = stallsData.find(s => s.id === route.params.id) || null
+  extraReviews.value = readLocalReviews()[route.params.id] || []
 })
+
+function addReview() {
+  if (!newReview.value.trim() || !stall.value) return
+  const review = {
+    user: currentUser.value?.shopName || currentUser.value?.username || '游客',
+    date: new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }),
+    content: newReview.value.trim()
+  }
+  const all = readLocalReviews()
+  all[stall.value.id] = [...(all[stall.value.id] || []), review]
+  localStorage.setItem('nq_stall_reviews', JSON.stringify(all))
+  extraReviews.value = [...extraReviews.value, review]
+  newReview.value = ''
+}
 </script>
 
 <style scoped>
@@ -103,5 +143,16 @@ onMounted(() => {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
   margin-bottom: 4px;
+}
+.review-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.review-composer {
+  margin-top: var(--space-md);
+}
+.login-hint {
+  margin-top: var(--space-md);
+  color: var(--color-text-secondary);
 }
 </style>

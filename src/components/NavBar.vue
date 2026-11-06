@@ -52,7 +52,7 @@
         <input
           v-model="loginId"
           class="form-input menu-input"
-          placeholder="ID / 用户名"
+          placeholder="ID"
         >
         <input
           v-model="loginPwd"
@@ -71,7 +71,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import accounts from '../data/accounts.json'
+import { findAccountById } from '../utils/auth'
 import { isComplete } from '../utils/progress'
 
 const route = useRoute()
@@ -165,16 +165,17 @@ function logout() {
   }
 }
 
-// 切换账号：校验并替换当前登录账号
+// 切换账号：按 ID 校验并替换当前登录账号
 function doSwitch() {
-  const uname = loginId.value.trim()
+  const id = loginId.value.trim()
   const pwd = loginPwd.value.trim()
-  if (!uname || !pwd) {
-    loginError.value = '请输入用户名和密码'
+  if (!id || !pwd) {
+    loginError.value = '请输入ID和密码'
     return
   }
-  const account = accounts[uname]
+  const account = findAccountById(id)
   if (account && account.password === pwd) {
+    const uname = account.username
     localStorage.setItem('nq_user', JSON.stringify({
       username: uname,
       shopName: account.shopName || uname,
@@ -186,7 +187,7 @@ function doSwitch() {
     loginPwd.value = ''
     window.dispatchEvent(new CustomEvent('nq-user-changed'))
   } else {
-    loginError.value = '账号或密码错误，请重试'
+    loginError.value = 'ID或密码错误，请重试'
   }
 }
 </script>

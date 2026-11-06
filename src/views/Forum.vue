@@ -24,7 +24,9 @@
         @click="$router.push('/forum/' + post.id)"
       >
         <h3 class="post-title">{{ post.title }}</h3>
-        <p class="post-meta">{{ post.author }} · {{ post.date }} · {{ post.replies }} 回复</p>
+        <p class="post-meta">
+          {{ post.author }}<span v-if="post.uid" class="user-uid">（ID：{{ post.uid }}）</span> · {{ post.date }} · {{ post.replies }} 回复
+        </p>
         <p class="post-preview">{{ post.preview }}</p>
       </div>
     </div>
@@ -33,10 +35,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import postsData from '../data/posts.json'
+import accounts from '../data/accounts.json'
+import { useCurrentUser } from '../utils/auth'
 
 // 帖子列表：内置帖子(src/data/posts.json) + 玩家发布的帖子(localStorage nq_posts)
 // 玩家帖子/评论只存在本机浏览器，退出游戏（清除浏览器数据/换设备）后不再保留
@@ -45,13 +49,7 @@ const showComposer = ref(false)
 const newTitle = ref('')
 const newContent = ref('')
 
-const currentUser = computed(() => {
-  try {
-    return JSON.parse(localStorage.getItem('nq_user') || 'null')
-  } catch {
-    return null
-  }
-})
+const { currentUser } = useCurrentUser()
 
 // 读取玩家发布的帖子
 function readLocalPosts() {
@@ -98,6 +96,8 @@ onMounted(() => {
 function publishPost() {
   if (!newTitle.value.trim()) return
   const author = currentUser.value?.shopName || currentUser.value?.username || '游客'
+  const uname = currentUser.value?.username
+  const acct = uname ? accounts[uname] : null
   const post = {
     id: 'local-' + Date.now(),
     title: newTitle.value.trim(),
@@ -107,6 +107,8 @@ function publishPost() {
     content: newContent.value.trim(),
     comments: []
   }
+  // 游客发言带数字ID（与论坛展示规则一致）
+  if (acct && acct.role === 'customer' && acct.uid) post.uid = acct.uid
   const localPosts = readLocalPosts()
   localPosts.unshift(post)
   localStorage.setItem('nq_posts', JSON.stringify(localPosts))
@@ -147,6 +149,9 @@ function publishPost() {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
   margin-bottom: 4px;
+}
+.user-uid {
+  opacity: 0.85;
 }
 .post-preview {
   font-size: var(--font-small);

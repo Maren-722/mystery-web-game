@@ -33,11 +33,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import messagesData from '../data/messages.json'
 import { markNode } from '../utils/progress'
+import { useCurrentUser } from '../utils/auth'
 
 // 手记正文里 **文字** 渲染为加粗（如陈伯日记里的「念」字）
 function renderNote(text) {
@@ -58,13 +59,7 @@ const NOTE_PROGRESS = {
 const notes = ref([])
 const newNote = ref('')
 
-const currentUser = computed(() => {
-  try {
-    return JSON.parse(localStorage.getItem('nq_user') || 'null')
-  } catch {
-    return null
-  }
-})
+const { currentUser, syncUser } = useCurrentUser()
 
 function readLocalNotes() {
   try {
@@ -74,13 +69,20 @@ function readLocalNotes() {
   }
 }
 
+// "10月25日" -> 1025，用于按时间由近及远排序
+function parseDate(s) {
+  const m = String(s || '').match(/(\d+)月(\d+)日/)
+  return m ? (+m[1]) * 100 + (+m[2]) : 0
+}
+
 function loadData() {
+  syncUser()
   const uname = currentUser.value?.username
   if (uname) {
     const builtin = messagesData[uname]?.notes || []
     const local = readLocalNotes()[uname] || []
-    // 玩家自己添加的排前面
-    notes.value = [...local, ...builtin]
+    // 按时间由近及远排列
+    notes.value = [...local, ...builtin].sort((a, b) => parseDate(b.date) - parseDate(a.date))
     // 有内置剧情手记的账号：看到手记即记录进度
     if (builtin.length && NOTE_PROGRESS[uname]) {
       markNode(NOTE_PROGRESS[uname])

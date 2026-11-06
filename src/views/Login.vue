@@ -7,12 +7,12 @@
       <p class="login-subtitle">登录后可查看私信、手记和管理店铺信息</p>
 
       <div class="form-group">
-        <label class="form-label">用户名</label>
+        <label class="form-label">ID</label>
         <input
           type="text"
           class="form-input"
           v-model="username"
-          placeholder="请输入用户名"
+          placeholder="商户为姓名，游客为数字ID"
           @keyup.enter="handleLogin"
         >
       </div>
@@ -41,7 +41,7 @@ import { useRouter, useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
-import accounts from '../data/accounts.json'
+import { findAccountById } from '../utils/auth'
 
 const router = useRouter()
 const route = useRoute()
@@ -50,28 +50,29 @@ const username = ref('')
 const password = ref('')
 const errorMsg = ref('')
 
-// 登录逻辑：账号密码对照表在 src/data/accounts.json（队友C维护）
+// 登录逻辑：按 ID 匹配 src/data/accounts.json（商户ID=人名，游客ID=长数字）
 // 玩家自己注册的账号存 localStorage nq_custom_accounts，同样可以登录
 function handleLogin() {
   const uname = username.value.trim()
   const pwd = password.value.trim()
 
   if (!uname || !pwd) {
-    errorMsg.value = '请输入用户名和密码'
+    errorMsg.value = '请输入ID和密码'
     return
   }
 
-  const account = accounts[uname]
-  let matched = account && account.password === pwd
+  // 剧情账号：ID -> 账号
+  const account = findAccountById(uname)
+  let matchedKey = account && account.password === pwd ? account.username : null
   let shopName = account?.shopName || uname
   let role = account?.role || 'customer'
 
-  if (!matched) {
-    // 检查玩家注册的账号
+  // 玩家注册的账号（以用户名登录）
+  if (!matchedKey) {
     try {
       const custom = JSON.parse(localStorage.getItem('nq_custom_accounts') || '{}')
       if (custom[uname] && custom[uname].password === pwd) {
-        matched = true
+        matchedKey = uname
         shopName = custom[uname].shopName || uname
         role = 'customer'
       }
@@ -80,17 +81,18 @@ function handleLogin() {
     }
   }
 
-  if (matched) {
+  if (matchedKey) {
     errorMsg.value = ''
     localStorage.setItem('nq_user', JSON.stringify({
-      username: uname,
+      username: matchedKey,
       shopName,
       role
     }))
+    window.dispatchEvent(new CustomEvent('nq-user-changed'))
     // 管理员账号登录后直接进工作台
     router.push(route.query.redirect || (role === 'manager' ? '/manager' : '/messages'))
   } else {
-    errorMsg.value = '用户名或密码错误，请重试'
+    errorMsg.value = 'ID或密码错误，请重试'
   }
 }
 </script>
