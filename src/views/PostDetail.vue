@@ -11,7 +11,9 @@
 
         <h3 class="sub-title">评论（{{ mergedComments.length }}）</h3>
         <div v-for="(c, i) in mergedComments" :key="i" class="comment-item">
-          <p class="comment-user">{{ c.user }} · {{ c.date }}</p>
+          <p class="comment-user">
+            {{ c.user }}<template v-if="c.replyTo"> 回复 {{ c.replyTo }}</template> · {{ c.date }}
+          </p>
           <p>{{ c.content }}</p>
         </div>
 
@@ -37,6 +39,7 @@ import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
 import postsData from '../data/posts.json'
+import { markNode } from '../utils/progress'
 
 const route = useRoute()
 const post = ref(null)
@@ -80,6 +83,10 @@ onMounted(() => {
   const localPosts = readLocalPosts()
   const found = localPosts.find(p => p.id === id) || postsData.find(p => p.id === id) || null
   post.value = found
+  // 三篇主线帖：帖子详情页加载即可看到全部内容，进页面即判定进度
+  if (found && ['p1', 'p2', 'p3'].includes(id)) {
+    markNode('post-' + id)
+  }
 })
 
 function addComment() {

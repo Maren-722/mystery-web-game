@@ -7,16 +7,16 @@
       <h2 class="section-title">公告栏</h2>
       <div class="notice-bar">
         <div
-          v-for="(n, i) in notices"
-          :key="i"
+          v-for="(n, i) in visibleNotices"
+          :key="n.id"
           class="notice-item"
           :class="{ important: n.important }"
-          @click="openNotice(n)"
+          @click="openNotice(i)"
         >
-          <span class="notice-tag" :style="{ background: tagColors[n.tag] }">{{ n.tag }}</span>
+          <span class="notice-tag" :style="{ background: tagColors[n.tag] || 'var(--color-primary)' }">{{ n.tag }}</span>
           <div class="notice-body">
             <p class="notice-text">{{ n.text }}</p>
-            <p class="notice-meta">{{ n.meta }}</p>
+            <p class="notice-meta">管理处 · {{ n.publishDate }}</p>
           </div>
         </div>
       </div>
@@ -29,45 +29,106 @@
           @touchend="onTouchEnd"
         >
           <div class="modal-header">
-            <span class="notice-tag" :style="{ background: tagColors[activeNotice.tag] }">{{ activeNotice.tag }}</span>
+            <span class="notice-tag" :style="{ background: tagColors[activeNotice.tag] || 'var(--color-primary)' }">{{ activeNotice.tag }}</span>
             <h3 class="modal-title">{{ activeNotice.text }}</h3>
             <button class="modal-close" @click="closeNotice">×</button>
           </div>
-          <p class="modal-meta">{{ activeNotice.meta }}</p>
+          <p class="modal-meta">南桥夜市管理处 · {{ activeNotice.publishDate }}<template v-if="activeNotice.dateRange && activeNotice.dateRange !== '长期'"> · {{ activeNotice.dateRange }}</template></p>
           <div class="modal-content">{{ activeNotice.fullText }}</div>
-          <div class="modal-nav">
+
+          <!-- 地铁公告：点击展开线路示意图 -->
+          <div v-if="activeNotice.metro" class="metro-block">
+            <button v-if="!metroExpanded" class="btn metro-btn" @click="expandMetro">查看线路示意图</button>
+            <div v-else class="metro-map-wrap">
+              <svg class="metro-map" viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="地铁线路示意图">
+                <!-- 3号线（横） -->
+                <line x1="46" y1="160" x2="648" y2="160" stroke="#3B7DD8" stroke-width="7" stroke-linecap="round" />
+                <!-- 1号线（竖，在青石桥换乘） -->
+                <line x1="429" y1="38" x2="429" y2="292" stroke="#2FA84F" stroke-width="7" stroke-linecap="round" />
+                <!-- 3号线两端方向 -->
+                <text x="52" y="140" font-size="13" fill="#3B7DD8" font-weight="600">← 体育中心方向</text>
+                <text x="646" y="140" font-size="13" fill="#3B7DD8" font-weight="600" text-anchor="end">城南客运站方向 →</text>
+                <!-- 1号线两端方向 -->
+                <text x="440" y="52" font-size="13" fill="#2FA84F" font-weight="600">北苑方向 ↑</text>
+                <text x="440" y="286" font-size="13" fill="#2FA84F" font-weight="600">↓ 纺织城方向</text>
+
+                <!-- 3号线站点 -->
+                <g v-for="(st, i) in line3" :key="'l3-' + i">
+                  <circle
+                    v-if="!st.transfer && !st.here"
+                    :cx="st.x" cy="160" r="6" fill="#fff" stroke="#3B7DD8" stroke-width="3"
+                  />
+                  <text :x="st.x" y="192" font-size="13" :fill="st.key ? '#B3541E' : '#5b5b5b'" :font-weight="st.key ? '700' : '400'" text-anchor="middle">{{ st.name }}</text>
+                </g>
+                <!-- 1号线站点 -->
+                <g v-for="(st, i) in line1" :key="'l1-' + i">
+                  <circle v-if="!st.transfer" :cx="429" :cy="st.y" r="6" fill="#fff" stroke="#2FA84F" stroke-width="3" />
+                  <text x="429" :y="st.y - 12" font-size="13" fill="#5b5b5b" text-anchor="middle">{{ st.name }}</text>
+                </g>
+
+                <!-- 换乘站：青石桥 -->
+                <rect x="420" y="151" width="18" height="18" rx="4" fill="#fff" stroke="#3B7DD8" stroke-width="3" />
+                <rect x="420" y="151" width="18" height="18" rx="4" fill="#fff" stroke="#2FA84F" stroke-width="3" transform="rotate(45 429 160)" />
+                <text x="429" y="214" font-size="13" fill="#5b5b5b" text-anchor="middle">青石桥（换乘）</text>
+
+                <!-- 当前站：南桥 -->
+                <circle cx="324" cy="160" r="13" fill="#FFF3D6" stroke="#B3541E" stroke-width="3" />
+                <circle cx="324" cy="160" r="5" fill="#B3541E" />
+                <text x="324" y="132" font-size="15" fill="#B3541E" font-weight="700" text-anchor="middle">南桥站（您在这）</text>
+                <text x="324" y="214" font-size="13" fill="#B3541E" font-weight="700" text-anchor="middle">南桥</text>
+
+                <!-- 图例 -->
+                <g font-size="12" fill="#8a8a8a">
+                  <line x1="60" y1="266" x2="92" y2="266" stroke="#3B7DD8" stroke-width="6" stroke-linecap="round" />
+                  <text x="100" y="270">3号线</text>
+                  <line x1="160" y1="266" x2="192" y2="266" stroke="#2FA84F" stroke-width="6" stroke-linecap="round" />
+                  <text x="200" y="270">1号线</text>
+                  <rect x="260" y="259" width="14" height="14" rx="3" fill="#fff" stroke="#3B7DD8" stroke-width="2.5" />
+                  <text x="282" y="270">换乘站</text>
+                  <circle cx="360" cy="266" r="7" fill="#FFF3D6" stroke="#B3541E" stroke-width="3" />
+                  <text x="376" y="270">当前站</text>
+                </g>
+              </svg>
+              <p class="metro-note">示意图仅供参考，以车站实际公告为准。</p>
+            </div>
+          </div>
+
+          <div class="modal-nav" v-if="visibleNotices.length > 1">
             <button class="modal-arrow" @click="prevNotice">‹</button>
-            <span class="modal-count">{{ activeIndex + 1 }} / {{ notices.length }}</span>
+            <span class="modal-count">{{ activeIndex + 1 }} / {{ visibleNotices.length }}</span>
             <button class="modal-arrow" @click="nextNotice">›</button>
           </div>
         </div>
       </div>
 
-      <!-- 值日表（固屏） -->
-      <h2 class="section-title">夜市值日表</h2>
-      <p class="table-desc">街道卫生值日安排，每天三家店铺轮流打扫，由管理处统一排班。</p>
-      <div class="schedule-grid">
+      <!-- 排班表：2026年10月 日历 -->
+      <h2 class="section-title">夜市排班表</h2>
+      <p class="table-desc">十月值日安排，每天两位摊主轮流值守收摊巡查，由管理处统一排班。今天是 10月30日（周五）。</p>
+      <div class="cal-grid">
+        <div class="cal-head" v-for="w in weekNames" :key="w">{{ w }}</div>
+        <div v-for="pad in leadPads" :key="'pad-' + pad" class="cal-day cal-pad"></div>
         <div
-          v-for="day in schedule"
-          :key="day.name"
-          class="schedule-day"
-          :class="{ today: day.today }"
+          v-for="day in october"
+          :key="day.date"
+          class="cal-day"
+          :class="{ today: day.date === 30, alert: day.anyStruck }"
         >
-          <div class="schedule-day-name">{{ day.name }}</div>
-          <div class="schedule-day-date">{{ day.date }}</div>
-          <div class="schedule-day-shops">
-            <template v-for="shop in day.shops" :key="shop.name">
-              <span
-                v-if="shop.closed"
-                class="schedule-shop-closed"
-              >{{ shop.name }}</span>
-              <span v-else>{{ shop.name }}</span>
-              <span v-if="shop.replacedBy" class="schedule-replaced">（由{{ shop.replacedBy }}顶替）</span>
-              <br>
+          <div class="cal-top">
+            <span class="cal-date">{{ day.date }}</span>
+            <span v-if="day.date === 30" class="cal-today-tag">今天</span>
+          </div>
+          <div class="cal-shops">
+            <template v-for="(shop, si) in day.shops" :key="si">
+              <template v-if="shop.struck">
+                <span class="cal-shop struck">{{ shop.name }}</span><span class="cal-replace">→{{ shop.replacedBy }}</span>
+              </template>
+              <span v-else class="cal-shop">{{ shop.name }}</span>
+              <br v-if="si === 0">
             </template>
           </div>
         </div>
       </div>
+      <p class="cal-legend"><span class="struck-demo">划线</span> 为请假/停摊，由 <span class="replace-demo">绿色</span> 摊位顶替。</p>
 
     </div>
     <Footer />
@@ -78,8 +139,10 @@
 import { ref, computed } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
+import noticesData from '../data/notices.json'
+import { markNode } from '../utils/progress'
 
-// 公告标签配色：通知/开业/上新/活动
+// 公告标签配色
 const tagColors = {
   '通知': 'var(--color-danger)',
   '开业': 'var(--color-success)',
@@ -87,23 +150,47 @@ const tagColors = {
   '活动': 'var(--color-primary)'
 }
 
-// 当前打开的公告（弹窗）：支持左右切换邻近公告
+// 首页只展示「刊登中」的公告；置顶优先，其余按发布日期新的在前
+function parseDate(s) {
+  const m = String(s || '').match(/(\d+)月(\d+)日/)
+  return m ? (+m[1]) * 100 + (+m[2]) : 0
+}
+const visibleNotices = computed(() =>
+  noticesData
+    .filter(n => n.state === '刊登中')
+    .sort((a, b) => (b.important - a.important) || (parseDate(b.publishDate) - parseDate(a.publishDate)))
+)
+
+// 公告弹窗
 const showModal = ref(false)
 const activeIndex = ref(0)
-const activeNotice = computed(() => notices.value[activeIndex.value])
-function openNotice(n) {
-  activeIndex.value = notices.value.findIndex(item => item === n)
+const activeNotice = computed(() => visibleNotices.value[activeIndex.value])
+const metroExpanded = ref(false)
+
+function openNotice(i) {
+  activeIndex.value = i
+  metroExpanded.value = false
   showModal.value = true
 }
 function closeNotice() {
   showModal.value = false
 }
 function prevNotice() {
-  activeIndex.value = (activeIndex.value - 1 + notices.value.length) % notices.value.length
+  const len = visibleNotices.value.length
+  activeIndex.value = (activeIndex.value - 1 + len) % len
+  metroExpanded.value = false
 }
 function nextNotice() {
-  activeIndex.value = (activeIndex.value + 1) % notices.value.length
+  const len = visibleNotices.value.length
+  activeIndex.value = (activeIndex.value + 1) % len
+  metroExpanded.value = false
 }
+// 展开线路图：看到线路图才算推进度（内容点击后才可见，判定也在点击时）
+function expandMetro() {
+  metroExpanded.value = true
+  markNode('metro-map')
+}
+
 // 移动端左右滑动切换
 let touchStartX = 0
 function onTouchStart(e) {
@@ -115,82 +202,67 @@ function onTouchEnd(e) {
   else if (dx < -50) nextNotice()
 }
 
-// 公告列表：第一条为核心公告（暂停营业），其余营造夜市氛围
-const notices = ref([
-  {
-    tag: '通知',
-    important: true,
-    text: '陈记糖粥藕暂停营业，恢复时间另行通知。',
-    meta: '发布：南桥夜市管理处 · 王志强 ｜ 10月13日',
-    fullText: '近日，夜市内流传关于陈记糖粥藕摊主陈桂生"失踪""被害"等不当言论，均为谣言，请大家不要以讹传讹。\n\n陈记糖粥藕（A1号摊位）因个人原因暂停营业，恢复时间另行通知。如有陈师傅相关线索，请联系夜市管理处。\n\n—— 南桥夜市管理处 王志强\n2026年10月13日'
-  },
-  {
-    tag: '开业',
-    text: '王记烧烤全新开业，全场8折！',
-    meta: '开业时间：10月14日',
-    fullText: '王记烧烤（B3号摊位）于10月14日正式开业！\n\n主营：烤羊肉串、烤生蚝、烤茄子、烤韭菜。\n开业期间（10月14日-10月20日）全场8折，欢迎各位街坊捧场！'
-  },
-  {
-    tag: '上新',
-    text: '刘姐麻辣烫推出新品「秘制香辣藕片」，买一送一。',
-    meta: '活动时间：10月15日-10月17日',
-    fullText: '刘姐麻辣烫（B4号摊位）新品「秘制香辣藕片」10月15日上市！\n\n精选洪湖莲藕，香辣入味，脆嫩爽口，前三天买一送一，数量有限，售完即止。\n\n（藕是托老伙计进的货，那批藕品质不错，大家尝尝就知道。）'
-  },
-  {
-    tag: '活动',
-    text: '张阿姨凉面新品酸梅汤上市，第二杯半价。',
-    meta: '活动时间：10月13日起',
-    fullText: '张阿姨凉面（A2号摊位）自酿酸梅汤10月13日起上市！\n\n乌梅、山楂、陈皮慢火熬制，解腻消暑，配凉面一绝。活动期间第二杯半价。'
-  },
-  {
-    tag: '活动',
-    text: '小李炒粉开业一周年，全场满20减5。',
-    meta: '活动时间：10月10日-10月20日',
-    fullText: '小李炒粉（B2号摊位）开业一周年啦！\n\n10月10日-10月20日，全场满20减5，感谢各位街坊一年来的照顾。招牌炒粉加个蛋，老客都知道！'
-  }
-])
+// ---------------- 排班表：2026年10月 ----------------
+const weekNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+// 2026年10月1日是周四 → 周一开头的日历前面空3格
+const leadPads = 3
 
-// 值日表：10月13日-10月19日，10家摊位轮流值日
-// 陈叔暂停营业后，原值日由其他店铺顶替
-const schedule = ref([
-  {
-    name: '周二', date: '10月13日', today: true,
-    shops: [{ name: '张记卤味' }, { name: '张阿姨凉面' }, { name: '小李炒粉' }]
-  },
-  {
-    name: '周三', date: '10月14日',
-    shops: [
-      { name: '陈记糖粥藕', closed: true, replacedBy: '张阿姨凉面' },
-      { name: '赵记馄饨' },
-      { name: '王记烧烤' }
-    ]
-  },
-  {
-    name: '周四', date: '10月15日',
-    shops: [{ name: '珍姐水果捞' }, { name: '阿伟烤冷面' }, { name: '刘姐麻辣烫' }]
-  },
-  {
-    name: '周五', date: '10月16日',
-    shops: [
-      { name: '陈记糖粥藕', closed: true, replacedBy: '王记烧烤' },
-      { name: '小李炒粉' },
-      { name: '阿强臭豆腐' }
-    ]
-  },
-  {
-    name: '周六', date: '10月17日',
-    shops: [{ name: '张记卤味' }, { name: '赵记馄饨' }, { name: '珍姐水果捞' }]
-  },
-  {
-    name: '周日', date: '10月18日',
-    shops: [{ name: '阿伟烤冷面' }, { name: '张阿姨凉面' }, { name: '刘姐麻辣烫' }]
-  },
-  {
-    name: '周一', date: '10月19日',
-    shops: [{ name: '阿强臭豆腐' }, { name: '王记烧烤' }, { name: '小李炒粉' }]
-  }
-])
+// 每周值班模板（摊位按此轮值，老摊位每周两次）
+const weekPlan = {
+  1: ['张姐凉面', '阿强臭豆腐'],      // 周一
+  2: ['陈记糖粥藕', '小李炒粉'],      // 周二
+  3: ['珍姐水果捞', '王记烧烤'],      // 周三
+  4: ['赵记馄饨', '刘姐麻辣烫'],      // 周四
+  5: ['张记卤味', '阿伟烤冷面'],      // 周五
+  6: ['赵记馄饨', '阿强臭豆腐'],      // 周六
+  0: ['陈记糖粥藕', '张姐凉面']       // 周日
+}
 
+// 陈伯的班被划掉的日期：10.6/10.11 住院那一周，10.27 失踪之后
+const struckMap = {
+  6: { '陈记糖粥藕': '王记烧烤' },
+  11: { '陈记糖粥藕': '刘姐麻辣烫' },
+  27: { '陈记糖粥藕': '珍姐水果捞' }
+}
+
+const october = []
+for (let d = 1; d <= 31; d++) {
+  const weekday = new Date(2026, 9, d).getDay()
+  const struck = struckMap[d] || {}
+  const shops = weekPlan[weekday].map(name => ({
+    name,
+    struck: !!struck[name],
+    replacedBy: struck[name] || ''
+  }))
+  october.push({
+    date: d,
+    shops,
+    anyStruck: shops.some(s => s.struck)
+  })
+}
+
+// ---------------- 地铁线路图数据 ----------------
+const line3 = [
+  { name: '体育中心', x: 72 },
+  { name: '半山公园', x: 122 },
+  { name: '东湖', x: 172 },
+  { name: '市政府', x: 224 },
+  { name: '工业大学', x: 274 },
+  { name: '', x: 324 },            // 南桥站单独绘制
+  { name: '柳浪湾', x: 376 },
+  { name: '', x: 429 },            // 青石桥换乘站单独绘制
+  { name: '南湖公园', x: 480 },
+  { name: '双井街', x: 532 },
+  { name: '梧桐苑', x: 584, key: true },
+  { name: '城南客运站', x: 644 }
+].filter(s => s.name !== '')
+const line1 = [
+  { name: '北苑', y: 74 },
+  { name: '市图书馆', y: 116 },
+  { name: '', y: 160 },            // 青石桥（换乘）单独绘制
+  { name: '梅林', y: 208 },
+  { name: '纺织城', y: 252 }
+].filter(s => s.name !== '')
 </script>
 
 <style scoped>
@@ -248,8 +320,10 @@ const schedule = ref([
   padding: 20px;
 }
 .modal-card {
-  max-width: 520px;
+  max-width: 560px;
   width: 100%;
+  max-height: 86vh;
+  overflow-y: auto;
   background: var(--color-card);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
@@ -334,55 +408,136 @@ const schedule = ref([
   margin-top: 2px;
 }
 
+/* 地铁线路图 */
+.metro-block {
+  margin-top: var(--space-md);
+}
+.metro-btn {
+  width: 100%;
+}
+.metro-map-wrap {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #FDFCF9;
+  padding: 8px;
+}
+.metro-map {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.metro-note {
+  font-size: var(--font-tiny);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* 排班日历 */
 .table-desc {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-md);
 }
-
-.schedule-grid {
+.cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: var(--space-lg);
+  gap: 6px;
+  margin-bottom: var(--space-xs);
 }
-.schedule-day {
+.cal-head {
+  text-align: center;
+  font-size: var(--font-small);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 4px 0;
+}
+.cal-day {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 12px;
-  text-align: center;
+  padding: 8px 6px;
+  min-height: 86px;
 }
-.schedule-day.today {
-  border-color: var(--color-accent);
-  background: #FFFBEB;
+.cal-pad {
+  background: transparent;
+  border-color: transparent;
 }
-.schedule-day-name {
-  font-size: var(--font-small);
+.cal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cal-date {
+  font-size: var(--font-body-size);
   font-weight: 600;
   color: var(--color-text);
 }
-.schedule-day-date {
+.cal-today-tag {
+  font-size: 10px;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.cal-day.today {
+  border-color: var(--color-accent);
+  background: #FFFBEB;
+}
+.cal-day.alert {
+  border-color: #F3C2B4;
+  background: #FFF7F4;
+}
+.cal-day.today.alert {
+  border-color: var(--color-accent);
+}
+.cal-shops {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.cal-shop {
+  color: var(--color-text-secondary);
+  display: inline-block;
+}
+.cal-shop.struck {
+  color: var(--color-danger);
+  text-decoration: line-through;
+  font-weight: 600;
+}
+.cal-replace {
+  color: var(--color-success);
+  font-size: 10px;
+  margin-left: 2px;
+}
+.cal-legend {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-lg);
 }
-.schedule-day-shops {
-  font-size: var(--font-tiny);
-  line-height: 1.9;
-}
-.schedule-shop-closed {
+.struck-demo {
   color: var(--color-danger);
   text-decoration: line-through;
 }
-.schedule-replaced {
+.replace-demo {
   color: var(--color-success);
-  font-size: 11px;
 }
 
 @media (max-width: 720px) {
-  .schedule-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .cal-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .cal-day {
+    padding: 4px 2px;
+    min-height: 66px;
+  }
+  .cal-shops {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+  .cal-date {
+    font-size: var(--font-small);
   }
 }
 </style>

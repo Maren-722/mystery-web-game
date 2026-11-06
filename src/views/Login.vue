@@ -64,6 +64,7 @@ function handleLogin() {
   const account = accounts[uname]
   let matched = account && account.password === pwd
   let shopName = account?.shopName || uname
+  let role = account?.role || 'customer'
 
   if (!matched) {
     // 检查玩家注册的账号
@@ -72,6 +73,7 @@ function handleLogin() {
       if (custom[uname] && custom[uname].password === pwd) {
         matched = true
         shopName = custom[uname].shopName || uname
+        role = 'customer'
       }
     } catch {
       /* ignore */
@@ -82,9 +84,11 @@ function handleLogin() {
     errorMsg.value = ''
     localStorage.setItem('nq_user', JSON.stringify({
       username: uname,
-      shopName
+      shopName,
+      role
     }))
-    router.push(route.query.redirect || '/messages')
+    // 管理员账号登录后直接进工作台
+    router.push(route.query.redirect || (role === 'manager' ? '/manager' : '/messages'))
   } else {
     errorMsg.value = '用户名或密码错误，请重试'
   }

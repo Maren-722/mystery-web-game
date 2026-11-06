@@ -24,7 +24,9 @@
         <!-- 顾客评价 -->
         <h3 class="sub-title">顾客评价</h3>
         <div v-for="(review, i) in stall.reviews" :key="i" class="review-item">
-          <p class="review-user">{{ review.user }} · {{ review.date }}</p>
+          <p class="review-user">
+            {{ review.user }}<template v-if="review.replyTo"> 回复 {{ review.replyTo }}</template> · {{ review.date }}
+          </p>
           <p>{{ review.content }}</p>
         </div>
       </div>
