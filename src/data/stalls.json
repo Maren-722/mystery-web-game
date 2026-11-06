@@ -20,8 +20,8 @@
   {
     "id": "zhangjie",
     "stallNo": "A2",
-    "shopName": "张姐凉面",
-    "owner": "张姐",
+    "shopName": "老街凉面",
+    "owner": "老夫妻俩",
     "main": "凉面、凉皮、酸梅汤",
     "price": "8元起",
     "dishes": [
@@ -30,15 +30,15 @@
     ],
     "notes": [],
     "reviews": [
-      { "user": "不吃香菜", "date": "10月5日", "content": "凉面筋道，酸梅汤解腻！上次下大雨，张姐还借了我一把伞，人超好。" },
+      { "user": "不吃香菜", "date": "10月5日", "content": "凉面筋道，酸梅汤解腻！上次下大雨，摊主还借了我一把伞，人超好。" },
       { "user": "小鱼干", "date": "10月11日", "content": "逛夜市必来一碗，凉皮也推荐，麻酱给得足，拌开香得很。" }
     ]
   },
   {
     "id": "zhaoji",
     "stallNo": "A3",
-    "shopName": "赵记馄饨",
-    "owner": "赵师傅",
+    "shopName": "巷口馄饨",
+    "owner": "小两口",
     "main": "鲜肉馄饨、荠菜馄饨",
     "price": "10元起",
     "dishes": [
@@ -54,8 +54,8 @@
   {
     "id": "zhenjie",
     "stallNo": "A4",
-    "shopName": "珍姐水果捞",
-    "owner": "珍姐",
+    "shopName": "鲜果小铺",
+    "owner": "姐妹俩",
     "main": "水果捞、鲜榨果汁",
     "price": "15元起",
     "dishes": [
@@ -71,8 +71,8 @@
   {
     "id": "awei",
     "stallNo": "A5",
-    "shopName": "阿伟烤冷面",
-    "owner": "阿伟",
+    "shopName": "街角烤冷面",
+    "owner": "年轻小哥",
     "main": "烤冷面、鸡蛋灌饼",
     "price": "8元起",
     "dishes": [
@@ -125,8 +125,8 @@
   {
     "id": "wangji",
     "stallNo": "B3",
-    "shopName": "王记烧烤",
-    "owner": "王师傅",
+    "shopName": "炭火烧烤",
+    "owner": "东北大哥",
     "main": "烤羊肉串、烤生蚝、烤茄子",
     "price": "15元起",
     "dishes": [
@@ -160,8 +160,8 @@
   {
     "id": "aqiang",
     "stallNo": "B5",
-    "shopName": "阿强臭豆腐",
-    "owner": "阿强",
+    "shopName": "巷尾臭豆腐",
+    "owner": "小伙子",
     "main": "臭豆腐、炸串",
     "price": "10元起",
     "dishes": [

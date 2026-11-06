@@ -79,11 +79,14 @@ function loadData() {
     ...p,
     replies: (p.comments?.length || 0) + (localComments[p.id]?.length || 0)
   }))
-  // 内置帖子：回复数叠加玩家补充的评论
-  const builtinPosts = postsData.map(p => ({
-    ...p,
-    replies: p.replies + (localComments[p.id]?.length || 0)
-  }))
+  // 内置帖子：按发帖时间近→远排列（"4月20日" → 420）
+  const parseDate = s => {
+    const m = String(s || '').match(/(\d+)月(\d+)日/)
+    return m ? (+m[1]) * 100 + (+m[2]) : 0
+  }
+  const builtinPosts = [...postsData]
+    .sort((a, b) => parseDate(b.date) - parseDate(a.date))
+    .map(p => ({ ...p, replies: p.replies + (localComments[p.id]?.length || 0) }))
   posts.value = [...userPosts, ...builtinPosts]
 }
 

@@ -3,15 +3,24 @@
     <NavBar />
     <div class="container">
 
+      <!-- 置顶：管理处的话（长期说明，特殊样式） -->
+      <div v-if="pinnedNotice" class="pinned-card" @click="openNotice(0)">
+        <span class="pinned-icon">🏮</span>
+        <div class="pinned-body">
+          <p class="pinned-tag">置顶 · 管理处</p>
+          <p class="pinned-text">{{ pinnedNotice.text }}</p>
+        </div>
+        <span class="pinned-arrow">›</span>
+      </div>
+
       <!-- 公告栏 -->
       <h2 class="section-title">公告栏</h2>
       <div class="notice-bar">
         <div
-          v-for="(n, i) in visibleNotices"
+          v-for="(n, i) in regularNotices"
           :key="n.id"
           class="notice-item"
-          :class="{ important: n.important }"
-          @click="openNotice(i)"
+          @click="openNotice(i + 1)"
         >
           <span class="notice-tag" :style="{ background: tagColors[n.tag] || 'var(--color-primary)' }">{{ n.tag }}</span>
           <div class="notice-body">
@@ -33,13 +42,14 @@
             <h3 class="modal-title">{{ activeNotice.text }}</h3>
             <button class="modal-close" @click="closeNotice">×</button>
           </div>
-          <p class="modal-meta">南桥夜市管理处 · {{ activeNotice.publishDate }}<template v-if="activeNotice.dateRange && activeNotice.dateRange !== '长期'"> · {{ activeNotice.dateRange }}</template></p>
+          <p class="modal-meta">
+            南桥夜市管理处<template v-if="activeNotice.publishDate"> · {{ activeNotice.publishDate }}</template><template v-if="activeNotice.dateRange && activeNotice.dateRange !== '长期'"> · {{ activeNotice.dateRange }}</template>
+          </p>
           <div class="modal-content">{{ activeNotice.fullText }}</div>
 
-          <!-- 地铁公告：点击展开线路示意图 -->
+          <!-- 地铁公告：线路示意图直接展示 -->
           <div v-if="activeNotice.metro" class="metro-block">
-            <button v-if="!metroExpanded" class="btn metro-btn" @click="expandMetro">查看线路示意图</button>
-            <div v-else class="metro-map-wrap">
+            <div class="metro-map-wrap">
               <svg class="metro-map" viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="地铁线路示意图">
                 <!-- 3号线（横） -->
                 <line x1="46" y1="160" x2="648" y2="160" stroke="#3B7DD8" stroke-width="7" stroke-linecap="round" />
@@ -54,15 +64,12 @@
 
                 <!-- 3号线站点 -->
                 <g v-for="(st, i) in line3" :key="'l3-' + i">
-                  <circle
-                    v-if="!st.transfer && !st.here"
-                    :cx="st.x" cy="160" r="6" fill="#fff" stroke="#3B7DD8" stroke-width="3"
-                  />
+                  <circle v-if="!st.here" :cx="st.x" cy="160" r="6" fill="#fff" stroke="#3B7DD8" stroke-width="3" />
                   <text :x="st.x" y="192" font-size="13" :fill="st.key ? '#B3541E' : '#5b5b5b'" :font-weight="st.key ? '700' : '400'" text-anchor="middle">{{ st.name }}</text>
                 </g>
                 <!-- 1号线站点 -->
                 <g v-for="(st, i) in line1" :key="'l1-' + i">
-                  <circle v-if="!st.transfer" :cx="429" :cy="st.y" r="6" fill="#fff" stroke="#2FA84F" stroke-width="3" />
+                  <circle :cx="429" :cy="st.y" r="6" fill="#fff" stroke="#2FA84F" stroke-width="3" />
                   <text x="429" :y="st.y - 12" font-size="13" fill="#5b5b5b" text-anchor="middle">{{ st.name }}</text>
                 </g>
 
@@ -103,7 +110,7 @@
 
       <!-- 排班表：2026年10月 日历 -->
       <h2 class="section-title">夜市排班表</h2>
-      <p class="table-desc">十月值日安排，每天两位摊主轮流值守收摊巡查，由管理处统一排班。今天是 10月30日（周五）。</p>
+      <p class="table-desc">十月值日安排，每天两位摊主轮流值守收摊巡查，由管理处统一排班。</p>
       <div class="cal-grid">
         <div class="cal-head" v-for="w in weekNames" :key="w">{{ w }}</div>
         <div v-for="pad in leadPads" :key="'pad-' + pad" class="cal-day cal-pad"></div>
@@ -150,27 +157,34 @@ const tagColors = {
   '活动': 'var(--color-primary)'
 }
 
-// 首页只展示「刊登中」的公告；置顶优先，其余按发布日期新的在前
+// 首页只展示「刊登中」：置顶的单独渲染，其余按发布日期新的在前
 function parseDate(s) {
   const m = String(s || '').match(/(\d+)月(\d+)日/)
   return m ? (+m[1]) * 100 + (+m[2]) : 0
 }
-const visibleNotices = computed(() =>
-  noticesData
-    .filter(n => n.state === '刊登中')
-    .sort((a, b) => (b.important - a.important) || (parseDate(b.publishDate) - parseDate(a.publishDate)))
-)
+const visibleNotices = computed(() => {
+  const active = noticesData.filter(n => n.state === '刊登中')
+  const pinned = active.filter(n => n.pinned)
+  const regular = active
+    .filter(n => !n.pinned)
+    .sort((a, b) => parseDate(b.publishDate) - parseDate(a.publishDate))
+  return [...pinned, ...regular]
+})
+const pinnedNotice = computed(() => visibleNotices.value.find(n => n.pinned) || null)
+const regularNotices = computed(() => visibleNotices.value.filter(n => !n.pinned))
 
 // 公告弹窗
 const showModal = ref(false)
 const activeIndex = ref(0)
 const activeNotice = computed(() => visibleNotices.value[activeIndex.value])
-const metroExpanded = ref(false)
 
 function openNotice(i) {
   activeIndex.value = i
-  metroExpanded.value = false
   showModal.value = true
+  // 地铁公告：弹窗打开即能看到线路图，打开时就记录进度
+  if (activeNotice.value?.metro) {
+    markNode('metro-map')
+  }
 }
 function closeNotice() {
   showModal.value = false
@@ -178,17 +192,12 @@ function closeNotice() {
 function prevNotice() {
   const len = visibleNotices.value.length
   activeIndex.value = (activeIndex.value - 1 + len) % len
-  metroExpanded.value = false
+  if (activeNotice.value?.metro) markNode('metro-map')
 }
 function nextNotice() {
   const len = visibleNotices.value.length
   activeIndex.value = (activeIndex.value + 1) % len
-  metroExpanded.value = false
-}
-// 展开线路图：看到线路图才算推进度（内容点击后才可见，判定也在点击时）
-function expandMetro() {
-  metroExpanded.value = true
-  markNode('metro-map')
+  if (activeNotice.value?.metro) markNode('metro-map')
 }
 
 // 移动端左右滑动切换
@@ -209,20 +218,20 @@ const leadPads = 3
 
 // 每周值班模板（摊位按此轮值，老摊位每周两次）
 const weekPlan = {
-  1: ['张姐凉面', '阿强臭豆腐'],      // 周一
+  1: ['老街凉面', '巷尾臭豆腐'],      // 周一
   2: ['陈记糖粥藕', '小李炒粉'],      // 周二
-  3: ['珍姐水果捞', '王记烧烤'],      // 周三
-  4: ['赵记馄饨', '刘姐麻辣烫'],      // 周四
-  5: ['张记卤味', '阿伟烤冷面'],      // 周五
-  6: ['赵记馄饨', '阿强臭豆腐'],      // 周六
-  0: ['陈记糖粥藕', '张姐凉面']       // 周日
+  3: ['鲜果小铺', '炭火烧烤'],        // 周三
+  4: ['巷口馄饨', '刘姐麻辣烫'],      // 周四
+  5: ['张记卤味', '街角烤冷面'],      // 周五
+  6: ['巷口馄饨', '巷尾臭豆腐'],      // 周六
+  0: ['陈记糖粥藕', '老街凉面']       // 周日
 }
 
 // 陈伯的班被划掉的日期：10.6/10.11 住院那一周，10.27 失踪之后
 const struckMap = {
-  6: { '陈记糖粥藕': '王记烧烤' },
+  6: { '陈记糖粥藕': '炭火烧烤' },
   11: { '陈记糖粥藕': '刘姐麻辣烫' },
-  27: { '陈记糖粥藕': '珍姐水果捞' }
+  27: { '陈记糖粥藕': '鲜果小铺' }
 }
 
 const october = []
@@ -266,6 +275,47 @@ const line1 = [
 </script>
 
 <style scoped>
+/* 置顶：管理处的话（与普通公告不同的特殊样式） */
+.pinned-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #8B3A2A, #6E2E20);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: var(--space-lg);
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(110, 46, 32, 0.28);
+  transition: box-shadow 0.2s;
+}
+.pinned-card:hover {
+  box-shadow: 0 5px 16px rgba(110, 46, 32, 0.4);
+}
+.pinned-icon {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 200, 120, 0.6));
+}
+.pinned-body {
+  flex: 1;
+  min-width: 0;
+}
+.pinned-tag {
+  font-size: var(--font-tiny);
+  color: #E8C9A8;
+  margin-bottom: 2px;
+}
+.pinned-text {
+  font-family: var(--font-title);
+  font-size: var(--font-h3);
+  color: #FFF6E8;
+  font-weight: 600;
+}
+.pinned-arrow {
+  color: #E8C9A8;
+  font-size: 22px;
+}
+
 .notice-bar {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -287,16 +337,6 @@ const line1 = [
 }
 .notice-item:last-child {
   border-bottom: none;
-}
-.notice-item.important {
-  background: #FFFBEB;
-  margin: 0 -16px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--color-accent-light);
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-.notice-item.important:hover {
-  background: #FFF6DC;
 }
 .notice-tag {
   background: var(--color-primary);
@@ -399,9 +439,6 @@ const line1 = [
 .notice-text {
   font-size: var(--font-body-size);
 }
-.notice-item.important .notice-text {
-  font-weight: 600;
-}
 .notice-meta {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
@@ -411,9 +448,6 @@ const line1 = [
 /* 地铁线路图 */
 .metro-block {
   margin-top: var(--space-md);
-}
-.metro-btn {
-  width: 100%;
 }
 .metro-map-wrap {
   border: 1px solid var(--color-border);
@@ -524,6 +558,9 @@ const line1 = [
 }
 
 @media (max-width: 720px) {
+  .pinned-text {
+    font-size: var(--font-body-size);
+  }
   .cal-grid {
     grid-template-columns: repeat(7, 1fr);
     gap: 3px;

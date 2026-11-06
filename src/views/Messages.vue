@@ -88,7 +88,8 @@ function lastOf(messages) {
 
 function loadData() {
   if (currentUser.value) {
-    messageList.value = messagesData[currentUser.value.username] || []
+    // messages.json 结构：{ 账号: { messages: [会话...], notes: [手记...] } }
+    messageList.value = messagesData[currentUser.value.username]?.messages || []
   } else {
     messageList.value = []
   }

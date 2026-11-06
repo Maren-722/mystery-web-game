@@ -32,7 +32,7 @@
             <span class="notice-tag" :style="{ background: tagColors[n.tag] || 'var(--color-primary)' }">{{ n.tag }}</span>
             <span class="history-text" :class="{ 'text-deleted': n.state === '已删除' }">{{ n.text }}</span>
           </div>
-          <p class="history-meta">发布于 {{ n.publishDate }}<template v-if="n.dateRange && n.dateRange !== '长期'"> · {{ n.dateRange }}</template></p>
+          <p class="history-meta">{{ n.publishDate ? '发布于 ' + n.publishDate : '长期刊登' }}<template v-if="n.dateRange && n.dateRange !== '长期'"> · {{ n.dateRange }}</template></p>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
             <h3 class="modal-title" :class="{ 'text-deleted': activeNotice.state === '已删除' }">{{ activeNotice.text }}</h3>
             <button class="modal-close" @click="closeNotice">×</button>
           </div>
-          <p class="modal-meta">南桥夜市管理处 · 发布于 {{ activeNotice.publishDate }}<template v-if="activeNotice.dateRange && activeNotice.dateRange !== '长期'"> · {{ activeNotice.dateRange }}</template></p>
+          <p class="modal-meta">南桥夜市管理处 · {{ activeNotice.publishDate ? '发布于 ' + activeNotice.publishDate : '长期刊登' }}<template v-if="activeNotice.dateRange && activeNotice.dateRange !== '长期'"> · {{ activeNotice.dateRange }}</template></p>
           <div class="modal-content">{{ activeNotice.fullText }}</div>
         </div>
       </div>
