@@ -71,7 +71,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { findAccountById } from '../utils/auth'
+import { matchLogin } from '../utils/auth'
 import { isComplete } from '../utils/progress'
 
 const route = useRoute()
@@ -165,7 +165,7 @@ function logout() {
   }
 }
 
-// 切换账号：按 ID 校验并替换当前登录账号
+// 切换账号：统一走 matchLogin（剧情账号ID/账号名、玩家用户名/数字ID均可）
 function doSwitch() {
   const id = loginId.value.trim()
   const pwd = loginPwd.value.trim()
@@ -173,15 +173,14 @@ function doSwitch() {
     loginError.value = '请输入ID和密码'
     return
   }
-  const account = findAccountById(id)
-  if (account && account.password === pwd) {
-    const uname = account.username
+  const result = matchLogin(id, pwd)
+  if (result && result.ok) {
     localStorage.setItem('nq_user', JSON.stringify({
-      username: uname,
-      shopName: account.shopName || uname,
-      role: account.role || 'customer'
+      username: result.username,
+      shopName: result.shopName,
+      role: result.role
     }))
-    currentUser.value = { username: uname, shopName: account.shopName || uname, role: account.role || 'customer' }
+    currentUser.value = { username: result.username, shopName: result.shopName, role: result.role }
     closeMenu()
     loginId.value = ''
     loginPwd.value = ''

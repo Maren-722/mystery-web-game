@@ -12,7 +12,7 @@
           type="text"
           class="form-input"
           v-model="username"
-          placeholder="商户为姓名，游客为数字ID"
+          placeholder="商户为拼音，游客为数字ID"
           @keyup.enter="handleLogin"
         >
       </div>
@@ -41,7 +41,7 @@ import { useRouter, useRoute } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
-import { findAccountById } from '../utils/auth'
+import { matchLogin } from '../utils/auth'
 
 const router = useRouter()
 const route = useRoute()
@@ -50,47 +50,29 @@ const username = ref('')
 const password = ref('')
 const errorMsg = ref('')
 
-// 登录逻辑：按 ID 匹配 src/data/accounts.json（商户ID=人名，游客ID=长数字）
-// 玩家自己注册的账号存 localStorage nq_custom_accounts，同样可以登录
+// 登录逻辑：统一走 matchLogin——
+// 剧情账号：ID（商户拼音 / 游客数字）或账号名均可登录
+// 玩家注册的账号：用户名或分配到的数字ID均可登录
 function handleLogin() {
-  const uname = username.value.trim()
+  const id = username.value.trim()
   const pwd = password.value.trim()
 
-  if (!uname || !pwd) {
+  if (!id || !pwd) {
     errorMsg.value = '请输入ID和密码'
     return
   }
 
-  // 剧情账号：ID -> 账号
-  const account = findAccountById(uname)
-  let matchedKey = account && account.password === pwd ? account.username : null
-  let shopName = account?.shopName || uname
-  let role = account?.role || 'customer'
-
-  // 玩家注册的账号（以用户名登录）
-  if (!matchedKey) {
-    try {
-      const custom = JSON.parse(localStorage.getItem('nq_custom_accounts') || '{}')
-      if (custom[uname] && custom[uname].password === pwd) {
-        matchedKey = uname
-        shopName = custom[uname].shopName || uname
-        role = 'customer'
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-
-  if (matchedKey) {
+  const result = matchLogin(id, pwd)
+  if (result && result.ok) {
     errorMsg.value = ''
     localStorage.setItem('nq_user', JSON.stringify({
-      username: matchedKey,
-      shopName,
-      role
+      username: result.username,
+      shopName: result.shopName,
+      role: result.role
     }))
     window.dispatchEvent(new CustomEvent('nq-user-changed'))
     // 管理员账号登录后直接进工作台
-    router.push(route.query.redirect || (role === 'manager' ? '/manager' : '/messages'))
+    router.push(route.query.redirect || (result.role === 'manager' ? '/manager' : '/messages'))
   } else {
     errorMsg.value = 'ID或密码错误，请重试'
   }

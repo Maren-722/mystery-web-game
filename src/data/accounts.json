@@ -1,33 +1,33 @@
 {
   "小李": {
-    "uid": "小李",
+    "uid": "liyang",
     "password": "20260420",
     "shopName": "小李炒粉",
     "stallNo": "B2",
     "role": "merchant"
   },
   "刘姐": {
-    "uid": "刘姐",
+    "uid": "liuxiulan",
     "password": "0601",
     "shopName": "刘姐麻辣烫",
     "stallNo": "B4",
     "role": "merchant"
   },
   "陈伯": {
-    "uid": "陈伯",
+    "uid": "chenguisheng",
     "password": "20060816",
     "shopName": "陈记糖粥藕",
     "stallNo": "A1",
     "role": "merchant"
   },
   "王主任": {
-    "uid": "王主任",
+    "uid": "wangzhiqiang",
     "password": "20211101",
     "shopName": "南桥夜市管理处",
     "role": "manager"
   },
   "老张": {
-    "uid": "老张",
+    "uid": "zhangjianguo",
     "password": "1012",
     "shopName": "张记卤味",
     "stallNo": "B1",

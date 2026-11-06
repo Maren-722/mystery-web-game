@@ -7,14 +7,14 @@
       <div v-if="post" class="detail-card">
         <h2 class="post-title">{{ post.title }}</h2>
         <p class="post-meta">
-          {{ post.author }}<span v-if="post.uid" class="user-uid">（ID：{{ post.uid }}）</span> · {{ post.date }}
+          {{ post.author }} <span v-if="post.uid" class="user-uid">{{ post.uid }}</span> · {{ post.date }}
         </p>
         <div class="post-content">{{ post.content }}</div>
 
         <h3 class="sub-title">评论（{{ mergedComments.length }}）</h3>
         <div v-for="(c, i) in mergedComments" :key="i" class="comment-item">
           <p class="comment-user">
-            {{ c.user }}<span v-if="c.uid" class="user-uid">（ID：{{ c.uid }}）</span><template v-if="c.replyTo"> 回复 {{ c.replyTo }}</template> · {{ c.date }}
+            {{ c.user }} <span v-if="c.uid" class="user-uid">{{ c.uid }}</span><template v-if="c.replyTo"> 回复 {{ c.replyTo }}</template> · {{ c.date }}
           </p>
           <p class="comment-content">{{ c.content }}</p>
         </div>
@@ -41,9 +41,8 @@ import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
 import postsData from '../data/posts.json'
-import accounts from '../data/accounts.json'
 import { markNode } from '../utils/progress'
-import { useCurrentUser } from '../utils/auth'
+import { useCurrentUser, uidOf } from '../utils/auth'
 
 const route = useRoute()
 const post = ref(null)
@@ -100,9 +99,8 @@ onMounted(() => {
 function addComment() {
   if (!newComment.value.trim() || !post.value) return
   const uname = currentUser.value?.username
-  const acct = uname ? accounts[uname] : null
-  // 游客发言带数字ID（与论坛展示规则一致），商户不带
-  const uid = acct && acct.role === 'customer' ? acct.uid : undefined
+  // 发言一律带ID：商户=真名拼音，游客=数字ID（剧情账号与玩家账号都适用）
+  const uid = uname ? uidOf(uname) : null
   const comment = {
     user: currentUser.value?.shopName || uname || '游客',
     date: new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }) + ' ' +
@@ -142,6 +140,7 @@ function addComment() {
 .user-uid {
   color: var(--color-text-muted);
   opacity: 0.85;
+  margin-left: 6px;
 }
 .post-content {
   line-height: 1.9;

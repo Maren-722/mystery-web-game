@@ -25,7 +25,7 @@
       >
         <h3 class="post-title">{{ post.title }}</h3>
         <p class="post-meta">
-          {{ post.author }}<span v-if="post.uid" class="user-uid">（ID：{{ post.uid }}）</span> · {{ post.date }} · {{ post.replies }} 回复
+          {{ post.author }} <span v-if="post.uid" class="user-uid">{{ post.uid }}</span> · {{ post.date }} · {{ post.replies }} 回复
         </p>
         <p class="post-preview">{{ post.preview }}</p>
       </div>
@@ -39,8 +39,7 @@ import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import postsData from '../data/posts.json'
-import accounts from '../data/accounts.json'
-import { useCurrentUser } from '../utils/auth'
+import { useCurrentUser, uidOf } from '../utils/auth'
 
 // 帖子列表：内置帖子(src/data/posts.json) + 玩家发布的帖子(localStorage nq_posts)
 // 玩家帖子/评论只存在本机浏览器，退出游戏（清除浏览器数据/换设备）后不再保留
@@ -96,8 +95,6 @@ onMounted(() => {
 function publishPost() {
   if (!newTitle.value.trim()) return
   const author = currentUser.value?.shopName || currentUser.value?.username || '游客'
-  const uname = currentUser.value?.username
-  const acct = uname ? accounts[uname] : null
   const post = {
     id: 'local-' + Date.now(),
     title: newTitle.value.trim(),
@@ -107,8 +104,10 @@ function publishPost() {
     content: newContent.value.trim(),
     comments: []
   }
-  // 游客发言带数字ID（与论坛展示规则一致）
-  if (acct && acct.role === 'customer' && acct.uid) post.uid = acct.uid
+  // 发帖人一律带ID：商户=真名拼音，游客=数字ID
+  const uname = currentUser.value?.username
+  const uid = uname ? uidOf(uname) : null
+  if (uid) post.uid = uid
   const localPosts = readLocalPosts()
   localPosts.unshift(post)
   localStorage.setItem('nq_posts', JSON.stringify(localPosts))
@@ -152,6 +151,7 @@ function publishPost() {
 }
 .user-uid {
   opacity: 0.85;
+  margin-left: 6px;
 }
 .post-preview {
   font-size: var(--font-small);

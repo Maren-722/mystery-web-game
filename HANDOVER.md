@@ -62,6 +62,21 @@
 
 ---
 
+### 2026-11-07（二）· 2x1y3z · 分支 feature/2x1y3z-main-storyline
+
+**本次做了什么**
+
+1. **商户 ID 改为真名拼音**：小李=liyang、刘姐=liuxiulan、陈伯=chenguisheng、王主任=wangzhiqiang、老张=zhangjianguo（账号名登录仍兼容）
+2. **论坛 ID 展示**：商户和游客的 ID 都显示在名字旁，无括号（如"陈伯 chenguisheng"）
+3. **注册/登录冲突处理**：剧情账号名+剧情ID 列为保留字（注册时拒绝）；玩家注册自动分配 10 位数字 ID，用户名或 ID 均可登录；导航栏切换账号同样支持玩家账号
+4. 王主任 10.28 手记补了"陈桂生"全名（陈伯真名的出处）
+
+**涉及文件**：`src/data/accounts.json`（uid 全改拼音）、`src/data/posts.json`（全员 uid）、`src/utils/auth.js`（matchLogin/isReservedId/generateVisitorUid/uidOf）、`Login.vue`、`Register.vue`、`NavBar.vue`、`PostDetail.vue`、`Forum.vue`
+
+**怎么验证**：论坛帖子1/2 里每个发言者名字旁都有 ID；用 `chenguisheng` + 密码可登录陈伯账号；尝试注册 `liyang` 会被拒
+
+---
+
 ### 2026-11-07 · 2x1y3z · 分支 feature/2x1y3z-main-storyline
 
 **本次做了什么**

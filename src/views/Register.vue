@@ -41,22 +41,13 @@ import { useRouter } from 'vue-router'
 import NavBar from '../components/NavBar.vue'
 import Footer from '../components/Footer.vue'
 import BackBar from '../components/BackBar.vue'
-import accounts from '../data/accounts.json'
+import { isReservedId, generateVisitorUid, readCustomAccounts } from '../utils/auth'
 
 const router = useRouter()
 
 const username = ref('')
 const password = ref('')
 const errorMsg = ref('')
-
-// 读取玩家注册的账号（localStorage）
-function readCustomAccounts() {
-  try {
-    return JSON.parse(localStorage.getItem('nq_custom_accounts') || '{}')
-  } catch {
-    return {}
-  }
-}
 
 function handleRegister() {
   const uname = username.value.trim()
@@ -66,22 +57,27 @@ function handleRegister() {
     errorMsg.value = '请输入用户名和密码'
     return
   }
-  // 与游戏内置账号不冲突
-  if (accounts[uname]) {
-    errorMsg.value = '该用户名已被占用，请换一个'
+  // 与剧情账号冲突：剧情账号名（陈伯等）和剧情ID（chenbo、5830921476等）都是保留字
+  if (isReservedId(uname)) {
+    errorMsg.value = '这个名字已被占用，请换一个'
     return
   }
   const custom = readCustomAccounts()
-  if (custom[uname]) {
-    errorMsg.value = '该用户名已被占用，请换一个'
+  // 与其他玩家冲突：用户名重复，或撞上别人分配到的数字ID
+  const uidTaken = Object.keys(custom).some(n => String(custom[n].uid) === uname)
+  if (custom[uname] || uidTaken) {
+    errorMsg.value = '这个名字已被占用，请换一个'
     return
   }
 
-  custom[uname] = { password: pwd, shopName: uname }
+  // 注册玩家是游客：自动分配一个长数字ID（论坛发言旁会显示，登录时用户名或ID都可用）
+  const uid = generateVisitorUid()
+  custom[uname] = { password: pwd, shopName: uname, uid }
   localStorage.setItem('nq_custom_accounts', JSON.stringify(custom))
 
   // 注册成功即自动登录
-  localStorage.setItem('nq_user', JSON.stringify({ username: uname, shopName: uname }))
+  localStorage.setItem('nq_user', JSON.stringify({ username: uname, shopName: uname, role: 'customer' }))
+  window.dispatchEvent(new CustomEvent('nq-user-changed'))
   router.push('/home')
 }
 </script>

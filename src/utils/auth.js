@@ -1,11 +1,19 @@
-// 当前登录态的响应式共享（解决"切换账号后必须刷新页面"的问题）
+// 登录态与账号匹配（ID 体系）
 // ------------------------------------------------------------
-// localStorage 不是响应式数据源，直接在 computed 里读会在切换账号后拿到缓存的旧值。
-// 这里统一用 ref + 'nq-user-changed' 事件（NavBar 登录/切换/退出时派发）来同步。
-// 用法：const { currentUser, readUser, syncUser } = useCurrentUser()
+// ID 规则：
+//   - 剧情商户：ID = 姓名拼音（导览页可见姓名），登录也可直接用账号名（如"陈伯"）
+//   - 剧情游客（儿子）：ID = 长数字（论坛发言旁显示）
+//   - 玩家注册的账号：注册时自动分配长数字 ID，登录可用"用户名或ID"
+//
+// 冲突约定：
+//   - 剧情账号的"账号名 + ID"全部是保留字，注册时禁止使用（见 isReservedId）
+//   - 注册用户名也不能与已有玩家分配到的数字 ID 撞车
+//   - localStorage 不是响应式数据源，登录态统一用 ref + 'nq-user-changed' 事件同步
 // ------------------------------------------------------------
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import accounts from '../data/accounts.json'
+
+const CUSTOM_KEY = 'nq_custom_accounts'
 
 export function readUser() {
   try {
@@ -32,11 +40,81 @@ export function useCurrentUser() {
   return { currentUser, readUser, syncUser }
 }
 
-// 按 ID 查找剧情账号：商户 ID 是人名（导览里可见），游客 ID 是长数字（论坛发言旁可见）
-// 兼容直接用账号名（玩家注册的自定义账号仍以用户名登录）
+export function readCustomAccounts() {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+// 按关键字查剧情账号：匹配 uid（拼音/数字）或账号名
 export function findAccountById(id) {
-  const byUid = Object.keys(accounts).find(k => accounts[k].uid === id)
+  const k = String(id || '').trim()
+  const byUid = Object.keys(accounts).find(n => String(accounts[n].uid) === k)
   if (byUid) return { username: byUid, ...accounts[byUid] }
-  if (accounts[id]) return { username: id, ...accounts[id] }
+  if (accounts[k]) return { username: k, ...accounts[k] }
   return null
+}
+
+// 统一登录匹配：关键字可以是 剧情账号ID / 剧情账号名 / 玩家用户名 / 玩家数字ID
+// 返回：{ ok: true, username, shopName, role, uid } 匹配成功
+//       { ok: false, reason: 'password' } 账号存在但密码错误
+//       null 账号不存在
+export function matchLogin(id, pwd) {
+  const story = findAccountById(id)
+  if (story) {
+    if (story.password !== pwd) return { ok: false, reason: 'password' }
+    return {
+      ok: true,
+      username: story.username,
+      shopName: story.shopName || story.username,
+      role: story.role || 'customer',
+      uid: story.uid
+    }
+  }
+  const custom = readCustomAccounts()
+  const k = String(id || '').trim()
+  const name = custom[k] ? k : Object.keys(custom).find(n => custom[n].uid === k)
+  if (name) {
+    const acct = custom[name]
+    if (acct.password !== pwd) return { ok: false, reason: 'password' }
+    return {
+      ok: true,
+      username: name,
+      shopName: acct.shopName || name,
+      role: 'customer',
+      uid: acct.uid
+    }
+  }
+  return null
+}
+
+// 保留字：剧情账号名 + 剧情账号ID（拼音比较不区分大小写），玩家用户名不能用
+export function isReservedId(id) {
+  const k = String(id || '').trim().toLowerCase()
+  if (!k) return true
+  if (Object.keys(accounts).some(n => n.toLowerCase() === k)) return true
+  if (Object.values(accounts).some(a => String(a.uid).toLowerCase() === k)) return true
+  return false
+}
+
+// 给新注册的游客分配唯一的长数字 ID（避开剧情ID和已有玩家的ID）
+export function generateVisitorUid() {
+  const custom = readCustomAccounts()
+  const taken = new Set([
+    ...Object.values(accounts).map(a => String(a.uid)),
+    ...Object.values(custom).map(a => String(a.uid || ''))
+  ])
+  let uid
+  do {
+    uid = String(Math.floor(1000000000 + Math.random() * 9000000000))
+  } while (taken.has(uid))
+  return uid
+}
+
+// 取某个登录用户的展示用 ID（剧情账号或玩家账号都适用）
+export function uidOf(username) {
+  if (accounts[username]) return accounts[username].uid
+  return readCustomAccounts()[username]?.uid || null
 }
