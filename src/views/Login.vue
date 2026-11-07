@@ -86,18 +86,31 @@ function handleLogin() {
   flex-direction: column;
 }
 .login-container {
+  position: relative;
   max-width: 400px;
   width: 100%;
-  margin: 60px auto;
+  margin: 64px auto;
   background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-xl);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  padding: 44px 40px 36px;
   flex: 1;
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--color-accent));
 }
 .login-title {
   font-family: var(--font-title);
-  font-size: var(--font-h1);
+  font-size: 30px;
+  letter-spacing: 5px;
   text-align: center;
   margin-bottom: var(--space-sm);
 }

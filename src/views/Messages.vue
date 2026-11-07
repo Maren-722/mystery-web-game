@@ -2,7 +2,11 @@
   <div class="messages-page">
     <NavBar />
     <div class="container">
-      <h2 class="section-title">短信</h2>
+      <header class="page-head">
+        <p class="page-head-kicker">南桥夜市 · 私信</p>
+        <h1 class="page-head-title">短信</h1>
+        <p class="page-head-desc">和夜市里的人说几句话。有些话，他们只对熟人说。</p>
+      </header>
 
       <div v-if="currentUser" class="chat-app" :class="{ 'chat-open': !!activeConv }">
         <!-- 左侧：会话列表（电脑常驻；手机上未进入聊天时显示） -->
@@ -20,11 +24,10 @@
                 <span class="chat-item-name">{{ conv.with }}</span>
                 <span class="chat-item-time">{{ convTime(conv) }}</span>
               </div>
-              <p class="chat-item-preview" :class="{ cleared: !convMsgs(conv).length }">
+              <p class="chat-item-preview">
                 {{ convPreview(conv) }}
               </p>
             </div>
-            <span v-if="unreadCount(conv)" class="unread-dot">{{ unreadCount(conv) }}</span>
           </div>
           <p v-if="!sortedConvs.length" class="chat-list-empty">暂时没有私信记录</p>
         </aside>
@@ -36,9 +39,6 @@
             <span class="chat-window-name">{{ activeConv.with }}</span>
           </div>
           <div class="chat-window-body" ref="chatBody">
-            <!-- 被清空的会话：顶部说明，解释为什么只剩这几天 -->
-            <p v-if="activeConv.cleared" class="sys-line">更早的聊天记录已清空</p>
-
             <template v-if="activeMessages.length">
               <div
                 v-for="(msg, i) in activeMessages"
@@ -48,9 +48,7 @@
               >
                 <div class="bubble-avatar">{{ avatarFor(msg) }}</div>
                 <div class="bubble-stack">
-                  <p class="bubble-time">
-                    {{ msg.time }}<span v-if="isUnread(msg)" class="unread-tag">未读</span>
-                  </p>
+                  <p class="bubble-time">{{ msg.time }}</p>
                   <div class="bubble">{{ msg.content }}</div>
                 </div>
               </div>
@@ -149,19 +147,6 @@ const activeMessages = computed(() => {
   return activeConv.value ? convMsgs(activeConv.value) : []
 })
 
-// 未读：数据里显式标记「对方未读」，或被清空的会话里所有来信（他再没打开过手机）
-function isUnread(msg) {
-  if (msg.from === currentUser.value?.username) return false
-  if (msg.unread) return true
-  return !!activeConv.value?.cleared
-}
-
-function unreadCount(conv) {
-  const mine = currentUser.value?.username
-  const base = (conv.messages || []).filter(m => m.from !== mine && (m.unread || conv.cleared)).length
-  return base
-}
-
 function avatarFor(msg) {
   if (msg.from === currentUser.value?.username) {
     return (currentUser.value?.username || '').slice(0, 1)
@@ -237,6 +222,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-soft);
 }
 
 /* ---------- 左侧会话列表 ---------- */
@@ -244,7 +230,7 @@ onBeforeUnmount(() => {
   width: 280px;
   flex-shrink: 0;
   border-right: 1px solid var(--color-border);
-  background: var(--color-bg);
+  background: var(--color-card-2);
   overflow-y: auto;
 }
 .chat-list-item {
@@ -266,15 +252,17 @@ onBeforeUnmount(() => {
 .chat-avatar {
   width: 38px;
   height: 38px;
-  border-radius: 8px;
-  background: var(--color-primary);
-  color: #fff;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #8B4A29, #5E2E19);
+  color: #FFF0D6;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-title);
   font-size: 16px;
   font-weight: 600;
   flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 214, 150, 0.3);
 }
 .chat-item-info {
   flex: 1;
@@ -314,20 +302,6 @@ onBeforeUnmount(() => {
   padding: 40px 0;
   font-size: var(--font-small);
 }
-.unread-dot {
-  position: absolute;
-  right: 10px;
-  bottom: 12px;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 4px;
-  border-radius: 9px;
-  background: var(--color-danger);
-  color: #fff;
-  font-size: 10px;
-  line-height: 17px;
-  text-align: center;
-}
 
 /* ---------- 右侧聊天窗口 ---------- */
 .chat-window {
@@ -337,14 +311,16 @@ onBeforeUnmount(() => {
   flex-direction: column;
 }
 .chat-window-header {
-  height: 52px;
+  height: 54px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 16px;
+  padding: 0 18px;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-card);
+  font-family: var(--font-title);
+  letter-spacing: 1.5px;
 }
 .chat-back {
   display: none;
@@ -363,14 +339,10 @@ onBeforeUnmount(() => {
 .chat-window-body {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  background: var(--color-bg);
-}
-.sys-line {
-  text-align: center;
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-  margin: 4px 0 18px;
+  padding: 18px;
+  background:
+    repeating-linear-gradient(0deg, rgba(122, 60, 34, 0.022) 0 1px, transparent 1px 4px),
+    #F7ECD6;
 }
 .chat-cleared {
   color: var(--color-text-muted);
@@ -399,12 +371,13 @@ onBeforeUnmount(() => {
 .bubble-avatar {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
-  background: var(--color-primary);
-  color: #fff;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #8B4A29, #5E2E19);
+  color: #FFF0D6;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-title);
   font-size: 14px;
   font-weight: 600;
   flex-shrink: 0;
@@ -421,27 +394,20 @@ onBeforeUnmount(() => {
 .bubble-row.mine .bubble-time {
   text-align: right;
 }
-.unread-tag {
-  margin-left: 6px;
-  color: var(--color-danger);
-  font-size: 10px;
-  border: 1px solid currentColor;
-  border-radius: 3px;
-  padding: 0 3px;
-}
 .bubble {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   padding: 9px 12px;
-  border-radius: 10px;
-  line-height: 1.6;
+  border-radius: var(--radius);
+  line-height: 1.65;
   font-size: var(--font-body-size);
   white-space: pre-wrap;
   word-break: break-word;
+  box-shadow: 0 6px 14px -12px rgba(74, 35, 18, 0.7);
 }
 .bubble-row.mine .bubble {
-  background: #F3E4C2;
-  border-color: #E3CD9E;
+  background: #F6E1B4;
+  border-color: #DFC38A;
 }
 
 /* ---------- 输入栏 ---------- */

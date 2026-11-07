@@ -1,5 +1,6 @@
 <template>
   <div class="intro-page">
+    <div class="intro-glow" aria-hidden="true"></div>
     <div class="intro-card">
       <span class="intro-tag">前情</span>
       <h1 class="intro-title">你是一名刚到临岗市的大一新生</h1>
@@ -7,26 +8,19 @@
         开学两周，你还没适应这座江边城市的秋天。今天室友们都出去了，你一个人在宿舍刷手机，搜“临岗必吃夜市”。
       </p>
       <p class="intro-text">
-        评论区里有人提到<span class="intro-highlight">南桥夜市</span>——一条上了官网的老夜市：摊位、菜单、评价、论坛，全都能在网上看。底下一水儿地夸一家叫<span class="intro-highlight">“陈记糖粥藕”</span>的摊子，说那是临岗人从小吃到大的味道。
+        评论区里有人提到<span class="intro-highlight">南桥夜市</span>——一个数字化转型的新型夜市：每个摊位都上了官网，能看菜单、看评价、逛论坛。里面有凉面、馄饨、炒粉、烧烤、麻辣烫、臭豆腐……等许多美味，尤其是那家<span class="intro-highlight">“陈记糖粥藕”</span>，据说是临岗人从小吃到大的老味道，糖藕软糯、粥底浓稠。
       </p>
       <p class="intro-text">
-        你按着地址找过去。A1 的卷帘门锁着，门缝里能看见灶台——擦得锃亮，像刚收拾过。隔壁摊主说，陈伯好几天没来了，也没人知道为什么。
-      </p>
-      <p class="intro-text">
-        回宿舍的路上，你刷到夜市论坛最新的一条帖子：<span class="intro-quote">“陈伯是不是不出摊了？以后还喝得到糖粥藕吗呜呜呜”</span>
-        底下十几条回复，没有一个人答得上来。
-      </p>
-      <p class="intro-text">
-        一个在一条街上卖了二十年糖粥藕的老人，不会无缘无故地消失。
-        <br>你也不知道自己为什么，把那条帖子来来回回看了三遍。
+        只是你点进去才发现，那个卖糖粥藕的陈伯，已经好几天没出摊了——你忽然很想知道，他去了哪儿。
       </p>
       <hr class="intro-divider">
       <p class="intro-text intro-go">
-        你点开了南桥夜市的官网：
+        在美味的诱惑下，你点开了南桥夜市的官网：
         <a class="intro-link" @click="$router.push('/home')">www.nanqiao-night-market.com</a>
       </p>
       <p class="intro-disclaimer">本游戏为虚构创作，其中人物、地点、事件均为虚构，如有雷同，纯属巧合。</p>
     </div>
+    <span class="intro-side">临岗市 · 江边老街 · 十月</span>
   </div>
 </template>
 
@@ -37,84 +31,127 @@
 
 <style scoped>
 .intro-page {
+  position: relative;
   min-height: 100vh;
-  background: #14171D;
-  color: #e0e0e0;
+  background:
+    linear-gradient(160deg, #5A2A18 0%, #7A3A20 46%, #4A2313 100%),
+    repeating-linear-gradient(90deg, rgba(255, 214, 160, 0.03) 0 2px, transparent 2px 9px);
+  color: #F3E3C8;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 44px 20px;
+  overflow: hidden;
+}
+/* 街口那盏灯 */
+.intro-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(520px 320px at 82% 14%, rgba(255, 196, 112, 0.34), transparent 70%),
+    radial-gradient(620px 380px at 10% 92%, rgba(255, 170, 92, 0.18), transparent 72%);
 }
 .intro-card {
-  max-width: 600px;
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
   width: 100%;
-  background: #1C202A;
-  border-radius: 12px;
-  padding: 48px 40px;
-  border: 1px solid #2A2F3A;
+  background: var(--color-card);
+  color: var(--color-text);
+  border-radius: var(--radius-lg);
+  padding: 52px 46px 34px;
+  border: 1px solid #E4CFA9;
+  box-shadow: 0 40px 80px -40px rgba(28, 12, 4, 0.9);
+}
+/* 卡片内的一圈细框，像一张旧信纸 */
+.intro-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(197, 164, 114, 0.4);
+  pointer-events: none;
 }
 .intro-tag {
   display: inline-block;
-  background: #D79A4A;
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  margin-bottom: 24px;
+  background: var(--color-accent);
+  color: #FFF3E0;
+  padding: 3px 14px;
+  border-radius: var(--radius);
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-bottom: 22px;
 }
 .intro-title {
   font-family: var(--font-title);
-  font-size: 28px;
-  color: #fff;
-  margin-bottom: 24px;
-  line-height: 1.4;
+  font-size: 29px;
+  color: var(--color-text);
+  margin-bottom: 26px;
+  line-height: 1.5;
+  letter-spacing: 1.5px;
 }
 .intro-text {
   font-size: 15px;
-  line-height: 1.9;
-  color: #b8b8b8;
+  line-height: 2;
+  color: #4A3322;
   margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 .intro-highlight {
-  color: #D79A4A;
+  color: var(--color-accent);
   font-weight: 600;
-}
-.intro-quote {
-  color: #d8cfc2;
-  font-style: italic;
-}
-.intro-go {
-  color: #d8cfc2;
 }
 .intro-divider {
   border: none;
-  border-top: 1px solid #2A2F3A;
-  margin: 32px 0;
+  border-top: 1px dashed var(--color-border-strong);
+  margin: 30px 0 22px;
+}
+.intro-go {
+  color: var(--color-text-secondary);
 }
 .intro-link {
-  color: #D79A4A;
+  color: var(--color-accent);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
   transition: color 0.2s;
 }
 .intro-link:hover {
-  color: #fff;
+  color: var(--color-primary-dark);
 }
 .intro-disclaimer {
-  margin-top: 24px;
-  font-size: 12px;
-  color: #666b85;
+  margin-top: 26px;
+  font-size: 11.5px;
+  color: var(--color-text-muted);
   text-align: center;
+  letter-spacing: 0.5px;
+}
+.intro-side {
+  position: absolute;
+  right: 34px;
+  bottom: 34px;
+  writing-mode: vertical-rl;
+  font-family: var(--font-title);
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: rgba(255, 226, 181, 0.5);
+  z-index: 2;
 }
 
 @media (max-width: 720px) {
   .intro-card {
-    padding: 32px 24px;
+    padding: 34px 24px 26px;
   }
   .intro-title {
-    font-size: 24px;
+    font-size: 23px;
+  }
+  .intro-text {
+    font-size: 14.5px;
+    line-height: 1.95;
+  }
+  .intro-side {
+    display: none;
   }
 }
 </style>

@@ -2,50 +2,52 @@
    南桥夜市 · 设计变量
    全站统一使用这套变量，不要写死色值
    --------------------------------------------
-   基调：深夜的墨蓝 + 一盏盏暖灯。
-   页面是暖纸色的，框架（导航/页脚/首屏）是墨色的，
-   暖橙只用在"灯"和"重要的事"上。
+   基调：一整条街的暖光。
+   纸是焦糖色的旧纸，框架是熬糖熬出来的酱褐色（不用黑），
+   红是灯笼红，黄是灯芯黄，绿只留给"顶替/正常"。
    ============================================ */
 
 :root {
-  /* 墨色：导航、页脚、首屏 */
-  --ink: #14171D;
-  --ink-2: #1C202A;
-  --ink-3: #2A2F3A;
+  /* 酱褐：导航、页脚、深色底（暖，不黑） */
+  --ink: #40251A;
+  --ink-2: #4E2E20;
+  --ink-3: #5E3A28;
 
-  /* 主色（保持旧变量名，含义=墨色） */
-  --color-primary: #1C202A;
-  --color-primary-dark: #101319;
+  /* 主色：灶火褐 */
+  --color-primary: #7A3C22;
+  --color-primary-dark: #572617;
 
-  /* 暖灯：强调色 */
-  --color-accent: #B8792C;
-  --color-accent-light: #F1E3C6;
-  --amber: #D79A4A;
-  --amber-soft: #E8BE84;
+  /* 强调：灯笼红 / 灯芯黄 */
+  --color-accent: #B4472A;
+  --color-accent-dark: #8E3320;
+  --color-accent-light: #F7E3BE;
+  --amber: #D98A2B;
+  --amber-soft: #EBB86A;
 
-  /* 背景与卡片 */
-  --color-bg: #F6F1E6;
-  --color-card: #FFFDF7;
-  --color-card-2: #FBF7EC;
+  /* 纸张 */
+  --color-bg: #F0DDBB;
+  --color-bg-deep: #E7CFA6;
+  --color-card: #FBF2DD;
+  --color-card-2: #F6E8CA;
 
   /* 文字 */
-  --color-text: #211E19;
-  --color-text-secondary: #635C50;
-  --color-text-muted: #8F8677;
+  --color-text: #2E1C11;
+  --color-text-secondary: #6C4C34;
+  --color-text-muted: #97795A;
 
   /* 边框与状态 */
-  --color-border: #E5DBC8;
-  --color-border-strong: #D6C8AF;
-  --color-danger: #A6402A;
-  --color-success: #4A6B47;
+  --color-border: #DCC29A;
+  --color-border-strong: #C5A472;
+  --color-danger: #A33A22;
+  --color-success: #52703C;
 
   /* 字体 */
   --font-title: "Songti SC", "Source Han Serif SC", "Noto Serif SC", "STSong", "SimSun", serif;
   --font-body: -apple-system, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
 
   /* 圆角与间距 */
-  --radius: 3px;
-  --radius-lg: 6px;
+  --radius: 2px;
+  --radius-lg: 3px;
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -53,21 +55,22 @@
   --space-xl: 40px;
 
   /* 内容区最大宽度 */
-  --container-max: 1080px;
+  --container-max: 1120px;
 
   /* 字号层级 */
-  --font-h1: 34px;
-  --font-h2: 24px;
+  --font-h1: 40px;
+  --font-h2: 25px;
   --font-h3: 17px;
   --font-body-size: 14px;
   --font-small: 13px;
   --font-tiny: 12px;
 
-  /* 阴影：只用很轻的一层，避免脏 */
-  --shadow-soft: 0 1px 2px rgba(33, 30, 25, 0.04), 0 8px 24px rgba(33, 30, 25, 0.04);
+  /* 阴影：暖褐色的浅影，像灯下的纸 */
+  --shadow-soft: 0 1px 0 rgba(255, 252, 240, 0.75) inset, 0 12px 26px -18px rgba(74, 35, 18, 0.5);
+  --shadow-lift: 0 1px 0 rgba(255, 252, 240, 0.8) inset, 0 18px 34px -20px rgba(74, 35, 18, 0.62);
 }
 
 /* 响应式断点参考
-   1920px：大屏（内容区仍限制在 1080px 内）
+   1920px：大屏（内容区仍限制在 1120px 内）
    1440px：常规笔记本
    720px：手机窄屏（在此断点以下改布局） */

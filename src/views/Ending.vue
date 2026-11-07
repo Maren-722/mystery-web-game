@@ -59,7 +59,7 @@
 
           <p class="ending-kicker">三 · 他回了家</p>
           <p class="ending-text">
-            10月26日晚上，他把最后一锅粥分给街坊，把灶台擦干净，把手机里的聊天记录一条一条删掉，给王主任留了张纸条。
+            10月26日晚上，他把最后一锅粥分给街坊，把灶台擦干净，给王主任留了张纸条。
           </p>
           <p class="ending-text">
             然后他坐上3号线，往城南，第五站，梧桐苑。那是他住了二十年、一直没搬过的老屋。
@@ -82,7 +82,7 @@
           <div class="post-preview">
             <p class="post-preview-title">陈伯没有失踪，他只是回家了</p>
             <p class="post-preview-body">
-              前面那些都是真的。我一条一条核过。A1的灶台是他自己擦的，聊天记录是他自己删的，钥匙交给了王主任。他不是出事，他是自己走的。<br>
+              前面那些都是真的。我一条一条核过。A1的灶台是他自己擦的，钥匙交给了王主任。他不是出事，他是自己走的。<br>
               他儿子不知道。这条街上的人也都不知道。
             </p>
             <p class="post-preview-addr">
@@ -207,22 +207,27 @@ function restart() {
 <style scoped>
 .ending-page {
   min-height: 100vh;
-  background: #14171D;
-  color: #e0e0e0;
+  position: relative;
+  background:
+    radial-gradient(720px 420px at 50% 0%, rgba(255, 190, 108, 0.22), transparent 70%),
+    linear-gradient(165deg, #4C2515 0%, #351A0D 100%);
+  color: #EFDDC2;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 44px 20px;
 }
 .ending-shell {
   width: 100%;
-  max-width: 640px;
+  max-width: 660px;
 }
 .ending-card {
-  background: #1C202A;
-  border-radius: 12px;
-  padding: 48px 40px;
-  border: 1px solid #2A2F3A;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 50px 44px 40px;
+  border: 1px solid #E3CDA6;
+  box-shadow: 0 40px 90px -46px rgba(20, 8, 2, 0.95);
+  color: var(--color-text);
   animation: fadeUp 0.6s ease both;
 }
 @keyframes fadeUp {
@@ -230,43 +235,48 @@ function restart() {
   to { opacity: 1; transform: translateY(0); }
 }
 .stage-tag {
-  font-size: 12px;
-  letter-spacing: 4px;
-  color: #8F8677;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--color-accent);
   margin-bottom: 18px;
 }
 .ending-title {
   font-family: var(--font-title);
-  font-size: 26px;
-  color: #fff;
+  font-size: 27px;
+  letter-spacing: 1.5px;
+  color: var(--color-text);
   margin-bottom: 22px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .ending-kicker {
   font-family: var(--font-title);
   font-size: 16px;
-  color: #D79A4A;
-  margin: 26px 0 10px;
+  letter-spacing: 2px;
+  color: var(--color-accent);
+  margin: 28px 0 10px;
+  padding-left: 10px;
+  border-left: 3px solid var(--amber);
 }
 .ending-text {
   font-size: 15px;
-  line-height: 2;
-  color: #b8b8b8;
+  line-height: 2.05;
+  color: #4A3322;
   margin-bottom: 14px;
 }
 .ending-text.strong {
-  color: #E8BE84;
+  color: var(--color-primary);
   font-weight: 600;
 }
 .ending-divider {
   border: none;
-  border-top: 1px solid #2A2F3A;
+  border-top: 1px dashed var(--color-border-strong);
   margin: 32px 0 20px;
 }
 .ending-fin {
   text-align: center;
-  color: #8F8677;
-  letter-spacing: 6px;
+  color: var(--color-text-muted);
+  letter-spacing: 8px;
+  font-family: var(--font-title);
   margin-bottom: 24px;
 }
 .ending-actions {
@@ -285,53 +295,60 @@ function restart() {
   width: 100%;
   padding: 13px;
   background: transparent;
-  color: #D79A4A;
-  border: 1px solid #D79A4A;
-  border-radius: 6px;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
   font-size: 14px;
+  letter-spacing: 1.5px;
   cursor: pointer;
   font-family: var(--font-body);
   transition: background 0.2s;
 }
 .ending-btn:hover {
-  background: rgba(233, 160, 92, 0.14);
+  background: rgba(180, 71, 42, 0.09);
 }
 .ending-btn.primary {
-  background: #D79A4A;
-  color: #241a0e;
+  background: var(--color-accent);
+  border-color: var(--color-accent-dark);
+  color: #FFF4E2;
   font-weight: 600;
 }
+.ending-btn.primary:hover {
+  background: #C25232;
+}
 .ending-btn.ghost {
-  color: #8F8677;
-  border-color: #3A4050;
+  color: var(--color-text-muted);
+  border-color: var(--color-border-strong);
 }
 
 /* 帖子预览：抉择前的最后一眼 */
 .post-preview {
-  margin: 18px 0 22px;
-  padding: 18px 20px;
-  background: #12151B;
-  border: 1px solid #3A4050;
-  border-radius: 8px;
+  margin: 20px 0 24px;
+  padding: 20px 22px;
+  background: #F6E9CC;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius);
 }
 .post-preview-title {
   font-family: var(--font-title);
   font-size: 16px;
-  color: #E8DFCE;
+  color: var(--color-text);
   margin-bottom: 10px;
 }
 .post-preview-body {
   font-size: 13px;
-  line-height: 1.9;
-  color: #B4AB9A;
+  line-height: 1.95;
+  color: var(--color-text-secondary);
 }
 .post-preview-addr {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #3A4050;
+  border-top: 1px dashed var(--color-border-strong);
   font-size: 13px;
   line-height: 1.8;
-  color: #E8BE84;
+  color: var(--color-accent);
+  font-weight: 600;
 }
 
 /* 进度点 */
@@ -342,14 +359,15 @@ function restart() {
   margin-top: 20px;
 }
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #3A4050;
+  background: rgba(255, 226, 181, 0.25);
   transition: background 0.3s;
 }
 .dot.on {
-  background: #D79A4A;
+  background: var(--amber);
+  box-shadow: 0 0 10px rgba(255, 190, 92, 0.7);
 }
 
 /* 未解锁的挡板页 */
@@ -367,13 +385,14 @@ function restart() {
   text-align: center;
   font-family: var(--font-title);
   font-size: 22px;
-  color: #d8cfc2;
+  letter-spacing: 3px;
+  color: var(--color-text);
   margin-bottom: 8px;
 }
 .blocked-sub {
   text-align: center;
   font-size: 14px;
-  color: #8F8677;
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 720px) {

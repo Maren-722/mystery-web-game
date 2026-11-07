@@ -2,28 +2,120 @@
   <div class="home-page">
     <NavBar />
 
-    <!-- 首屏：夜市的灯 -->
+    <!-- 首屏：黄昏的街口，摊子还没收，灯已经亮了 -->
     <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+
+      <!-- 街上的一排棚顶与灯串（装饰） -->
+      <svg class="hero-scene" viewBox="0 0 1440 280" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <!-- 远处的楼 -->
+        <g fill="rgba(74,35,20,0.22)">
+          <rect x="0" y="118" width="120" height="90" />
+          <rect x="132" y="96" width="86" height="112" />
+          <rect x="230" y="128" width="140" height="80" />
+          <rect x="382" y="104" width="70" height="104" />
+          <rect x="1010" y="112" width="96" height="96" />
+          <rect x="1118" y="88" width="76" height="120" />
+          <rect x="1206" y="122" width="130" height="86" />
+          <rect x="1348" y="100" width="92" height="108" />
+        </g>
+        <!-- 远处的窗 -->
+        <g fill="rgba(255,203,126,0.4)">
+          <rect x="150" y="118" width="10" height="12" />
+          <rect x="168" y="118" width="10" height="12" />
+          <rect x="150" y="142" width="10" height="12" />
+          <rect x="1136" y="112" width="10" height="12" />
+          <rect x="1154" y="112" width="10" height="12" />
+          <rect x="1136" y="136" width="10" height="12" />
+        </g>
+
+        <!-- 灯串：三段垂弧 -->
+        <path
+          v-for="(span, i) in lightSpans"
+          :key="'wire-' + i"
+          :d="span.path"
+          fill="none"
+          stroke="rgba(58,26,12,0.55)"
+          stroke-width="1.4"
+        />
+        <circle
+          v-for="(b, i) in bulbs"
+          :key="'bulb-' + i"
+          :cx="b.x"
+          :cy="b.y"
+          r="9"
+          fill="rgba(255,190,92,0.16)"
+        />
+        <circle
+          v-for="(b, i) in bulbs"
+          :key="'bulb-core-' + i"
+          :cx="b.x"
+          :cy="b.y"
+          r="3.1"
+          fill="#FFE3B2"
+        />
+
+        <!-- 摊位棚顶 -->
+        <g v-for="(s, i) in stalls" :key="'stall-' + i">
+          <!-- 棚布 -->
+          <path :d="`M${s.x},${s.y} L${s.x + s.w},${s.y} L${s.x + s.w - 8},${s.y + 26} L${s.x + 8},${s.y + 26} Z`" fill="#4A2413" />
+          <!-- 棚布条纹 -->
+          <path
+            v-for="n in 4"
+            :key="'stripe-' + n"
+            :d="`M${s.x + n * 14},${s.y} L${s.x + n * 14 - 6},${s.y + 26}`"
+            stroke="rgba(240,190,120,0.22)"
+            stroke-width="4"
+          />
+          <!-- 摊身 -->
+          <rect :x="s.x" :y="s.y + 26" :width="s.w" height="120" fill="#3F1E0F" />
+          <!-- 摊上的灯 -->
+          <rect :x="s.x + 12" :y="s.y + 40" :width="s.w - 24" height="30" fill="rgba(255,196,112,0.9)" />
+          <rect :x="s.x + 12" :y="s.y + 40" :width="s.w - 24" height="30" fill="url(#warmFade)" />
+          <!-- 蒸汽 -->
+          <path
+            :d="`M${s.x + s.w / 2},${s.y + 38} c-8,-12 8,-18 0,-30 c-7,-10 7,-14 1,-24`"
+            fill="none"
+            stroke="rgba(255,236,206,0.35)"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </g>
+
+        <!-- 街面 -->
+        <rect x="0" y="252" width="1440" height="28" fill="#3A1E10" />
+        <defs>
+          <linearGradient id="warmFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,214,150,0.5)" />
+            <stop offset="100%" stop-color="rgba(255,180,90,0)" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <div class="hero-inner">
-        <p class="hero-kicker">临岗市 · 江边老街 · 开市五年</p>
+        <p class="hero-kicker">临岗市 · 江边老街</p>
         <h1 class="hero-title">南桥夜市</h1>
-        <p class="hero-sub">今夜照常营业　17:00 — 23:00</p>
-        <div class="hero-rule"></div>
-        <p class="hero-line">五周年前的这个秋天，A1 的灶台凉了。</p>
+        <p class="hero-sub">营业时间　每天　17:00 — 23:00</p>
         <div class="hero-links">
-          <a @click="$router.push('/stalls')">逛夜市 →</a>
-          <a @click="$router.push('/forum')">看论坛 →</a>
+          <a @click="$router.push('/stalls')">逛夜市</a>
+          <span class="hero-link-dot">·</span>
+          <a @click="$router.push('/forum')">看论坛</a>
         </div>
       </div>
+
+      <div class="hero-side" aria-hidden="true">
+        <span class="hero-side-text">一条老街<br>灯一直亮着</span>
+        <span class="seal hero-seal">临岗<br>南桥</span>
+      </div>
+
       <span class="hero-date">2026.10.30</span>
-      <div class="hero-lanterns" aria-hidden="true"><span>🏮</span><span>🏮</span><span>🏮</span></div>
     </section>
 
     <div class="container">
 
       <!-- 置顶：管理处的话（长期说明，特殊样式） -->
       <div v-if="pinnedNotice" class="pinned-card" @click="openNotice(0)">
-        <span class="pinned-icon">🏮</span>
+        <span class="pinned-nail" aria-hidden="true"></span>
         <div class="pinned-body">
           <p class="pinned-tag">置顶 · 管理处</p>
           <p class="pinned-text">{{ pinnedNotice.text }}</p>
@@ -40,11 +132,15 @@
           class="notice-item"
           @click="openNotice(i + 1)"
         >
-          <span class="notice-tag" :style="{ background: tagColors[n.tag] || 'var(--color-primary)' }">{{ n.tag }}</span>
+          <span class="notice-pin" aria-hidden="true"></span>
           <div class="notice-body">
             <p class="notice-text">{{ n.text }}</p>
-            <p class="notice-meta">管理处 · {{ n.publishDate }}</p>
+            <p class="notice-meta">
+              <span class="notice-tag" :style="{ color: tagColors[n.tag] || 'var(--color-primary)' }">{{ n.tag }}</span>
+              管理处 · {{ n.publishDate }}
+            </p>
           </div>
+          <span class="notice-arrow">›</span>
         </div>
       </div>
 
@@ -56,7 +152,7 @@
           @touchend="onTouchEnd"
         >
           <div class="modal-header">
-            <span class="notice-tag" :style="{ background: tagColors[activeNotice.tag] || 'var(--color-primary)' }">{{ activeNotice.tag }}</span>
+            <span class="notice-tag-box" :style="{ background: tagColors[activeNotice.tag] || 'var(--color-primary)' }">{{ activeNotice.tag }}</span>
             <h3 class="modal-title">{{ activeNotice.text }}</h3>
             <button class="modal-close" @click="closeNotice">×</button>
           </div>
@@ -129,31 +225,33 @@
       <!-- 排班表：2026年10月 日历 -->
       <h2 class="section-title">夜市排班表</h2>
       <p class="table-desc">十月值日安排，每天两位摊主轮流值守收摊巡查，由管理处统一排班。</p>
-      <div class="cal-grid">
-        <div class="cal-head" v-for="w in weekNames" :key="w">{{ w }}</div>
-        <div v-for="pad in leadPads" :key="'pad-' + pad" class="cal-day cal-pad"></div>
-        <div
-          v-for="day in october"
-          :key="day.date"
-          class="cal-day"
-          :class="{ today: day.date === 30, alert: day.anyStruck }"
-        >
-          <div class="cal-top">
-            <span class="cal-date">{{ day.date }}</span>
-            <span v-if="day.date === 30" class="cal-today-tag">今天</span>
-          </div>
-          <div class="cal-shops">
-            <template v-for="(shop, si) in day.shops" :key="si">
-              <template v-if="shop.struck">
-                <span class="cal-shop struck">{{ shop.name }}</span><span class="cal-replace">→{{ shop.replacedBy }}</span>
+      <div class="cal-board">
+        <div class="cal-grid">
+          <div class="cal-head" v-for="w in weekNames" :key="w">{{ w }}</div>
+          <div v-for="pad in leadPads" :key="'pad-' + pad" class="cal-day cal-pad"></div>
+          <div
+            v-for="day in october"
+            :key="day.date"
+            class="cal-day"
+            :class="{ today: day.date === 30, alert: day.anyStruck }"
+          >
+            <div class="cal-top">
+              <span class="cal-date">{{ day.date }}</span>
+              <span v-if="day.date === 30" class="cal-today-tag">今天</span>
+            </div>
+            <div class="cal-shops">
+              <template v-for="(shop, si) in day.shops" :key="si">
+                <template v-if="shop.struck">
+                  <span class="cal-shop struck">{{ shop.name }}</span><span class="cal-replace">→{{ shop.replacedBy }}</span>
+                </template>
+                <span v-else class="cal-shop">{{ shop.name }}</span>
+                <br v-if="si === 0">
               </template>
-              <span v-else class="cal-shop">{{ shop.name }}</span>
-              <br v-if="si === 0">
-            </template>
+            </div>
           </div>
         </div>
+        <p class="cal-legend"><span class="struck-demo">划线</span> 为请假/停摊，由 <span class="replace-demo">绿色</span> 摊位顶替。</p>
       </div>
-      <p class="cal-legend"><span class="struck-demo">划线</span> 为请假/停摊，由 <span class="replace-demo">绿色</span> 摊位顶替。</p>
 
     </div>
     <Footer />
@@ -229,6 +327,37 @@ function onTouchEnd(e) {
   else if (dx < -50) nextNotice()
 }
 
+// ---------------- 首屏装饰：灯串与棚顶 ----------------
+// 三段垂弧，每段是一条二次贝塞尔曲线；灯泡按曲线取点，位置不会飘
+const lightSpans = [
+  { x0: -40, x1: 500, ctrl: 230, cy: 96, y0: 34, y1: 40 },
+  { x0: 480, x1: 980, ctrl: 730, cy: 104, y0: 40, y1: 36 },
+  { x0: 960, x1: 1480, ctrl: 1220, cy: 92, y0: 36, y1: 42 }
+].map(s => ({
+  ...s,
+  path: `M${s.x0},${s.y0} Q${s.ctrl},${s.cy} ${s.x1},${s.y1}`
+}))
+
+function quadPoint(s, t) {
+  const mt = 1 - t
+  return {
+    x: mt * mt * s.x0 + 2 * mt * t * s.ctrl + t * t * s.x1,
+    y: mt * mt * s.y0 + 2 * mt * t * s.cy + t * t * s.y1
+  }
+}
+const bulbs = lightSpans.flatMap(s =>
+  [0.14, 0.34, 0.52, 0.7, 0.88].map(t => quadPoint(s, t))
+)
+
+const stalls = [
+  { x: 20, y: 148, w: 158 },
+  { x: 196, y: 156, w: 142 },
+  { x: 356, y: 146, w: 150 },
+  { x: 1010, y: 150, w: 160 },
+  { x: 1188, y: 158, w: 136 },
+  { x: 1340, y: 146, w: 152 }
+]
+
 // ---------------- 排班表：2026年10月 ----------------
 const weekNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 // 2026年10月1日是周四 → 周一开头的日历前面空3格
@@ -293,146 +422,159 @@ const line1 = [
 </script>
 
 <style scoped>
-/* 首屏：墨色夜空 + 几盏远处的灯 */
+/* ---------- 首屏：黄昏的街口 ---------- */
 .hero {
   position: relative;
-  background: var(--ink);
   overflow: hidden;
+  min-height: 560px;
+  background: linear-gradient(
+    180deg,
+    #642C18 0%,
+    #8F3D1F 26%,
+    #B75A28 52%,
+    #DB9245 76%,
+    #F0C98F 92%,
+    #F0DDBB 100%
+  );
 }
-.hero::before {
-  content: '';
+/* 街口那一片被灯照暖的空气 */
+.hero-glow {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(420px 230px at 78% 20%, rgba(215, 154, 74, 0.22), transparent 70%),
-    radial-gradient(300px 190px at 64% 74%, rgba(180, 70, 47, 0.16), transparent 72%),
-    radial-gradient(520px 260px at 10% 8%, rgba(215, 154, 74, 0.10), transparent 70%);
+    radial-gradient(560px 260px at 22% 34%, rgba(255, 205, 140, 0.34), transparent 70%),
+    radial-gradient(460px 240px at 82% 26%, rgba(255, 178, 92, 0.24), transparent 72%),
+    radial-gradient(700px 300px at 50% 108%, rgba(255, 214, 150, 0.3), transparent 70%);
 }
-.hero::after {
-  content: '';
+.hero-scene {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 110px;
-  background: linear-gradient(to bottom, rgba(20, 23, 29, 0), var(--color-bg));
+  width: 100%;
+  height: 280px;
+  display: block;
 }
 .hero-inner {
   position: relative;
   z-index: 2;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 82px 28px 78px;
+  padding: 86px 28px 0;
 }
 .hero-kicker {
   font-size: 11px;
-  letter-spacing: 3.2px;
-  color: rgba(215, 154, 74, 0.92);
+  letter-spacing: 5px;
+  color: rgba(255, 226, 181, 0.95);
+  text-shadow: 0 1px 10px rgba(74, 35, 20, 0.5);
 }
 .hero-title {
   font-family: var(--font-title);
-  font-size: 62px;
+  font-size: 76px;
   font-weight: 600;
-  letter-spacing: 12px;
-  line-height: 1.15;
-  color: #FAF3E5;
-  margin: 20px 0 12px;
+  letter-spacing: 14px;
+  line-height: 1.12;
+  color: #FFF6E4;
+  margin: 18px 0 0;
+  text-shadow: 0 2px 0 rgba(90, 38, 16, 0.28), 0 18px 40px rgba(74, 35, 20, 0.35);
 }
 .hero-sub {
-  font-size: 13px;
-  letter-spacing: 2px;
-  color: #B9AE9C;
-}
-.hero-rule {
-  width: 46px;
-  height: 1px;
-  background: var(--amber);
-  margin: 24px 0;
-}
-.hero-line {
-  font-family: var(--font-title);
-  font-size: 17px;
-  letter-spacing: 1.2px;
-  color: #E4D8C4;
+  margin-top: 18px;
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  letter-spacing: 2.6px;
+  color: #FFF0D4;
+  background: rgba(74, 35, 20, 0.34);
+  border: 1px solid rgba(255, 214, 150, 0.42);
+  border-radius: var(--radius);
+  backdrop-filter: blur(2px);
 }
 .hero-links {
   display: flex;
-  gap: 24px;
-  margin-top: 28px;
-  font-size: 13px;
-  letter-spacing: 1px;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+  font-size: 13.5px;
+  letter-spacing: 2px;
 }
 .hero-links a {
-  color: var(--amber-soft);
-  border-bottom: 1px solid rgba(215, 154, 74, 0.38);
-  padding-bottom: 2px;
+  color: #FFF1D8;
+  border-bottom: 1px solid rgba(255, 226, 181, 0.55);
+  padding-bottom: 3px;
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color 0.2s, border-color 0.2s, letter-spacing 0.2s;
 }
 .hero-links a:hover {
-  color: #fff;
-  border-color: #fff;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  letter-spacing: 3px;
+}
+.hero-link-dot {
+  color: rgba(255, 226, 181, 0.6);
+}
+.hero-side {
+  position: absolute;
+  right: 46px;
+  top: 96px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.hero-side-text {
+  writing-mode: vertical-rl;
+  font-family: var(--font-title);
+  font-size: 12.5px;
+  letter-spacing: 7px;
+  line-height: 1.9;
+  color: rgba(255, 236, 206, 0.72);
+}
+.hero-seal {
+  border-color: rgba(255, 226, 181, 0.8);
+  color: rgba(255, 236, 206, 0.9);
+  background: rgba(120, 44, 20, 0.25);
 }
 .hero-date {
   position: absolute;
   right: 30px;
-  bottom: 26px;
+  bottom: 20px;
   font-size: 11px;
   letter-spacing: 3px;
-  color: rgba(239, 230, 214, 0.35);
-  z-index: 2;
-}
-.hero-lanterns {
-  position: absolute;
-  top: 48px;
-  right: 64px;
-  display: flex;
-  gap: 18px;
-  z-index: 2;
-  opacity: 0.92;
-}
-.hero-lanterns span {
-  font-size: 24px;
-  filter: drop-shadow(0 0 12px rgba(255, 190, 92, 0.5));
-  animation: sway 5s ease-in-out infinite;
-}
-.hero-lanterns span:nth-child(2) {
-  font-size: 30px;
-  margin-top: -6px;
-  animation-delay: -1.6s;
-}
-.hero-lanterns span:nth-child(3) {
-  font-size: 20px;
-  margin-top: 4px;
-  animation-delay: -3.2s;
-}
-@keyframes sway {
-  0%, 100% { transform: rotate(-3deg) translateY(0); }
-  50% { transform: rotate(3deg) translateY(2px); }
+  color: rgba(255, 244, 222, 0.55);
+  z-index: 3;
 }
 
-/* 置顶：管理处的话（与普通公告不同的特殊样式） */
+/* ---------- 置顶：挂在管理处门口的木牌 ---------- */
 .pinned-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
-  background: var(--ink-2);
-  border-left: 3px solid var(--amber);
+  background: linear-gradient(180deg, #5A3220 0%, #472517 100%);
+  border: 1px solid #6E4128;
   border-radius: var(--radius-lg);
-  padding: 18px 22px;
-  margin-bottom: 30px;
+  padding: 18px 24px 18px 26px;
+  margin-bottom: 32px;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(20, 23, 29, 0.16);
+  box-shadow: 0 18px 34px -22px rgba(58, 26, 12, 0.9);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .pinned-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 34px rgba(20, 23, 29, 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px -22px rgba(58, 26, 12, 0.95);
 }
-.pinned-icon {
-  font-size: 26px;
-  line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(255, 200, 120, 0.55));
+.pinned-nail {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: #E9C48C;
+  box-shadow: 0 0 6px rgba(255, 214, 150, 0.8);
 }
 .pinned-body {
   flex: 1;
@@ -440,60 +582,97 @@ const line1 = [
 }
 .pinned-tag {
   font-size: 10px;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: var(--amber-soft);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 .pinned-text {
   font-family: var(--font-title);
-  font-size: 16px;
-  letter-spacing: 0.8px;
-  color: #F6EEDF;
+  font-size: 16.5px;
+  letter-spacing: 1.2px;
+  line-height: 1.7;
+  color: #FBF0DA;
   font-weight: 600;
 }
 .pinned-arrow {
   color: var(--amber-soft);
-  font-size: 20px;
+  font-size: 22px;
 }
 
+/* ---------- 公告栏：贴在墙上的纸条 ---------- */
 .notice-bar {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 4px 22px;
-  margin-bottom: var(--space-lg);
+  padding: 2px 24px;
+  box-shadow: var(--shadow-soft);
 }
 .notice-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--color-border);
+  gap: 16px;
+  padding: 17px 0;
+  border-bottom: 1px dashed var(--color-border);
   cursor: pointer;
-  transition: background 0.15s;
-}
-.notice-item:hover {
-  background: #FBF6EA;
+  transition: background 0.15s, padding-left 0.2s;
 }
 .notice-item:last-child {
   border-bottom: none;
 }
+.notice-item:hover {
+  background: var(--color-card-2);
+  padding-left: 6px;
+}
+.notice-pin {
+  width: 8px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(180, 71, 42, 0.12);
+  flex-shrink: 0;
+}
+.notice-body {
+  flex: 1;
+  min-width: 0;
+}
+.notice-text {
+  font-size: 14.5px;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+.notice-meta {
+  margin-top: 4px;
+  font-size: var(--font-tiny);
+  color: var(--color-text-muted);
+}
 .notice-tag {
-  background: var(--color-primary);
-  color: #F7F1E4;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-right: 8px;
+}
+.notice-arrow {
+  color: var(--color-border-strong);
+  font-size: 18px;
+  line-height: 1.4;
+}
+.notice-tag-box {
+  color: #FFF4E2;
   padding: 2px 9px;
-  border-radius: 2px;
+  border-radius: var(--radius);
   font-size: 11px;
   letter-spacing: 1px;
   flex-shrink: 0;
   margin-top: 3px;
 }
 
-/* 公告详情弹窗 */
+/* ---------- 公告详情弹窗 ---------- */
 .modal-mask {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(46, 22, 10, 0.62);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -501,14 +680,15 @@ const line1 = [
   padding: 20px;
 }
 .modal-card {
-  max-width: 560px;
+  max-width: 580px;
   width: 100%;
   max-height: 86vh;
   overflow-y: auto;
   background: var(--color-card);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
-  padding: 28px 26px;
-  box-shadow: 0 20px 60px rgba(20, 23, 29, 0.35);
+  padding: 30px 28px;
+  box-shadow: 0 30px 70px -30px rgba(58, 26, 12, 0.9);
 }
 .modal-header {
   display: flex;
@@ -520,7 +700,7 @@ const line1 = [
   flex: 1;
   font-family: var(--font-title);
   font-size: 19px;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   color: var(--color-text);
   line-height: 1.5;
 }
@@ -534,7 +714,7 @@ const line1 = [
   padding: 0 4px;
 }
 .modal-close:hover {
-  color: var(--color-text);
+  color: var(--color-accent);
 }
 .modal-meta {
   font-size: var(--font-tiny);
@@ -545,7 +725,7 @@ const line1 = [
 }
 .modal-content {
   font-size: var(--font-body-size);
-  line-height: 1.9;
+  line-height: 1.95;
   white-space: pre-line;
   color: var(--color-text);
 }
@@ -556,10 +736,10 @@ const line1 = [
   gap: 16px;
   margin-top: var(--space-md);
   padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px dashed var(--color-border);
 }
 .modal-arrow {
-  background: var(--color-bg);
+  background: var(--color-card-2);
   border: 1px solid var(--color-border);
   width: 32px;
   height: 32px;
@@ -578,14 +758,6 @@ const line1 = [
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
 }
-.notice-text {
-  font-size: var(--font-body-size);
-}
-.notice-meta {
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-  margin-top: 2px;
-}
 
 /* 地铁线路图 */
 .metro-block {
@@ -594,7 +766,7 @@ const line1 = [
 .metro-map-wrap {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  background: #FDFCF9;
+  background: #FFFDF6;
   padding: 8px;
 }
 .metro-map {
@@ -609,11 +781,18 @@ const line1 = [
   margin-top: 6px;
 }
 
-/* 排班日历 */
+/* ---------- 排班日历：管理处墙上的一张表 ---------- */
 .table-desc {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-md);
+}
+.cal-board {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 12px;
+  box-shadow: var(--shadow-soft);
 }
 .cal-grid {
   display: grid;
@@ -624,17 +803,18 @@ const line1 = [
 .cal-head {
   text-align: center;
   font-size: 11px;
-  letter-spacing: 1.6px;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  padding: 4px 0 10px;
+  letter-spacing: 1.8px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: 4px 0 12px;
+  border-bottom: 1px solid var(--color-border);
 }
 .cal-day {
-  background: var(--color-card);
+  background: #FFFBF0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 9px 8px;
-  min-height: 96px;
+  min-height: 98px;
 }
 .cal-pad {
   background: transparent;
@@ -656,17 +836,18 @@ const line1 = [
   font-size: 9px;
   letter-spacing: 1px;
   background: var(--color-accent);
-  color: #fff;
+  color: #FFF4E2;
   padding: 1px 6px;
-  border-radius: 2px;
+  border-radius: 1px;
 }
 .cal-day.today {
   border-color: var(--color-accent);
-  background: #FFFAEE;
+  background: #FFF3D9;
+  box-shadow: inset 0 0 0 1px rgba(180, 71, 42, 0.25);
 }
 .cal-day.alert {
-  border-color: #E7C9BC;
-  background: #FDF6F1;
+  border-color: #E2BFA4;
+  background: #FBEDE1;
 }
 .cal-day.today.alert {
   border-color: var(--color-accent);
@@ -692,7 +873,9 @@ const line1 = [
 .cal-legend {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
-  margin-bottom: var(--space-lg);
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+  margin-top: 6px;
 }
 .struck-demo {
   color: var(--color-danger);
@@ -703,22 +886,34 @@ const line1 = [
 }
 
 @media (max-width: 720px) {
+  .hero {
+    min-height: 440px;
+  }
   .hero-inner {
-    padding: 54px 18px 52px;
+    padding: 54px 18px 0;
   }
   .hero-title {
-    font-size: 40px;
+    font-size: 44px;
     letter-spacing: 8px;
-    margin: 16px 0 10px;
   }
-  .hero-line {
-    font-size: 15px;
+  .hero-sub {
+    font-size: 11px;
+    letter-spacing: 1.6px;
+  }
+  .hero-side {
+    display: none;
+  }
+  .hero-scene {
+    height: 190px;
   }
   .hero-date {
     display: none;
   }
   .pinned-text {
     font-size: var(--font-body-size);
+  }
+  .cal-board {
+    padding: 12px 10px 8px;
   }
   .cal-grid {
     grid-template-columns: repeat(7, 1fr);

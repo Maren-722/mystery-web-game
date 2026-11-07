@@ -2,8 +2,11 @@
   <div class="stalls-page">
     <NavBar />
     <div class="container">
-      <h2 class="section-title">夜市导览</h2>
-      <p class="page-desc">在这里查看每个摊位的名片：摊位号、老板、主营商品、价格和顾客评价。</p>
+      <header class="page-head">
+        <p class="page-head-kicker">南桥夜市 · 导览</p>
+        <h1 class="page-head-title">夜市导览</h1>
+        <p class="page-head-desc">A 区五家，B 区五家。每个摊位一张名片：摊位号、老板、主营、价钱，还有客人留下的话。</p>
+      </header>
 
       <div class="stall-grid">
         <!-- TODO(队友B)：从 src/data/stalls.json 循环渲染摊位卡片 -->
@@ -53,35 +56,47 @@ onMounted(() => {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, auto);
   grid-auto-flow: column;
-  gap: 14px;
+  gap: 16px;
 }
 .stall-card {
   cursor: pointer;
-  padding: 18px 20px 16px;
+  padding: 20px 22px 18px;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   position: relative;
+  overflow: hidden;
+}
+/* 卡片顶部一道暖线，像摊子上方的灯带 */
+.stall-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(217, 138, 43, 0.65), rgba(180, 71, 42, 0.15));
 }
 .stall-card:hover {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-soft);
-  transform: translateY(-1px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
 }
 .stall-no {
   display: inline-block;
   font-size: 10px;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.8px;
   color: var(--color-accent);
-  border: 1px solid rgba(184, 121, 44, 0.35);
-  padding: 1px 7px;
-  border-radius: 2px;
-  margin-bottom: 10px;
+  background: rgba(180, 71, 42, 0.07);
+  border: 1px solid rgba(180, 71, 42, 0.25);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  margin-bottom: 11px;
 }
 .stall-name {
   font-family: var(--font-title);
-  font-size: 19px;
-  letter-spacing: 1px;
+  font-size: 21px;
+  letter-spacing: 1.5px;
   color: var(--color-text);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 .stall-owner,
 .stall-main {

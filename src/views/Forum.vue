@@ -2,12 +2,14 @@
   <div class="forum-page">
     <NavBar />
     <div class="container">
-      <div class="forum-header">
-        <h2 class="section-title">夜市论坛</h2>
-        <!-- 登录后可以发帖 -->
+      <header class="page-head forum-header">
+        <div>
+          <p class="page-head-kicker">南桥夜市 · 论坛</p>
+          <h1 class="page-head-title">夜市论坛</h1>
+          <p class="page-head-desc">摊主和老顾客都在这里聊两句。登录后可以发帖、评论。</p>
+        </div>
         <button v-if="currentUser" class="btn" @click="showComposer = true">发帖</button>
-      </div>
-      <p class="page-desc">摊主和老顾客都在这里聊两句。登录后可以发帖、评论。</p>
+      </header>
 
       <!-- 发帖框（登录后可见） -->
       <div v-if="showComposer" class="card composer">
@@ -121,33 +123,34 @@ function publishPost() {
 <style scoped>
 .forum-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-}
-.page-desc {
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-md);
+  gap: 20px;
 }
 .composer {
   margin-bottom: var(--space-md);
 }
 .post-card {
   cursor: pointer;
-  margin-bottom: var(--space-sm);
-  transition: border-color 0.2s;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 .post-card:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
 }
 .post-title {
-  font-size: var(--font-h3);
-  color: var(--color-primary);
-  margin-bottom: 4px;
+  font-family: var(--font-title);
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--color-text);
+  margin-bottom: 5px;
 }
 .post-meta {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .user-uid {
   opacity: 0.85;

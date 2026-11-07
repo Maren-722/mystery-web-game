@@ -2,8 +2,11 @@
   <div class="notes-page">
     <NavBar />
     <div class="container">
-      <h2 class="section-title">我的手记</h2>
-      <p class="page-desc">只有你自己能看到的私密手记。</p>
+      <header class="page-head">
+        <p class="page-head-kicker">南桥夜市 · 私人</p>
+        <h1 class="page-head-title">我的手记</h1>
+        <p class="page-head-desc">只有你自己能看到的私密手记。想写什么，就写在这儿。</p>
+      </header>
 
       <!-- 只有你自己能看到的私密手记；这里也可以添加新手记（本机保存） -->
       <div v-if="currentUser">
@@ -122,21 +125,29 @@ onBeforeUnmount(() => {
   margin-bottom: var(--space-md);
 }
 .note-card {
-  margin-bottom: var(--space-md);
-  border-left: 3px solid var(--color-accent);
+  margin-bottom: 16px;
+  border-left: 3px solid var(--amber);
+  padding: 24px 28px;
 }
 .note-date {
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-xs);
+  font-family: var(--font-title);
+  font-size: var(--font-small);
+  letter-spacing: 2px;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--color-border);
 }
 .note-content {
   white-space: pre-line;
-  line-height: 1.9;
+  line-height: 2.05;
+  color: #46301F;
+  font-size: 14.5px;
 }
 .note-composer {
   margin-top: var(--space-lg);
-  border-left: 3px solid var(--color-accent);
+  border-left: 3px solid var(--amber);
+  padding: 22px 24px;
 }
 .empty-hint {
   color: var(--color-text-secondary);

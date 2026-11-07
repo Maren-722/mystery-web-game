@@ -95,27 +95,46 @@ function addReview() {
 
 <style scoped>
 .detail-card {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  padding: 30px 32px;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+.detail-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--color-accent));
 }
 .detail-header {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px dashed var(--color-border-strong);
   padding-bottom: var(--space-md);
   margin-bottom: var(--space-md);
 }
 .stall-no {
+  display: inline-block;
   font-size: var(--font-tiny);
-  color: var(--color-text-muted);
+  letter-spacing: 2px;
+  color: var(--color-accent);
+  background: rgba(180, 71, 42, 0.07);
+  border: 1px solid rgba(180, 71, 42, 0.25);
+  padding: 2px 9px;
+  border-radius: var(--radius);
 }
 .stall-name {
   font-family: var(--font-title);
-  font-size: var(--font-h1);
-  color: var(--color-primary);
-  margin: 4px 0;
+  font-size: 34px;
+  letter-spacing: 3px;
+  color: var(--color-text);
+  margin: 10px 0 6px;
 }
 .stall-owner {
   color: var(--color-text-secondary);

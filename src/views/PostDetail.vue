@@ -120,22 +120,27 @@ function addComment() {
 
 <style scoped>
 .detail-card {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  padding: 30px 32px;
+  box-shadow: var(--shadow-soft);
 }
 .post-title {
   font-family: var(--font-title);
-  font-size: var(--font-h1);
-  color: var(--color-primary);
+  font-size: 27px;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  color: var(--color-text);
 }
 .post-meta {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
-  margin: 4px 0 var(--space-md);
+  margin: 6px 0 var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px dashed var(--color-border-strong);
 }
 .user-uid {
   color: var(--color-text-muted);

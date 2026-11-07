@@ -2,8 +2,11 @@
   <div class="manager-page">
     <NavBar />
     <div class="container">
-      <h2 class="section-title">管理处工作台</h2>
-      <p class="page-desc">南桥夜市管理处 · 内部系统。公告从这里发布、下架，历史记录长期留存。</p>
+      <header class="page-head">
+        <p class="page-head-kicker">南桥夜市 · 管理处</p>
+        <h1 class="page-head-title">管理处工作台</h1>
+        <p class="page-head-desc">南桥夜市管理处 · 内部系统。公告从这里发布、下架，历史记录长期留存。</p>
+      </header>
 
       <!-- 通告历史 -->
       <div class="history-head">
@@ -142,8 +145,8 @@ function closeNotice() {
 }
 .filter-tab.active {
   background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: #fff;
+  border-color: var(--color-primary-dark);
+  color: #FFF4E2;
 }
 
 .history-list {
@@ -159,8 +162,8 @@ function closeNotice() {
   border-color: var(--color-accent);
 }
 .history-item.deleted {
-  opacity: 0.78;
-  background: var(--color-bg);
+  opacity: 0.8;
+  background: #F3E7D1;
 }
 .history-row {
   display: flex;
@@ -176,21 +179,21 @@ function closeNotice() {
   flex-shrink: 0;
 }
 .st-active {
-  background: #EDF2E7;
-  color: #4A6B47;
+  background: #E8EFDC;
+  color: #4F6539;
 }
 .st-expired {
-  background: #F1ECE1;
-  color: #8F8677;
+  background: #F4EAD6;
+  color: #97795A;
 }
 .st-deleted {
-  background: #FBEDE9;
-  color: #A6402A;
+  background: #F8E2D7;
+  color: #A33A22;
 }
 .notice-tag {
-  color: #fff;
+  color: #FFF6E6;
   padding: 1px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius);
   font-size: 11px;
   flex-shrink: 0;
 }
