@@ -1,13 +1,14 @@
 // 登录态与账号匹配（ID 体系）
 // ------------------------------------------------------------
-// ID 规则：
-//   - 剧情商户：ID = 姓名拼音（导览页可见姓名），登录也可直接用账号名（如"陈伯"）
-//   - 剧情游客（儿子）：ID = 长数字（论坛发言旁显示）
-//   - 玩家注册的账号：注册时自动分配长数字 ID，登录可用"用户名或ID"
+// ID 规则（v5）：
+//   - 商户摊主：ID = 摊位号（A1/B1/B2/B4…，导览页老板行可见），登录也可直接用账号名（如"陈伯"）
+//   - 王主任（管理处）：ID = M1
+//   - 食客/游客：ID = C + 数字（如 C2093847156；儿子 C5830921476）
+//   - 玩家注册的账号：注册时自动分配 C+10位数字 的 ID，登录可用"用户名或ID"
 //
 // 冲突约定：
 //   - 剧情账号的"账号名 + ID"全部是保留字，注册时禁止使用（见 isReservedId）
-//   - 注册用户名也不能与已有玩家分配到的数字 ID 撞车
+//   - 注册用户名也不能与已有玩家分配到的 ID 撞车
 //   - localStorage 不是响应式数据源，登录态统一用 ref + 'nq-user-changed' 事件同步
 // ------------------------------------------------------------
 import { ref, onMounted, onBeforeUnmount } from 'vue'
@@ -48,12 +49,14 @@ export function readCustomAccounts() {
   }
 }
 
-// 按关键字查剧情账号：匹配 uid（拼音/数字）或账号名
+// 按关键字查剧情账号：匹配 uid（摊位号 / M1 / C+数字）或账号名，不区分大小写
 export function findAccountById(id) {
-  const k = String(id || '').trim()
-  const byUid = Object.keys(accounts).find(n => String(accounts[n].uid) === k)
+  const k = String(id || '').trim().toLowerCase()
+  if (!k) return null
+  const byUid = Object.keys(accounts).find(n => String(accounts[n].uid).toLowerCase() === k)
   if (byUid) return { username: byUid, ...accounts[byUid] }
-  if (accounts[k]) return { username: k, ...accounts[k] }
+  const byName = Object.keys(accounts).find(n => n.toLowerCase() === k)
+  if (byName) return { username: byName, ...accounts[byName] }
   return null
 }
 
@@ -75,7 +78,7 @@ export function matchLogin(id, pwd) {
   }
   const custom = readCustomAccounts()
   const k = String(id || '').trim()
-  const name = custom[k] ? k : Object.keys(custom).find(n => custom[n].uid === k)
+  const name = custom[k] ? k : Object.keys(custom).find(n => String(custom[n].uid || '').toLowerCase() === k.toLowerCase())
   if (name) {
     const acct = custom[name]
     if (acct.password !== pwd) return { ok: false, reason: 'password' }
@@ -99,7 +102,7 @@ export function isReservedId(id) {
   return false
 }
 
-// 给新注册的游客分配唯一的长数字 ID（避开剧情ID和已有玩家的ID）
+// 给新注册的游客分配唯一的「C + 10位数字」ID（避开剧情ID和已有玩家的ID）
 export function generateVisitorUid() {
   const custom = readCustomAccounts()
   const taken = new Set([
@@ -108,7 +111,7 @@ export function generateVisitorUid() {
   ])
   let uid
   do {
-    uid = String(Math.floor(1000000000 + Math.random() * 9000000000))
+    uid = 'C' + String(Math.floor(1000000000 + Math.random() * 9000000000))
   } while (taken.has(uid))
   return uid
 }

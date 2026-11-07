@@ -57,20 +57,20 @@ function handleRegister() {
     errorMsg.value = '请输入用户名和密码'
     return
   }
-  // 与剧情账号冲突：剧情账号名（陈伯等）和剧情ID（chenbo、5830921476等）都是保留字
+  // 与剧情账号冲突：剧情账号名（陈伯等）和剧情ID（A1、M1、C+数字等）都是保留字
   if (isReservedId(uname)) {
     errorMsg.value = '这个名字已被占用，请换一个'
     return
   }
   const custom = readCustomAccounts()
-  // 与其他玩家冲突：用户名重复，或撞上别人分配到的数字ID
-  const uidTaken = Object.keys(custom).some(n => String(custom[n].uid) === uname)
+  // 与其他玩家冲突：用户名重复，或撞上别人分配到的 ID
+  const uidTaken = Object.keys(custom).some(n => String(custom[n].uid || '').toLowerCase() === uname.toLowerCase())
   if (custom[uname] || uidTaken) {
     errorMsg.value = '这个名字已被占用，请换一个'
     return
   }
 
-  // 注册玩家是游客：自动分配一个长数字ID（论坛发言旁会显示，登录时用户名或ID都可用）
+  // 注册玩家是食客：自动分配「C + 数字」ID（论坛发言旁会显示，登录时用户名或ID都可用）
   const uid = generateVisitorUid()
   custom[uname] = { password: pwd, shopName: uname, uid }
   localStorage.setItem('nq_custom_accounts', JSON.stringify(custom))

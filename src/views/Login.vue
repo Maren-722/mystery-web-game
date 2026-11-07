@@ -12,7 +12,7 @@
           type="text"
           class="form-input"
           v-model="username"
-          placeholder="商户为拼音，游客为数字ID"
+          placeholder="摊主为摊位号，食客为C+数字"
           @keyup.enter="handleLogin"
         >
       </div>
@@ -51,8 +51,8 @@ const password = ref('')
 const errorMsg = ref('')
 
 // 登录逻辑：统一走 matchLogin——
-// 剧情账号：ID（商户拼音 / 游客数字）或账号名均可登录
-// 玩家注册的账号：用户名或分配到的数字ID均可登录
+// 剧情账号：ID（摊主=摊位号 / 管理处=M1 / 食客=C+数字）或账号名均可登录
+// 玩家注册的账号：用户名或分配到的 C+数字ID 均可登录
 function handleLogin() {
   const id = username.value.trim()
   const pwd = password.value.trim()
