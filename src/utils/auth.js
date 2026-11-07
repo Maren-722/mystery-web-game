@@ -3,7 +3,7 @@
 // ID 规则（v5）：
 //   - 商户摊主：ID = 摊位号（A1/B1/B2/B4…，导览页老板行可见），登录也可直接用账号名（如"陈伯"）
 //   - 王主任（管理处）：ID = M1
-//   - 食客/游客：ID = C + 数字（如 C2093847156；儿子 C5830921476）
+//   - 食客/游客：ID = C + 数字（5 位以内，如 C20938；儿子 C4826）
 //   - 玩家注册的账号：注册时自动分配 C+10位数字 的 ID，登录可用"用户名或ID"
 //
 // 冲突约定：
@@ -102,17 +102,17 @@ export function isReservedId(id) {
   return false
 }
 
-// 给新注册的游客分配唯一的「C + 10位数字」ID（避开剧情ID和已有玩家的ID）
+// 给新注册的游客分配唯一的「C + 5位数字」ID（避开剧情ID和已有玩家的ID）
 export function generateVisitorUid() {
   const custom = readCustomAccounts()
   const taken = new Set([
-    ...Object.values(accounts).map(a => String(a.uid)),
-    ...Object.values(custom).map(a => String(a.uid || ''))
+    ...Object.values(accounts).map(a => String(a.uid).toLowerCase()),
+    ...Object.values(custom).map(a => String(a.uid || '').toLowerCase())
   ])
   let uid
   do {
-    uid = 'C' + String(Math.floor(1000000000 + Math.random() * 9000000000))
-  } while (taken.has(uid))
+    uid = 'C' + String(Math.floor(10000 + Math.random() * 90000))
+  } while (taken.has(uid.toLowerCase()))
   return uid
 }
 

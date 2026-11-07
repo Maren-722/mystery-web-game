@@ -24,6 +24,7 @@
                 {{ convPreview(conv) }}
               </p>
             </div>
+            <span v-if="unreadCount(conv)" class="unread-dot">{{ unreadCount(conv) }}</span>
           </div>
           <p v-if="!sortedConvs.length" class="chat-list-empty">暂时没有私信记录</p>
         </aside>
@@ -35,6 +36,9 @@
             <span class="chat-window-name">{{ activeConv.with }}</span>
           </div>
           <div class="chat-window-body" ref="chatBody">
+            <!-- 被清空的会话：顶部说明，解释为什么只剩这几天 -->
+            <p v-if="activeConv.cleared" class="sys-line">更早的聊天记录已清空</p>
+
             <template v-if="activeMessages.length">
               <div
                 v-for="(msg, i) in activeMessages"
@@ -44,7 +48,9 @@
               >
                 <div class="bubble-avatar">{{ avatarFor(msg) }}</div>
                 <div class="bubble-stack">
-                  <p class="bubble-time">{{ msg.time }}</p>
+                  <p class="bubble-time">
+                    {{ msg.time }}<span v-if="isUnread(msg)" class="unread-tag">未读</span>
+                  </p>
                   <div class="bubble">{{ msg.content }}</div>
                 </div>
               </div>
@@ -143,10 +149,24 @@ const activeMessages = computed(() => {
   return activeConv.value ? convMsgs(activeConv.value) : []
 })
 
+// 未读：数据里显式标记「对方未读」，或被清空的会话里所有来信（他再没打开过手机）
+function isUnread(msg) {
+  if (msg.from === currentUser.value?.username) return false
+  if (msg.unread) return true
+  return !!activeConv.value?.cleared
+}
+
+function unreadCount(conv) {
+  const mine = currentUser.value?.username
+  const base = (conv.messages || []).filter(m => m.from !== mine && (m.unread || conv.cleared)).length
+  return base
+}
+
 function avatarFor(msg) {
-  return msg.from === currentUser.value?.username
-    ? (currentUser.value?.username || '').slice(0, 1)
-    : activeConv.value.with.slice(0, 1)
+  if (msg.from === currentUser.value?.username) {
+    return (currentUser.value?.username || '').slice(0, 1)
+  }
+  return activeConv.value.with.slice(0, 1)
 }
 
 function openConv(conv) {
@@ -189,9 +209,8 @@ function scrollToBottom() {
 function loadData() {
   syncUser()
   sentMap.value = readSent()
-  convs.value = currentUser.value
-    ? (messagesData[currentUser.value.username]?.messages || [])
-    : []
+  const uname = currentUser.value?.username
+  convs.value = uname ? (messagesData[uname]?.messages || []) : []
   // 当前打开的会话如果不在新账号的列表里，回到列表
   if (activeWith.value && !convs.value.find(c => c.with === activeWith.value)) {
     activeWith.value = ''
@@ -229,6 +248,7 @@ onBeforeUnmount(() => {
   overflow-y: auto;
 }
 .chat-list-item {
+  position: relative;
   display: flex;
   gap: 10px;
   padding: 12px 14px;
@@ -293,6 +313,20 @@ onBeforeUnmount(() => {
   padding: 40px 0;
   font-size: var(--font-small);
 }
+.unread-dot {
+  position: absolute;
+  right: 10px;
+  bottom: 12px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 10px;
+  line-height: 17px;
+  text-align: center;
+}
 
 /* ---------- 右侧聊天窗口 ---------- */
 .chat-window {
@@ -330,6 +364,12 @@ onBeforeUnmount(() => {
   overflow-y: auto;
   padding: 16px;
   background: var(--color-bg);
+}
+.sys-line {
+  text-align: center;
+  font-size: var(--font-tiny);
+  color: var(--color-text-muted);
+  margin: 4px 0 18px;
 }
 .chat-cleared {
   color: var(--color-text-muted);
@@ -379,6 +419,14 @@ onBeforeUnmount(() => {
 }
 .bubble-row.mine .bubble-time {
   text-align: right;
+}
+.unread-tag {
+  margin-left: 6px;
+  color: var(--color-danger);
+  font-size: 10px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 3px;
 }
 .bubble {
   background: var(--color-card);
