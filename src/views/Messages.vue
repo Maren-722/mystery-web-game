@@ -40,20 +40,22 @@
           </div>
           <div class="chat-window-body" ref="chatBody">
             <template v-if="activeMessages.length">
-              <div
-                v-for="(msg, i) in activeMessages"
-                :key="i"
-                class="bubble-row"
-                :class="{ mine: msg.from === currentUser.username }"
-              >
-                <div class="bubble-avatar">{{ avatarFor(msg) }}</div>
-                <div class="bubble-stack">
-                  <p class="bubble-time">{{ msg.time }}</p>
-                  <div class="bubble">{{ msg.content }}</div>
+              <template v-for="(row, i) in activeRows" :key="i">
+                <!-- 像微信一样：日期单独一行居中，只在跨天时出现，不显示具体时刻 -->
+                <p v-if="row.type === 'date'" class="chat-date">{{ row.label }}</p>
+                <div
+                  v-else
+                  class="bubble-row"
+                  :class="{ mine: row.msg.from === currentUser.username }"
+                >
+                  <div class="bubble-avatar">{{ avatarFor(row.msg) }}</div>
+                  <div class="bubble-stack">
+                    <div class="bubble">{{ row.msg.content }}</div>
+                  </div>
                 </div>
-              </div>
+              </template>
             </template>
-            <p v-else class="chat-cleared">此会话的记录已被清空。</p>
+            <p v-else class="chat-cleared">记录已清空</p>
           </div>
           <div class="chat-input-bar">
             <input
@@ -131,12 +133,13 @@ function lastTs(conv) {
 
 function convTime(conv) {
   const m = convMsgs(conv)
-  return m.length ? m[m.length - 1].time : ''
+  if (!m.length) return ''
+  return String(m[m.length - 1].time || '').split(' ')[0]
 }
 
 function convPreview(conv) {
   const m = convMsgs(conv)
-  return m.length ? m[m.length - 1].content : '（记录已清空）'
+  return m.length ? m[m.length - 1].content : '记录已清空'
 }
 
 const activeConv = computed(() => {
@@ -145,6 +148,21 @@ const activeConv = computed(() => {
 
 const activeMessages = computed(() => {
   return activeConv.value ? convMsgs(activeConv.value) : []
+})
+
+// 按日期切段：跨天时插入一条居中的日期行（微信式）
+const activeRows = computed(() => {
+  const rows = []
+  let lastDate = ''
+  for (const msg of activeMessages.value) {
+    const date = String(msg.time || '').split(' ')[0]
+    if (date && date !== lastDate) {
+      rows.push({ type: 'date', label: date })
+      lastDate = date
+    }
+    rows.push({ type: 'msg', msg })
+  }
+  return rows
 })
 
 function avatarFor(msg) {
@@ -386,13 +404,23 @@ onBeforeUnmount(() => {
   max-width: 72%;
   min-width: 0;
 }
-.bubble-time {
+/* 微信式的日期分隔：一行小字居中 */
+.chat-date {
+  text-align: center;
   font-size: 11px;
+  letter-spacing: 1px;
   color: var(--color-text-muted);
-  margin-bottom: 4px;
+  margin: 6px 0 16px;
 }
-.bubble-row.mine .bubble-time {
-  text-align: right;
+.chat-date::before,
+.chat-date::after {
+  content: '';
+  display: inline-block;
+  width: 26px;
+  height: 1px;
+  vertical-align: middle;
+  margin: 0 10px;
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
 }
 .bubble {
   background: var(--color-card);

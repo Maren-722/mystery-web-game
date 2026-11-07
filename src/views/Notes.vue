@@ -11,7 +11,7 @@
       <!-- 只有你自己能看到的私密手记；这里也可以添加新手记（本机保存） -->
       <div v-if="currentUser">
         <div v-if="notes.length">
-          <div v-for="(note, i) in notes" :key="i" class="card note-card">
+          <div v-for="(note, i) in notes" :key="note.key" class="card note-card">
             <p class="note-date">{{ note.date }}</p>
             <p class="note-content">
               <template v-for="(seg, si) in renderNote(note.content)" :key="si">
@@ -72,7 +72,7 @@ function readLocalNotes() {
   }
 }
 
-// "10月25日" -> 1025，用于按时间由近及远排序
+// "10月25日" -> 1025，用于按时间先后排序（日记按时间往下读）
 function parseDate(s) {
   const m = String(s || '').match(/(\d+)月(\d+)日/)
   return m ? (+m[1]) * 100 + (+m[2]) : 0
@@ -81,17 +81,24 @@ function parseDate(s) {
 function loadData() {
   syncUser()
   const uname = currentUser.value?.username
-  if (uname) {
-    const builtin = messagesData[uname]?.notes || []
-    const local = readLocalNotes()[uname] || []
-    // 按时间由近及远排列
-    notes.value = [...local, ...builtin].sort((a, b) => parseDate(b.date) - parseDate(a.date))
-    // 有内置剧情手记的账号：看到手记即记录进度
-    if (builtin.length && NOTE_PROGRESS[uname]) {
-      markNode(NOTE_PROGRESS[uname])
-    }
-  } else {
+  if (!uname) {
     notes.value = []
+    return
+  }
+
+  const builtin = messagesData[uname]?.notes || []
+  const builtinNotes = builtin.map(n => ({ key: 'b:' + n.date, date: n.date, content: n.content }))
+  const localNotes = (readLocalNotes()[uname] || []).map((n, i) => ({
+    key: 'l:' + i,
+    date: n.date,
+    content: n.content
+  }))
+
+  notes.value = [...builtinNotes, ...localNotes]
+    .sort((a, b) => parseDate(a.date) - parseDate(b.date))
+
+  if (builtin.length && NOTE_PROGRESS[uname]) {
+    markNode(NOTE_PROGRESS[uname])
   }
 }
 

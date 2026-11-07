@@ -5,7 +5,7 @@
       <header class="page-head">
         <p class="page-head-kicker">南桥夜市 · 导览</p>
         <h1 class="page-head-title">夜市导览</h1>
-        <p class="page-head-desc">A 区五家，B 区五家。每个摊位一张名片：摊位号、老板、主营、价钱，还有客人留下的话。</p>
+        <p class="page-head-desc">夜市不大，慢慢走。点开一家，能看见是谁在守摊、卖什么、多少钱；拿不定主意，就看看吃过的人在底下留的那几句。</p>
       </header>
 
       <div class="stall-grid">
@@ -19,7 +19,7 @@
         >
           <div class="stall-no">摊位 {{ stall.stallNo }}</div>
           <h3 class="stall-name">{{ stall.shopName }}</h3>
-          <p class="stall-owner">老板：{{ stall.owner }} <span v-if="stall.uid" class="stall-uid">ID:{{ stall.uid }}</span></p>
+          <p class="stall-owner">老板：{{ stall.owner }}<span v-if="stall.uid" class="stall-id">ID:{{ stall.uid }}</span></p>
           <p class="stall-main">{{ stall.main }}</p>
           <p class="stall-price">价格：{{ stall.price }}</p>
           <span v-if="stall.closed" class="stall-status">暂停营业</span>
@@ -107,6 +107,17 @@ onMounted(() => {
 .stall-uid {
   color: var(--color-text-muted);
   margin-left: 4px;
+}
+/* 老板与 ID 同一行、同一字号同一颜色，只用一个间隔点分开 */
+.stall-id {
+  font-size: inherit;
+  color: inherit;
+  letter-spacing: 0.2px;
+}
+.stall-id::before {
+  content: '·';
+  margin: 0 7px;
+  color: var(--color-text-muted);
 }
 .stall-price {
   font-size: var(--font-tiny);
