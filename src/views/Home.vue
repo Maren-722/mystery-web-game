@@ -1,6 +1,24 @@
 <template>
   <div class="home-page">
     <NavBar />
+
+    <!-- 首屏：夜市的灯 -->
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="hero-kicker">临岗市 · 江边老街 · 开市五年</p>
+        <h1 class="hero-title">南桥夜市</h1>
+        <p class="hero-sub">今夜照常营业　17:00 — 23:00</p>
+        <div class="hero-rule"></div>
+        <p class="hero-line">五周年前的这个秋天，A1 的灶台凉了。</p>
+        <div class="hero-links">
+          <a @click="$router.push('/stalls')">逛夜市 →</a>
+          <a @click="$router.push('/forum')">看论坛 →</a>
+        </div>
+      </div>
+      <span class="hero-date">2026.10.30</span>
+      <div class="hero-lanterns" aria-hidden="true"><span>🏮</span><span>🏮</span><span>🏮</span></div>
+    </section>
+
     <div class="container">
 
       <!-- 置顶：管理处的话（长期说明，特殊样式） -->
@@ -275,77 +293,200 @@ const line1 = [
 </script>
 
 <style scoped>
+/* 首屏：墨色夜空 + 几盏远处的灯 */
+.hero {
+  position: relative;
+  background: var(--ink);
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(420px 230px at 78% 20%, rgba(215, 154, 74, 0.22), transparent 70%),
+    radial-gradient(300px 190px at 64% 74%, rgba(180, 70, 47, 0.16), transparent 72%),
+    radial-gradient(520px 260px at 10% 8%, rgba(215, 154, 74, 0.10), transparent 70%);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 110px;
+  background: linear-gradient(to bottom, rgba(20, 23, 29, 0), var(--color-bg));
+}
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 82px 28px 78px;
+}
+.hero-kicker {
+  font-size: 11px;
+  letter-spacing: 3.2px;
+  color: rgba(215, 154, 74, 0.92);
+}
+.hero-title {
+  font-family: var(--font-title);
+  font-size: 62px;
+  font-weight: 600;
+  letter-spacing: 12px;
+  line-height: 1.15;
+  color: #FAF3E5;
+  margin: 20px 0 12px;
+}
+.hero-sub {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #B9AE9C;
+}
+.hero-rule {
+  width: 46px;
+  height: 1px;
+  background: var(--amber);
+  margin: 24px 0;
+}
+.hero-line {
+  font-family: var(--font-title);
+  font-size: 17px;
+  letter-spacing: 1.2px;
+  color: #E4D8C4;
+}
+.hero-links {
+  display: flex;
+  gap: 24px;
+  margin-top: 28px;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.hero-links a {
+  color: var(--amber-soft);
+  border-bottom: 1px solid rgba(215, 154, 74, 0.38);
+  padding-bottom: 2px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.hero-links a:hover {
+  color: #fff;
+  border-color: #fff;
+}
+.hero-date {
+  position: absolute;
+  right: 30px;
+  bottom: 26px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: rgba(239, 230, 214, 0.35);
+  z-index: 2;
+}
+.hero-lanterns {
+  position: absolute;
+  top: 48px;
+  right: 64px;
+  display: flex;
+  gap: 18px;
+  z-index: 2;
+  opacity: 0.92;
+}
+.hero-lanterns span {
+  font-size: 24px;
+  filter: drop-shadow(0 0 12px rgba(255, 190, 92, 0.5));
+  animation: sway 5s ease-in-out infinite;
+}
+.hero-lanterns span:nth-child(2) {
+  font-size: 30px;
+  margin-top: -6px;
+  animation-delay: -1.6s;
+}
+.hero-lanterns span:nth-child(3) {
+  font-size: 20px;
+  margin-top: 4px;
+  animation-delay: -3.2s;
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50% { transform: rotate(3deg) translateY(2px); }
+}
+
 /* 置顶：管理处的话（与普通公告不同的特殊样式） */
 .pinned-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: linear-gradient(135deg, #8B3A2A, #6E2E20);
+  gap: 16px;
+  background: var(--ink-2);
+  border-left: 3px solid var(--amber);
   border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  margin-bottom: var(--space-lg);
+  padding: 18px 22px;
+  margin-bottom: 30px;
   cursor: pointer;
-  box-shadow: 0 3px 12px rgba(110, 46, 32, 0.28);
-  transition: box-shadow 0.2s;
+  box-shadow: 0 10px 28px rgba(20, 23, 29, 0.16);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .pinned-card:hover {
-  box-shadow: 0 5px 16px rgba(110, 46, 32, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(20, 23, 29, 0.22);
 }
 .pinned-icon {
-  font-size: 30px;
+  font-size: 26px;
   line-height: 1;
-  filter: drop-shadow(0 0 6px rgba(255, 200, 120, 0.6));
+  filter: drop-shadow(0 0 8px rgba(255, 200, 120, 0.55));
 }
 .pinned-body {
   flex: 1;
   min-width: 0;
 }
 .pinned-tag {
-  font-size: var(--font-tiny);
-  color: #E8C9A8;
-  margin-bottom: 2px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--amber-soft);
+  margin-bottom: 4px;
 }
 .pinned-text {
   font-family: var(--font-title);
-  font-size: var(--font-h3);
-  color: #FFF6E8;
+  font-size: 16px;
+  letter-spacing: 0.8px;
+  color: #F6EEDF;
   font-weight: 600;
 }
 .pinned-arrow {
-  color: #E8C9A8;
-  font-size: 22px;
+  color: var(--amber-soft);
+  font-size: 20px;
 }
 
 .notice-bar {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 4px 16px;
+  border-radius: var(--radius-lg);
+  padding: 4px 22px;
   margin-bottom: var(--space-lg);
 }
 .notice-item {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--color-border);
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   transition: background 0.15s;
 }
 .notice-item:hover {
-  background: #FFFDF8;
+  background: #FBF6EA;
 }
 .notice-item:last-child {
   border-bottom: none;
 }
 .notice-tag {
   background: var(--color-primary);
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-size: var(--font-tiny);
+  color: #F7F1E4;
+  padding: 2px 9px;
+  border-radius: 2px;
+  font-size: 11px;
+  letter-spacing: 1px;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* 公告详情弹窗 */
@@ -366,8 +507,8 @@ const line1 = [
   overflow-y: auto;
   background: var(--color-card);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  padding: 28px 26px;
+  box-shadow: 0 20px 60px rgba(20, 23, 29, 0.35);
 }
 .modal-header {
   display: flex;
@@ -378,9 +519,10 @@ const line1 = [
 .modal-title {
   flex: 1;
   font-family: var(--font-title);
-  font-size: var(--font-h3);
-  color: var(--color-primary);
-  line-height: 1.4;
+  font-size: 19px;
+  letter-spacing: 0.8px;
+  color: var(--color-text);
+  line-height: 1.5;
 }
 .modal-close {
   background: none;
@@ -476,22 +618,23 @@ const line1 = [
 .cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 5px;
   margin-bottom: var(--space-xs);
 }
 .cal-head {
   text-align: center;
-  font-size: var(--font-small);
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  padding: 4px 0;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 4px 0 10px;
 }
 .cal-day {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 8px 6px;
-  min-height: 86px;
+  padding: 9px 8px;
+  min-height: 96px;
 }
 .cal-pad {
   background: transparent;
@@ -501,34 +644,36 @@ const line1 = [
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 .cal-date {
-  font-size: var(--font-body-size);
+  font-family: var(--font-title);
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
 }
 .cal-today-tag {
-  font-size: 10px;
+  font-size: 9px;
+  letter-spacing: 1px;
   background: var(--color-accent);
   color: #fff;
   padding: 1px 6px;
-  border-radius: 10px;
+  border-radius: 2px;
 }
 .cal-day.today {
   border-color: var(--color-accent);
-  background: #FFFBEB;
+  background: #FFFAEE;
 }
 .cal-day.alert {
-  border-color: #F3C2B4;
-  background: #FFF7F4;
+  border-color: #E7C9BC;
+  background: #FDF6F1;
 }
 .cal-day.today.alert {
   border-color: var(--color-accent);
 }
 .cal-shops {
-  font-size: 11px;
-  line-height: 1.8;
+  font-size: 10.5px;
+  line-height: 1.9;
 }
 .cal-shop {
   color: var(--color-text-secondary);
@@ -558,6 +703,20 @@ const line1 = [
 }
 
 @media (max-width: 720px) {
+  .hero-inner {
+    padding: 54px 18px 52px;
+  }
+  .hero-title {
+    font-size: 40px;
+    letter-spacing: 8px;
+    margin: 16px 0 10px;
+  }
+  .hero-line {
+    font-size: 15px;
+  }
+  .hero-date {
+    display: none;
+  }
   .pinned-text {
     font-size: var(--font-body-size);
   }
@@ -566,15 +725,19 @@ const line1 = [
     gap: 3px;
   }
   .cal-day {
-    padding: 4px 2px;
-    min-height: 66px;
+    padding: 5px 3px;
+    min-height: 72px;
   }
   .cal-shops {
     font-size: 9px;
-    line-height: 1.5;
+    line-height: 1.55;
   }
   .cal-date {
     font-size: var(--font-small);
+  }
+  .cal-head {
+    font-size: 10px;
+    letter-spacing: 0;
   }
 }
 </style>

@@ -1,6 +1,9 @@
 <template>
   <nav v-if="!hideNav" class="navbar">
-    <div class="navbar-logo" @click="go('/home')">南桥夜市</div>
+    <div class="navbar-logo" @click="go('/home')">
+      <span class="logo-cn">南桥夜市</span>
+      <span class="logo-en">NANQIAO NIGHT MARKET</span>
+    </div>
     <div class="navbar-links">
       <a :class="{ active: isActive('/home') }" @click="go('/home')">首页</a>
       <a :class="{ active: isActive('/stalls') }" @click="go('/stalls')">夜市导览</a>
@@ -193,59 +196,95 @@ function doSwitch() {
 
 <style scoped>
 .navbar {
-  background: var(--color-primary);
-  color: #fff;
-  padding: 0 var(--space-lg);
+  background: var(--ink);
+  color: #EFE6D6;
+  padding: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
+  gap: 24px;
+  height: 64px;
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid rgba(215, 154, 74, 0.18);
 }
 .navbar-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.logo-cn {
   font-family: var(--font-title);
   font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 4px;
+  line-height: 1;
+  color: #F6EEDF;
+}
+.logo-en {
+  font-size: 8px;
+  letter-spacing: 2.6px;
+  line-height: 1;
+  color: rgba(215, 154, 74, 0.85);
 }
 .navbar-links {
   display: flex;
-  gap: var(--space-lg);
+  gap: 22px;
   align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.navbar-links::-webkit-scrollbar {
+  display: none;
 }
 .navbar-links a {
-  color: #fff;
-  font-size: var(--font-body-size);
-  opacity: 0.9;
+  position: relative;
+  color: #CBC2B3;
+  font-size: 13px;
+  letter-spacing: 0.8px;
   cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 6px;
-  transition: opacity 0.2s, background 0.2s, box-shadow 0.2s;
+  padding: 8px 1px;
+  white-space: nowrap;
+  transition: color 0.2s;
 }
 .navbar-links a:hover {
-  opacity: 1;
+  color: #F3E7D2;
 }
-/* 当前所在页面：阴影高亮 */
+/* 当前所在页面：暖色字 + 下划线 */
 .navbar-links a.active {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.18);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  color: var(--amber-soft);
+}
+.navbar-links a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--amber);
 }
 .navbar-user-wrap {
   position: relative;
 }
 .navbar-user {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: var(--font-small);
+  border: 1px solid rgba(215, 154, 74, 0.42);
+  color: #EADFCB;
+  padding: 5px 12px;
+  border-radius: 2px;
+  font-size: var(--font-tiny);
+  letter-spacing: 0.5px;
   cursor: pointer;
   user-select: none;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
 }
 .navbar-user:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(215, 154, 74, 0.12);
+  border-color: rgba(215, 154, 74, 0.7);
 }
 
 /* 菜单遮罩：点击任意外部区域关闭 */
@@ -397,18 +436,32 @@ function doSwitch() {
 
 @media (max-width: 720px) {
   .navbar {
-    padding: 0 var(--space-md);
+    padding: 0 14px;
+    height: 58px;
+    gap: 12px;
+  }
+  .logo-cn {
+    font-size: 17px;
+    letter-spacing: 2px;
+  }
+  .logo-en {
+    display: none;
   }
   .navbar-links {
-    gap: var(--space-sm);
+    gap: 14px;
+    justify-content: flex-end;
   }
   .navbar-links a {
-    font-size: var(--font-small);
+    font-size: var(--font-tiny);
+    letter-spacing: 0;
+  }
+  .navbar-user {
+    padding: 4px 8px;
   }
   .user-menu {
     position: fixed;
     right: var(--space-md);
-    top: 52px;
+    top: 64px;
   }
 }
 </style>

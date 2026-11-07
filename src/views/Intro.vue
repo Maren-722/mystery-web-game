@@ -38,7 +38,7 @@
 <style scoped>
 .intro-page {
   min-height: 100vh;
-  background: #1a1a2e;
+  background: #14171D;
   color: #e0e0e0;
   display: flex;
   align-items: center;
@@ -48,14 +48,14 @@
 .intro-card {
   max-width: 600px;
   width: 100%;
-  background: #16213e;
+  background: #1C202A;
   border-radius: 12px;
   padding: 48px 40px;
-  border: 1px solid #0f3460;
+  border: 1px solid #2A2F3A;
 }
 .intro-tag {
   display: inline-block;
-  background: #e94560;
+  background: #D79A4A;
   color: #fff;
   padding: 4px 12px;
   border-radius: 20px;
@@ -76,7 +76,7 @@
   margin-bottom: 16px;
 }
 .intro-highlight {
-  color: #e94560;
+  color: #D79A4A;
   font-weight: 600;
 }
 .intro-quote {
@@ -88,11 +88,11 @@
 }
 .intro-divider {
   border: none;
-  border-top: 1px solid #0f3460;
+  border-top: 1px solid #2A2F3A;
   margin: 32px 0;
 }
 .intro-link {
-  color: #e94560;
+  color: #D79A4A;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;

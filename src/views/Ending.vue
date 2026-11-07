@@ -207,7 +207,7 @@ function restart() {
 <style scoped>
 .ending-page {
   min-height: 100vh;
-  background: #1a1a2e;
+  background: #14171D;
   color: #e0e0e0;
   display: flex;
   align-items: center;
@@ -219,10 +219,10 @@ function restart() {
   max-width: 640px;
 }
 .ending-card {
-  background: #16213e;
+  background: #1C202A;
   border-radius: 12px;
   padding: 48px 40px;
-  border: 1px solid #0f3460;
+  border: 1px solid #2A2F3A;
   animation: fadeUp 0.6s ease both;
 }
 @keyframes fadeUp {
@@ -232,7 +232,7 @@ function restart() {
 .stage-tag {
   font-size: 12px;
   letter-spacing: 4px;
-  color: #7a8bb8;
+  color: #8F8677;
   margin-bottom: 18px;
 }
 .ending-title {
@@ -245,7 +245,7 @@ function restart() {
 .ending-kicker {
   font-family: var(--font-title);
   font-size: 16px;
-  color: #e9a05c;
+  color: #D79A4A;
   margin: 26px 0 10px;
 }
 .ending-text {
@@ -255,17 +255,17 @@ function restart() {
   margin-bottom: 14px;
 }
 .ending-text.strong {
-  color: #ffcf8a;
+  color: #E8BE84;
   font-weight: 600;
 }
 .ending-divider {
   border: none;
-  border-top: 1px solid #0f3460;
+  border-top: 1px solid #2A2F3A;
   margin: 32px 0 20px;
 }
 .ending-fin {
   text-align: center;
-  color: #7a8bb8;
+  color: #8F8677;
   letter-spacing: 6px;
   margin-bottom: 24px;
 }
@@ -285,8 +285,8 @@ function restart() {
   width: 100%;
   padding: 13px;
   background: transparent;
-  color: #e9a05c;
-  border: 1px solid #e9a05c;
+  color: #D79A4A;
+  border: 1px solid #D79A4A;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -297,41 +297,41 @@ function restart() {
   background: rgba(233, 160, 92, 0.14);
 }
 .ending-btn.primary {
-  background: #e9a05c;
+  background: #D79A4A;
   color: #241a0e;
   font-weight: 600;
 }
 .ending-btn.ghost {
-  color: #7a8bb8;
-  border-color: #2a3f6f;
+  color: #8F8677;
+  border-color: #3A4050;
 }
 
 /* 帖子预览：抉择前的最后一眼 */
 .post-preview {
   margin: 18px 0 22px;
   padding: 18px 20px;
-  background: #0f1a33;
-  border: 1px solid #24406b;
+  background: #12151B;
+  border: 1px solid #3A4050;
   border-radius: 8px;
 }
 .post-preview-title {
   font-family: var(--font-title);
   font-size: 16px;
-  color: #dfe6f5;
+  color: #E8DFCE;
   margin-bottom: 10px;
 }
 .post-preview-body {
   font-size: 13px;
   line-height: 1.9;
-  color: #9fb0cf;
+  color: #B4AB9A;
 }
 .post-preview-addr {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #24406b;
+  border-top: 1px dashed #3A4050;
   font-size: 13px;
   line-height: 1.8;
-  color: #ffcf8a;
+  color: #E8BE84;
 }
 
 /* 进度点 */
@@ -345,11 +345,11 @@ function restart() {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #2a3f6f;
+  background: #3A4050;
   transition: background 0.3s;
 }
 .dot.on {
-  background: #e9a05c;
+  background: #D79A4A;
 }
 
 /* 未解锁的挡板页 */
@@ -373,7 +373,7 @@ function restart() {
 .blocked-sub {
   text-align: center;
   font-size: 14px;
-  color: #8a8a8a;
+  color: #8F8677;
 }
 
 @media (max-width: 720px) {

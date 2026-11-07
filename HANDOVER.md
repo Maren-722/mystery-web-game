@@ -23,6 +23,28 @@
 
 ## 更新日志（每次改完就往下加一段，最新的放最上面）
 
+### 2026-11-07（四）· 2x1y3z · 分支 feature/2x1y3z-visual
+
+**本次做了什么：全站视觉改版（不动任何剧情/逻辑）**
+
+1. **设计基调换成"深夜的夜市"**：框架（导航/页脚/首屏）用墨色 `--ink #14171D`，内容区是暖纸色 `#F6F1E6`，暖橙 `#B8792C / #D79A4A` 只用在"灯"和重点上。设计变量全部集中在 `src/styles/variables.css`，旧变量名（--color-primary 等）保留但含义更新，各页面无需改动即自动适配
+2. **首页新增首屏 hero**：墨色夜空 + 三盏微动的灯笼 + 大字"南桥夜市" + 一句钩子"五周年前的这个秋天，A1 的灶台凉了"+ 逛夜市/看论坛入口
+3. **导航栏重做**：双行字标（南桥夜市 / NANQIAO NIGHT MARKET）、链接下划线高亮、手机端横向滚动；页脚改墨色贴底（内容短时不再露底色，骨架规则在 global.css `#app > div`）
+4. **排版系统**：区块标题统一为"左侧暖灯竖线 + 衬线大字"；卡片、按钮、输入框统一圆角/边框/留白；全局顶部有一层很淡的暖光渐变
+5. **细节**：导览摊位卡重做（摊位号徽章、衬线店名、价格虚线分隔；"暂停营业"用暖灰不用冷灰）；管理处状态标签配色统一；短信页自己的气泡改暖黄（原来刺眼的微信绿）；开场/结局页从蓝紫改为墨+暖灯配色
+
+**涉及文件**
+
+- `src/styles/variables.css`、`src/styles/global.css` —— 设计变量与全局排版（核心）
+- `src/components/NavBar.vue`、`src/components/Footer.vue` —— 框架
+- `src/views/Home.vue` —— hero + 公告/排班样式
+- `src/views/Stalls.vue`、`src/views/Manager.vue`、`src/views/Messages.vue` —— 局部样式
+- `src/views/Intro.vue`、`src/views/Ending.vue` —— 配色统一（文案未动）
+
+**给队友的提醒**：改样式请优先用 `variables.css` 里的变量，不要写死色值；本分支基于 `feature/2x1y3z-main-storyline`，合并顺序 handover → main-storyline → visual。
+
+---
+
 ### 2026-11-07（三）· 2x1y3z · 分支 feature/2x1y3z-main-storyline
 
 **本次做了什么**

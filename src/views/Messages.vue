@@ -300,6 +300,7 @@ onBeforeUnmount(() => {
   font-size: var(--font-tiny);
   color: var(--color-text-muted);
   margin-top: 3px;
+  padding-right: 22px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -439,8 +440,8 @@ onBeforeUnmount(() => {
   word-break: break-word;
 }
 .bubble-row.mine .bubble {
-  background: #95EC69;
-  border-color: #86DB5C;
+  background: #F3E4C2;
+  border-color: #E3CD9E;
 }
 
 /* ---------- 输入栏 ---------- */

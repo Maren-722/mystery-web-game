@@ -15,15 +15,17 @@ const hideNav = computed(() => route.meta.hideNav === true)
 
 <style scoped>
 .footer {
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-lg);
+  background: var(--ink);
+  border-top: 1px solid rgba(215, 154, 74, 0.14);
+  padding: 30px 24px;
   text-align: center;
-  color: var(--color-text-secondary);
-  font-size: var(--font-small);
+  color: #A79C8B;
+  font-size: var(--font-tiny);
+  letter-spacing: 0.8px;
 }
 .footer-small {
-  margin-top: var(--space-xs);
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(167, 156, 139, 0.6);
 }
 </style>

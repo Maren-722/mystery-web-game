@@ -15,11 +15,17 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--color-bg);
+  background-color: var(--color-bg);
+  /* 顶部一层很淡的暖光，像远处摊位的灯照过来 */
+  background-image:
+    radial-gradient(900px 320px at 50% -120px, rgba(215, 154, 74, 0.16), rgba(215, 154, 74, 0) 70%),
+    radial-gradient(600px 260px at 100% 0%, rgba(180, 70, 47, 0.06), rgba(180, 70, 47, 0) 70%);
+  background-repeat: no-repeat;
   color: var(--color-text);
   font-size: var(--font-body-size);
-  line-height: 1.6;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -31,11 +37,29 @@ ul, ol {
   list-style: none;
 }
 
+::selection {
+  background: rgba(215, 154, 74, 0.28);
+}
+
 /* 通用容器 */
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--space-lg);
+  padding: 44px 28px 64px;
+}
+
+/* 页面骨架：让内容区撑满视口，页脚贴底（内容短时不露底色） */
+#app > div {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+#app > div > .container {
+  flex: 1 0 auto;
+  width: 100%;
+}
+#app > div > .footer {
+  margin-top: auto;
 }
 
 /* 通用按钮 */
@@ -43,24 +67,29 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 11px 22px;
   background: var(--color-primary);
-  color: #fff;
-  border: none;
+  color: #F7F1E4;
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius);
   font-size: var(--font-body-size);
   font-family: var(--font-body);
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 .btn:hover {
-  background: var(--color-primary-dark);
+  background: #2A2F3A;
+  border-color: #2A2F3A;
 }
 .btn-accent {
   background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
 }
 .btn-accent:hover {
-  background: var(--color-primary);
+  background: #9E6624;
+  border-color: #9E6624;
 }
 .btn-block {
   width: 100%;
@@ -70,44 +99,82 @@ ul, ol {
 .card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
 }
 
-/* 区块标题 */
+/* 区块标题：左侧一道暖灯竖线 */
 .section-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
   font-family: var(--font-title);
   font-size: var(--font-h2);
-  font-weight: 700;
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-sm);
-  border-bottom: 2px solid var(--color-primary);
-  display: inline-block;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--color-text);
+  margin: 46px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 19px;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+/* 页面第一个标题不要顶出太多空白 */
+.container > .section-title:first-child {
+  margin-top: 0;
+}
+
+/* 小标签（全大写的小字，用来做层级） */
+.kicker {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 /* 表单 */
 .form-label {
   display: block;
-  font-size: var(--font-body-size);
-  margin-bottom: var(--space-xs);
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 .form-input {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--color-border);
+  padding: 11px 13px;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius);
+  background: #fff;
   font-size: 16px; /* 移动端防 iOS 聚焦缩放，必须 ≥16px */
   font-family: var(--font-body);
+  color: var(--color-text);
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .form-input:focus {
   border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(184, 121, 44, 0.12);
+}
+
+/* 键盘可达性 */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 /* 移动端适配（窄屏优先设计） */
 @media (max-width: 720px) {
   .container {
-    padding: var(--space-md);
+    padding: 28px 16px 48px;
+  }
+  .section-title {
+    font-size: 21px;
+    margin: 34px 0 14px;
   }
 }

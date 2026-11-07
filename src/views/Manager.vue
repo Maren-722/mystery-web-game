@@ -170,21 +170,22 @@ function closeNotice() {
 }
 .state-badge {
   font-size: 11px;
+  letter-spacing: 0.5px;
   padding: 1px 8px;
-  border-radius: 4px;
+  border-radius: 2px;
   flex-shrink: 0;
 }
 .st-active {
-  background: #E8F5E9;
-  color: #2E7D32;
+  background: #EDF2E7;
+  color: #4A6B47;
 }
 .st-expired {
-  background: #F5F5F5;
-  color: #9E9E9E;
+  background: #F1ECE1;
+  color: #8F8677;
 }
 .st-deleted {
-  background: #FDECEA;
-  color: #C62828;
+  background: #FBEDE9;
+  color: #A6402A;
 }
 .notice-tag {
   color: #fff;

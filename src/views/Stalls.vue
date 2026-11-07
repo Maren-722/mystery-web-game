@@ -44,7 +44,8 @@ onMounted(() => {
 <style scoped>
 .page-desc {
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-lg);
+  margin-bottom: 28px;
+  max-width: 620px;
 }
 .stall-grid {
   display: grid;
@@ -52,68 +53,90 @@ onMounted(() => {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, auto);
   grid-auto-flow: column;
-  gap: var(--space-md);
+  gap: 14px;
 }
 .stall-card {
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 18px 20px 16px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   position: relative;
 }
 .stall-card:hover {
   border-color: var(--color-accent);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
 }
 .stall-no {
-  font-size: var(--font-tiny);
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-xs);
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: var(--color-accent);
+  border: 1px solid rgba(184, 121, 44, 0.35);
+  padding: 1px 7px;
+  border-radius: 2px;
+  margin-bottom: 10px;
 }
 .stall-name {
   font-family: var(--font-title);
-  font-size: var(--font-h3);
-  color: var(--color-primary);
-  margin-bottom: 4px;
+  font-size: 19px;
+  letter-spacing: 1px;
+  color: var(--color-text);
+  margin-bottom: 6px;
 }
 .stall-owner,
 .stall-main {
-  font-size: var(--font-small);
+  font-size: var(--font-tiny);
   color: var(--color-text-secondary);
+  line-height: 1.75;
 }
 .stall-uid {
   color: var(--color-text-muted);
-  font-size: var(--font-tiny);
+  margin-left: 4px;
 }
 .stall-price {
-  font-size: var(--font-small);
-  color: var(--color-accent);
-  margin-top: var(--space-xs);
+  font-size: var(--font-tiny);
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
 }
 .stall-status {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: var(--color-danger);
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: var(--font-tiny);
+  top: 16px;
+  right: 16px;
+  background: rgba(166, 64, 42, 0.1);
+  color: var(--color-danger);
+  border: 1px solid rgba(166, 64, 42, 0.3);
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-size: 10px;
+  letter-spacing: 1px;
 }
 
-/* 暂停营业摊位：整体置灰 */
+/* 暂停营业摊位：整体压暗（保持暖调，不用冷灰） */
 .stall-closed {
-  background: #EFEFEF;
-  border-color: #DCDCDC;
+  background: #F3EEE2;
+  border-color: #E2D8C5;
 }
 .stall-closed .stall-name {
-  color: #8A8A8A;
+  color: #857E70;
 }
 .stall-closed .stall-owner,
-.stall-closed .stall-main {
-  color: #A5A5A5;
-}
+.stall-closed .stall-main,
 .stall-closed .stall-price {
-  color: #A5A5A5;
+  color: #A39B8B;
 }
 
 /* 手机端同样保持两列（A 列 / B 列），卡片内容自动紧凑换行 */
+@media (max-width: 720px) {
+  .stall-card {
+    padding: 14px 14px 12px;
+  }
+  .stall-name {
+    font-size: 16px;
+  }
+  .stall-main {
+    display: none;
+  }
+}
 </style>
